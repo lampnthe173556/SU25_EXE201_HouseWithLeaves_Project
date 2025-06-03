@@ -6,6 +6,15 @@ namespace ProjectHouseWithLeaves
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            #region Session
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            #endregion
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -21,7 +30,7 @@ namespace ProjectHouseWithLeaves
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
 
             app.UseAuthorization();
