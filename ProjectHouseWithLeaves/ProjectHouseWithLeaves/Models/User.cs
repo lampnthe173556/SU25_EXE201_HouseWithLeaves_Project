@@ -29,6 +29,8 @@ public partial class User
 
     public int? Status { get; set; }
 
+    public virtual Cart? Cart { get; set; }
+
     public virtual ICollection<FavoriteProduct> FavoriteProducts { get; set; } = new List<FavoriteProduct>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

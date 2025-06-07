@@ -9,9 +9,11 @@ public partial class Product
 
     public string ProductName { get; set; } = null!;
 
+    public string? Size { get; set; }
+
     public string? Description { get; set; }
 
-    public int Price { get; set; }
+    public decimal Price { get; set; }
 
     public int? QuantityInStock { get; set; }
 
@@ -21,11 +23,11 @@ public partial class Product
 
     public DateTime? UpdatedAt { get; set; }
 
-    public int? Status { get; set; }
-
     public bool? IsActive { get; set; }
 
     public bool? IsDeleted { get; set; }
+
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public virtual Category? Category { get; set; }
 

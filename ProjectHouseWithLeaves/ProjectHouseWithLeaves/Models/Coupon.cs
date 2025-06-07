@@ -11,7 +11,11 @@ public partial class Coupon
 
     public int? MaxUsage { get; set; }
 
+    public string DiscountType { get; set; } = null!;
+
     public decimal? DiscountPercent { get; set; }
+
+    public decimal? DiscountAmount { get; set; }
 
     public decimal? MinOrderAmount { get; set; }
 

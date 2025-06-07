@@ -11,6 +11,12 @@ public partial class Order
 
     public DateTime? OrderDate { get; set; }
 
+    public decimal? SubtotalAmount { get; set; }
+
+    public decimal? DiscountAppliedAmount { get; set; }
+
+    public decimal? ShippingCostApplied { get; set; }
+
     public decimal? TotalAmount { get; set; }
 
     public int? CouponId { get; set; }
