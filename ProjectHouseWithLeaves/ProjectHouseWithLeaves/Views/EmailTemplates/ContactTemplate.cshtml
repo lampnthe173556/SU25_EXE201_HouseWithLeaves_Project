@@ -1,0 +1,93 @@
+﻿@using ProjectHouseWithLeaves.Models
+@model Contact
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Liên hệ mới</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8faf6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px #8b5c2c22;
+            border: 1.5px solid #7a8b5c;
+            overflow: hidden;
+        }
+
+        .email-header {
+            background-color: #8b5c2c;
+            padding: 24px 20px 18px 20px;
+            color: #fff;
+            text-align: center;
+            border-bottom: 3px solid #7a8b5c;
+        }
+
+        .email-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            font-family: 'Pacifico', cursive, sans-serif;
+        }
+
+        .email-body {
+            padding: 32px 28px 24px 28px;
+        }
+
+        .email-body h2 {
+            margin-top: 0;
+            color: #4b5d3a;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
+
+        .email-body p {
+            line-height: 1.7;
+            margin: 12px 0;
+            color: #222;
+            font-size: 1.05rem;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #7a8b5c;
+        }
+
+        .footer {
+            background-color: #f8faf6;
+            padding: 16px;
+            text-align: center;
+            font-size: 13px;
+            color: #8b5c2c;
+            border-top: 1.5px solid #7a8b5c;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">           
+            <h1>KHÁCH HÀNG GỬI FEEDBACK</h1>
+        </div>
+        <div class="email-body">
+            <h2>Chi tiết</h2>
+            <p><span class="label">📧 Email người gửi:</span> @Model.EmailContact</p>
+            <p><span class="label">🕒 Thời gian gửi:</span> @Model.SendAt?.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><span class="label">📝 Nội dung:</span></p>
+            <p>@Model.DescriptionContact</p>
+        </div>
+        <div class="footer">
+            Email này được gửi từ hệ thống website.<br />
+            Vui lòng đọc và hỗ trợ khách hàng.
+        </div>
+    </div>
+</body>
+</html>

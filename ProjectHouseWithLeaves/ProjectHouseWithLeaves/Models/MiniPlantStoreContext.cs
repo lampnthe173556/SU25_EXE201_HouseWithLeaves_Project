@@ -50,7 +50,7 @@ public partial class MiniPlantStoreContext : DbContext
         return configuration["ConnectionStrings:DBDefault"];
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-       => optionsBuilder.UseSqlServer(GetConnectionString());
+        => optionsBuilder.UseSqlServer(GetConnectionString());
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -112,9 +112,7 @@ public partial class MiniPlantStoreContext : DbContext
         {
             entity.ToTable("Contact");
 
-            entity.Property(e => e.ContactId)
-                .ValueGeneratedNever()
-                .HasColumnName("contact_id");
+            entity.Property(e => e.ContactId).HasColumnName("contact_id");
             entity.Property(e => e.DescriptionContact).HasColumnName("description_contact");
             entity.Property(e => e.EmailContact).HasColumnName("email_contact");
             entity.Property(e => e.SendAt)

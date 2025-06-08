@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using ProjectHouseWithLeaves.Helper.Email;
 using ProjectHouseWithLeaves.Models;
+using ProjectHouseWithLeaves.Services.EmailService;
 using ProjectHouseWithLeaves.Services.ModelService;
 using System.Text.Json.Serialization;
 
@@ -16,10 +18,14 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddDbContext<MiniPlantStoreContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DBDefault")));
             #endregion
-
+            #region IConfiguration
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+            #endregion
             #region Register DI
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IContactService, ContactService>();
+            builder.Services.AddTransient<IEmailService, EmailService>();
             #endregion
 
             #region Session

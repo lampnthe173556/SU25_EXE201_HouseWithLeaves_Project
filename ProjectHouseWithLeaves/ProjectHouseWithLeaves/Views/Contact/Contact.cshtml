@@ -36,11 +36,9 @@
             <img src="../img/logo.jpg" alt="9X Garden" />
         </div>
         <h2 class="form-title">Contact Us</h2>
-        <form id="contactForm" class="contact-form" action="" method="post">
-            <input type="text" name="fullname" placeholder="Họ & Tên*" required>
-            <input type="email" name="email" placeholder="Email*" required>
-            <input type="text" name="phone" placeholder="Số điện thoại">
-            <textarea name="message" placeholder="Nội dung" rows="4" required></textarea>
+        <form id="contactForm" class="contact-form" action="/Contact/Contact" method="post">
+            <input type="email" name="EmailContact" placeholder="Email*" required>
+            <textarea name="DescriptionContact" placeholder="Nội dung" rows="4" required></textarea>
             <button type="submit">Gửi</button>
             <div class="form-message" id="formMessage"></div>
         </form>

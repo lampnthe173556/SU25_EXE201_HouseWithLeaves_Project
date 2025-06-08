@@ -3,14 +3,13 @@
     const messageDiv = document.getElementById('formMessage');
 
     form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        messageDiv.style.color = '#e74c3c';
-        const fullname = form.fullname.value.trim();
-        const email = form.email.value.trim();
-        const phone = form.phone.value.trim();
-        const message = form.message.value.trim();
+        e.preventDefault(); // Luôn chặn submit mặc định
 
-        if (!fullname || !email || !message) {
+        messageDiv.style.color = '#e74c3c';
+        const email = form.EmailContact.value.trim();
+        const description = form.DescriptionContact.value.trim();
+
+        if (!email || !description) {
             messageDiv.textContent = 'Vui lòng điền đầy đủ các trường bắt buộc.';
             return;
         }
@@ -18,10 +17,27 @@
             messageDiv.textContent = 'Email không hợp lệ.';
             return;
         }
-        // Nếu mọi thứ hợp lệ
-        messageDiv.style.color = '#27ae60';
-        messageDiv.textContent = 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.';
-        form.reset();
+
+        // Gửi dữ liệu lên server bằng fetch
+        fetch('/Contact/Contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `EmailContact=${encodeURIComponent(email)}&DescriptionContact=${encodeURIComponent(description)}`
+        })
+        .then(response => {
+            if (response.ok) {
+                messageDiv.style.color = '#27ae60';
+                messageDiv.textContent = 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.';
+                form.reset();
+            } else {
+                messageDiv.textContent = 'Có lỗi xảy ra, vui lòng thử lại sau.';
+            }
+        })
+        .catch(() => {
+            messageDiv.textContent = 'Có lỗi xảy ra, vui lòng thử lại sau.';
+        });
     });
 
     function validateEmail(email) {
