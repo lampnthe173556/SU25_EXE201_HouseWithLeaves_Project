@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
+using System.Text.Json.Serialization;
 
 namespace ProjectHouseWithLeaves
 {
@@ -18,6 +19,7 @@ namespace ProjectHouseWithLeaves
 
             #region Register DI
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             #endregion
 
             #region Session
@@ -30,7 +32,12 @@ namespace ProjectHouseWithLeaves
             #endregion
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                });
 
             var app = builder.Build();
 

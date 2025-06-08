@@ -6,26 +6,41 @@
 }
 @section Css
 {
-    <link rel="stylesheet" href="~/css/shop.css">
+<link rel="stylesheet" href="~/css/shop.css">
 }
 <div class="container">
     <aside>
         <h3>Danh Mục Sản Phẩm</h3>
         <ul id="categoryList">
-            <li><a href="#" class="category-link" data-category="Bình Thủy Tinh">Bình Thủy Tinh</a></li>
             <li>
-                <a href="#" class="category-link" data-category="Cây Nội Thất">Cây Nội Thất</a>
-                <ul>
-                    <li><a href="#" class="category-link" data-category="Cây Để Bàn - Kệ">Cây Để Bàn - Kệ</a></li>
-                    <li><a href="#" class="category-link" data-category="Cây Để Sàn">Cây Để Sàn</a></li>
-                </ul>
+                <a href="#" class="category-link">Cây Để Bàn</a>
+                @foreach (var item in ViewBag.Categories)
+                {
+                    if (item.CategoryId < 6)
+                    {
+                        <ul>
+                            <li>
+                                <a href="#" class="category-link" data-category="@item.CategoryId">
+                                @item.CategoryName</a>
+                            </li>
+                        </ul>
+                    }
+                    
+                }    
             </li>
-            <li><a href="#" class="category-link" data-category="Chậu - Lọ">Chậu - Lọ</a></li>
-            <li><a href="#" class="category-link" data-category="DIY KIT">DIY KIT</a></li>
-            <li><a href="#" class="category-link" data-category="Giftset - Quà tặng">Giftset - Quà tặng</a></li>
-            <li><a href="#" class="category-link" data-category="Phụ Kiện Terrarium">Phụ Kiện Terrarium</a></li>
-            <li><a href="#" class="category-link" data-category="Tiểu Cảnh Terrarium">Tiểu Cảnh Terrarium</a></li>
-            <li><a href="#" class="category-link" data-category="Tranh Rêu - Moss Art">Tranh Rêu - Moss Art</a></li>
+            
+            @foreach (var item in ViewBag.Categories)
+            {
+                if (item.CategoryId >= 6)
+                {
+                    <li>
+                        <a href="#" class="category-link" data-category="@item.CategoryId">
+                            @item.CategoryName
+                        </a>
+                    </li>
+                }
+            }
+            
         </ul>
         <div class="filter-group">
             <label for="priceMin">Giá (₫)</label>

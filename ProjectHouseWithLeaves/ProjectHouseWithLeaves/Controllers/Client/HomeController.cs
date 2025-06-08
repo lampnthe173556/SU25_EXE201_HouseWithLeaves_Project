@@ -22,6 +22,8 @@ namespace ProjectHouseWithLeaves.Controllers.Client
             var productSeller = await _productService.GetProductBestSeller();
             ViewBag.ProductSeller = productSeller;
             return View();
-        }      
+        }
+       
+        
     }
 }

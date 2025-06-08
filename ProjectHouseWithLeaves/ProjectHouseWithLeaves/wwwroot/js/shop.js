@@ -1,116 +1,42 @@
 ﻿// Dữ liệu mẫu
-const products = [
-    // 20 sản phẩm gốc
-    {
-        name: "Ami x Bàng Sing",
-        price: 189000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/ami-bang-sing.jpg"
-    },
-    {
-        name: "Ami x Lan Ý",
-        price: 189000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/ami-lan-y.jpg"
-    },
-    {
-        name: "Ami x Lưỡi Hổ",
-        price: 189000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/ami-luoi-ho.jpg"
-    },
-    {
-        name: "Ami x Ngũ Gia Bì",
-        price: 189000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/ami-ngu-gia-bi.jpg"
-    },
-    {
-        name: "Ami x Vạn Lộc",
-        price: 189000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/ami-van-loc.jpg"
-    },
-    {
-        name: "Ami x Phú Quý",
-        price: 189000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/ami-phu-quy.jpg"
-    },
-    {
-        name: "Ami x Trường Sinh Xanh",
-        price: 145000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/ami-truong-sinh-xanh.jpg"
-    },
-    {
-        name: "Akira x Môn Hồng",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-mon-hong.jpg"
-    },
-    {
-        name: "Akira x Lưỡi Hổ",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-luoi-ho.jpg"
-    },
-    {
-        name: "Akira x Kim Tiền",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-kim-tien.jpg"
-    },
-    {
-        name: "Akira x Trầu Bà Brasil",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-trau-ba-brasil.jpg"
-    },
-    {
-        name: "Akira x Trầu Bà Neon",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-trau-ba-neon.jpg"
-    },
-    {
-        name: "Akira x Trầu Bà Cẩm Thạch",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-trau-ba-cam-thach.jpg"
-    },
-    {
-        name: "Akira x Phát Tài Úc",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-phat-tai-uc.jpg"
-    },
-    {
-        name: "Akira x Môn Trắng",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-mon-trang.jpg"
-    },
-    {
-        name: "Akira x Ngọc Ngân",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-ngoc-ngan.jpg"
-    },
-    {
-        name: "Akira x Vạn Lộc",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-van-loc.jpg"
-    },
-    {
-        name: "Akira x Phú Quý",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-phu-quy.jpg"
-    },
-    {
-        name: "Akira x Trường Sinh Xanh",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-truong-sinh-xanh.jpg"
-    },
-    {
-        name: "Akira x Bàng Sing",
-        price: 350000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/akira-bang-sing.jpg"
-    }
-];
+let products = [];
 
-// Thêm sản phẩm mẫu cho đủ 100 sản phẩm
-for (let i = 21; i <= 100; i++) {
-    products.push({
-        name: `Sản phẩm mẫu ${i}`,
-        price: 100000 + (i % 10) * 10000,
-        image: "https://9xgarden.com/wp-content/uploads/2022/10/ami-bang-sing.jpg"
-    });
+async function fetchProducts() {
+    try {
+        const response = await fetch('https://localhost:7115/Shop/GetAllProductJson');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        products.length = 0;
+        products.push(...data);
+        console.log('Đã lấy dữ liệu thành công:', products);
+
+        // Tìm min và max price từ data
+        let minPriceValue = Math.min(...products.map(p => p.price));
+        let maxPriceValue = Math.max(...products.map(p => p.price));
+
+        // Gán lại cho input range
+        const priceMin = document.getElementById('priceMin');
+        const priceMax = document.getElementById('priceMax');
+        priceMin.min = minPriceValue;
+        priceMin.max = maxPriceValue;
+        priceMin.value = minPriceValue;
+        priceMax.min = minPriceValue;
+        priceMax.max = maxPriceValue;
+        priceMax.value = maxPriceValue;
+
+        // Cập nhật giao diện slider nếu có hàm
+        if (typeof updatePriceSliderUI === 'function') updatePriceSliderUI();
+
+        filterProducts();
+    } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error);
+    }
 }
+
+// Gọi API khi trang được tải
+document.addEventListener('DOMContentLoaded', fetchProducts);
 
 const PRODUCTS_PER_PAGE = 6;
 let currentPage = 1;
@@ -124,15 +50,16 @@ function renderProducts(list) {
         productList.innerHTML = '<div>Không tìm thấy sản phẩm phù hợp.</div>';
     }
     list.forEach(product => {
+        const imageUrl = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'link_anh_mac_dinh.png';
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
       <div class="product-img-wrap">
-        <img src="${product.image}" alt="${product.name}">
+        <img src="${imageUrl}" alt="${product.productName}">
         <div class="product-hover"><i class="fa fa-shopping-cart"></i></div>
       </div>
       <div class="product-name">
-        <a href="../html/productDetail.html">${product.name}</a>
+        <a href="../html/productDetail.html">${product.productName}</a>
       </div>
       <div class="product-price">${product.price.toLocaleString()}₫</div>
     `;
@@ -220,18 +147,41 @@ function showCurrentPage() {
     renderPagination(filteredProducts.length, currentPage);
 }
 
+// --- LỌC THEO DANH MỤC ---
+let currentCategory = null;
+
 function filterProducts() {
     const minPrice = parseInt(document.getElementById('priceMin').value, 10);
     const maxPrice = parseInt(document.getElementById('priceMax').value, 10);
     const search = document.getElementById('searchInput').value.trim().toLowerCase();
-    filteredProducts = products.filter(p =>
-        p.price >= minPrice &&
-        p.price <= maxPrice &&
-        p.name.toLowerCase().includes(search)
-    );
+    filteredProducts = products.filter(p => {
+        let matchCategory = true;
+        if (currentCategory) {
+            matchCategory = (p.categoryId == currentCategory);
+        }
+        return (
+            p.price >= minPrice &&
+            p.price <= maxPrice &&
+            p.productName.toLowerCase().includes(search) &&
+            matchCategory
+        );
+    });
     currentPage = 1;
     showCurrentPage();
 }
+
+// Gắn sự kiện click cho các link danh mục
+const categoryLinks = document.querySelectorAll('.category-link');
+categoryLinks.forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+        currentCategory = this.dataset.category;
+        filterProducts();
+        // Highlight danh mục đang chọn
+        categoryLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
 
 function updatePriceSliderUI() {
     const min = parseInt(priceMin.value, 10);
@@ -288,7 +238,7 @@ function addToCart(product) {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-        const existingProduct = cart.find(item => item.name === product.name);
+        const existingProduct = cart.find(item => item.productId === product.productId);
 
         if (existingProduct) {
             // Nếu đã có thì tăng số lượng
@@ -296,9 +246,10 @@ function addToCart(product) {
         } else {
             // Nếu chưa có thì thêm mới với số lượng là 1
             cart.push({
-                name: product.name,
+                productId: product.productId,
+                productName: product.productName,
                 price: product.price,
-                image: product.image,
+                image: product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : '',
                 quantity: 1
             });
         }
