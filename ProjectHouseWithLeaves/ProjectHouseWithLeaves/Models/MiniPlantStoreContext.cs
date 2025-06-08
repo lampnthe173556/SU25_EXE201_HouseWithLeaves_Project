@@ -21,6 +21,8 @@ public partial class MiniPlantStoreContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
+    public virtual DbSet<Contact> Contacts { get; set; }
+
     public virtual DbSet<Coupon> Coupons { get; set; }
 
     public virtual DbSet<FavoriteProduct> FavoriteProducts { get; set; }
@@ -49,17 +51,18 @@ public partial class MiniPlantStoreContext : DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
        => optionsBuilder.UseSqlServer(GetConnectionString());
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PK__Cart__51BCD797CB33006D");
+            entity.HasKey(e => e.CartId).HasName("PK__Cart__51BCD797ADC33F9C");
 
             entity.ToTable("Cart");
 
-            entity.HasIndex(e => e.UserId, "UQ__Cart__1788CCAD4E8AD4B0").IsUnique();
+            entity.HasIndex(e => e.UserId, "UQ__Cart__1788CCAD25ABB67C").IsUnique();
 
-            entity.HasIndex(e => e.UserId, "UQ__Cart__1788CCADFBF13221").IsUnique();
+            entity.HasIndex(e => e.UserId, "UQ__Cart__1788CCADDC2CC668").IsUnique();
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.CreatedAt)
@@ -75,7 +78,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.HasKey(e => e.CartItemId).HasName("PK__CartItem__488B0B2AC89565BC");
+            entity.HasKey(e => e.CartItemId).HasName("PK__CartItem__488B0B2A7389789A");
 
             entity.HasIndex(e => new { e.CartId, e.ProductId, e.Size }, "UQ_Cart_Product_Size").IsUnique();
 
@@ -97,7 +100,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B12A2F5E1");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2BFBC7D15C");
 
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName).HasMaxLength(100);
@@ -105,13 +108,28 @@ public partial class MiniPlantStoreContext : DbContext
             entity.Property(e => e.Status).HasDefaultValue(1);
         });
 
+        modelBuilder.Entity<Contact>(entity =>
+        {
+            entity.ToTable("Contact");
+
+            entity.Property(e => e.ContactId)
+                .ValueGeneratedNever()
+                .HasColumnName("contact_id");
+            entity.Property(e => e.DescriptionContact).HasColumnName("description_contact");
+            entity.Property(e => e.EmailContact).HasColumnName("email_contact");
+            entity.Property(e => e.SendAt)
+                .HasColumnType("datetime")
+                .HasColumnName("send_at");
+            entity.Property(e => e.Status).HasColumnName("status");
+        });
+
         modelBuilder.Entity<Coupon>(entity =>
         {
-            entity.HasKey(e => e.CouponId).HasName("PK__Coupons__384AF1DA0E9304AE");
+            entity.HasKey(e => e.CouponId).HasName("PK__Coupons__384AF1DAE0E7ACCA");
 
-            entity.HasIndex(e => e.Code, "UQ__Coupons__A25C5AA73DD5CCF2").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__Coupons__A25C5AA727B9F91F").IsUnique();
 
-            entity.HasIndex(e => e.Code, "UQ__Coupons__A25C5AA79CAB1C66").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__Coupons__A25C5AA7A2342E61").IsUnique();
 
             entity.Property(e => e.CouponId).HasColumnName("CouponID");
             entity.Property(e => e.Code)
@@ -127,7 +145,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<FavoriteProduct>(entity =>
         {
-            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__CE74FAF54D50B225");
+            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__CE74FAF5F7C8575C");
 
             entity.HasIndex(e => new { e.UserId, e.ProductId }, "UQ_User_Product").IsUnique();
 
@@ -149,7 +167,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF983C5C61");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAFD0245970");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.City).HasMaxLength(100);
@@ -200,7 +218,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C17B6BF6C");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CC1897989");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
@@ -220,7 +238,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.PaymentMethodId).HasName("PK__PaymentM__DC31C1F346D53066");
+            entity.HasKey(e => e.PaymentMethodId).HasName("PK__PaymentM__DC31C1F34879FE20");
 
             entity.Property(e => e.PaymentMethodId).HasColumnName("PaymentMethodID");
             entity.Property(e => e.MethodName).HasMaxLength(100);
@@ -229,7 +247,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED1EFCB133");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDB704FC88");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
@@ -252,7 +270,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F4EC7128ECD2");
+            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F4EC0EEC02E9");
 
             entity.Property(e => e.ImageId).HasColumnName("ImageID");
             entity.Property(e => e.ImageUrl)
@@ -267,11 +285,11 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3A9718051B");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3AB451B6AD");
 
-            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B6160B25C9DBB").IsUnique();
+            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B6160372E9A2B").IsUnique();
 
-            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B6160F566C96B").IsUnique();
+            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B616090283ADF").IsUnique();
 
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.RoleName).HasMaxLength(50);
@@ -279,7 +297,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<ShippingMethod>(entity =>
         {
-            entity.HasKey(e => e.ShippingMethodId).HasName("PK__Shipping__0C78338463DBE705");
+            entity.HasKey(e => e.ShippingMethodId).HasName("PK__Shipping__0C78338457AE145A");
 
             entity.Property(e => e.ShippingMethodId).HasColumnName("ShippingMethodID");
             entity.Property(e => e.MethodName).HasMaxLength(100);
@@ -289,15 +307,15 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACC9D5E5F7");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACF9B197C8");
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D1053466BF0A37").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534379998CE").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D105349CD448DC").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D105349A5A78E4").IsUnique();
 
-            entity.HasIndex(e => e.UserName, "UQ__Users__C9F2845608D5A8C2").IsUnique();
+            entity.HasIndex(e => e.UserName, "UQ__Users__C9F28456908296AD").IsUnique();
 
-            entity.HasIndex(e => e.UserName, "UQ__Users__C9F2845649E8891A").IsUnique();
+            entity.HasIndex(e => e.UserName, "UQ__Users__C9F28456D50CBD4B").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.CreatedAt)
