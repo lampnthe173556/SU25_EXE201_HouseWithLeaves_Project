@@ -40,20 +40,26 @@ public partial class MiniPlantStoreContext : DbContext
     public virtual DbSet<ShippingMethod> ShippingMethods { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
+    private string? GetConnectionString()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true).Build();
+        return configuration["ConnectionStrings:DBDefault"];
+    }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(local);Database=MiniPlantStore;UID=sa;PWD=lamlam276762;TrustServerCertificate=True");
-
+       => optionsBuilder.UseSqlServer(GetConnectionString());
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PK__Cart__51BCD7974371F28B");
+            entity.HasKey(e => e.CartId).HasName("PK__Cart__51BCD797CB33006D");
 
             entity.ToTable("Cart");
 
-            entity.HasIndex(e => e.UserId, "UQ__Cart__1788CCAD2EEDB9E6").IsUnique();
+            entity.HasIndex(e => e.UserId, "UQ__Cart__1788CCAD4E8AD4B0").IsUnique();
+
+            entity.HasIndex(e => e.UserId, "UQ__Cart__1788CCADFBF13221").IsUnique();
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.CreatedAt)
@@ -69,7 +75,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.HasKey(e => e.CartItemId).HasName("PK__CartItem__488B0B2A455E51DE");
+            entity.HasKey(e => e.CartItemId).HasName("PK__CartItem__488B0B2AC89565BC");
 
             entity.HasIndex(e => new { e.CartId, e.ProductId, e.Size }, "UQ_Cart_Product_Size").IsUnique();
 
@@ -91,7 +97,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B4E9D485C");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B12A2F5E1");
 
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName).HasMaxLength(100);
@@ -101,9 +107,11 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<Coupon>(entity =>
         {
-            entity.HasKey(e => e.CouponId).HasName("PK__Coupons__384AF1DAA2323532");
+            entity.HasKey(e => e.CouponId).HasName("PK__Coupons__384AF1DA0E9304AE");
 
-            entity.HasIndex(e => e.Code, "UQ__Coupons__A25C5AA77FBED24C").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__Coupons__A25C5AA73DD5CCF2").IsUnique();
+
+            entity.HasIndex(e => e.Code, "UQ__Coupons__A25C5AA79CAB1C66").IsUnique();
 
             entity.Property(e => e.CouponId).HasColumnName("CouponID");
             entity.Property(e => e.Code)
@@ -119,7 +127,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<FavoriteProduct>(entity =>
         {
-            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__CE74FAF55AB93FC8");
+            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__CE74FAF54D50B225");
 
             entity.HasIndex(e => new { e.UserId, e.ProductId }, "UQ_User_Product").IsUnique();
 
@@ -141,7 +149,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF8E8B8A66");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF983C5C61");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.City).HasMaxLength(100);
@@ -172,27 +180,27 @@ public partial class MiniPlantStoreContext : DbContext
             entity.HasOne(d => d.Coupon).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CouponId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Orders__CouponID__48CFD27E");
+                .HasConstraintName("FK__Orders__CouponID__71D1E811");
 
             entity.HasOne(d => d.PaymentMethod).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.PaymentMethodId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Orders__PaymentM__49C3F6B7");
+                .HasConstraintName("FK__Orders__PaymentM__72C60C4A");
 
             entity.HasOne(d => d.ShippingMethod).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ShippingMethodId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Orders__Shipping__4AB81AF0");
+                .HasConstraintName("FK__Orders__Shipping__73BA3083");
 
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Orders__UserID__47DBAE45");
+                .HasConstraintName("FK__Orders__UserID__74AE54BC");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CA9429066");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C17B6BF6C");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
@@ -202,17 +210,17 @@ public partial class MiniPlantStoreContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__OrderDeta__Order__4D94879B");
+                .HasConstraintName("FK__OrderDeta__Order__6FE99F9F");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__OrderDeta__Produ__4E88ABD4");
+                .HasConstraintName("FK__OrderDeta__Produ__70DDC3D8");
         });
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.PaymentMethodId).HasName("PK__PaymentM__DC31C1F379F1FF2C");
+            entity.HasKey(e => e.PaymentMethodId).HasName("PK__PaymentM__DC31C1F346D53066");
 
             entity.Property(e => e.PaymentMethodId).HasColumnName("PaymentMethodID");
             entity.Property(e => e.MethodName).HasMaxLength(100);
@@ -221,7 +229,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6EDE4D54DAB");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED1EFCB133");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
@@ -239,12 +247,12 @@ public partial class MiniPlantStoreContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Products__Catego__35BCFE0A");
+                .HasConstraintName("FK__Products__Catego__76969D2E");
         });
 
         modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F4EC4043C3CF");
+            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F4EC7128ECD2");
 
             entity.Property(e => e.ImageId).HasColumnName("ImageID");
             entity.Property(e => e.ImageUrl)
@@ -254,14 +262,16 @@ public partial class MiniPlantStoreContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductImages)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__ProductIm__Produ__571DF1D5");
+                .HasConstraintName("FK__ProductIm__Produ__75A278F5");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3A1C83BAD3");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3A9718051B");
 
-            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B61608BC663A4").IsUnique();
+            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B6160B25C9DBB").IsUnique();
+
+            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B6160F566C96B").IsUnique();
 
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.RoleName).HasMaxLength(50);
@@ -269,7 +279,7 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<ShippingMethod>(entity =>
         {
-            entity.HasKey(e => e.ShippingMethodId).HasName("PK__Shipping__0C78338429C24427");
+            entity.HasKey(e => e.ShippingMethodId).HasName("PK__Shipping__0C78338463DBE705");
 
             entity.Property(e => e.ShippingMethodId).HasColumnName("ShippingMethodID");
             entity.Property(e => e.MethodName).HasMaxLength(100);
@@ -279,11 +289,15 @@ public partial class MiniPlantStoreContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC06AF4936");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACC9D5E5F7");
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D1053434B9120A").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D1053466BF0A37").IsUnique();
 
-            entity.HasIndex(e => e.UserName, "UQ__Users__C9F28456A5F6923D").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D105349CD448DC").IsUnique();
+
+            entity.HasIndex(e => e.UserName, "UQ__Users__C9F2845608D5A8C2").IsUnique();
+
+            entity.HasIndex(e => e.UserName, "UQ__Users__C9F2845649E8891A").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.CreatedAt)
@@ -304,7 +318,7 @@ public partial class MiniPlantStoreContext : DbContext
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Users__RoleID__2C3393D0");
+                .HasConstraintName("FK__Users__RoleID__778AC167");
         });
 
         OnModelCreatingPartial(modelBuilder);
