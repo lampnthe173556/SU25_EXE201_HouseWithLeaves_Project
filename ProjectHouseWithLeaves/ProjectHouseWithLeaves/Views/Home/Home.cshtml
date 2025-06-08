@@ -6,15 +6,15 @@
 }
 @section Css
 {
-    <link rel="stylesheet" href="~/css/home.css">
+<link rel="stylesheet" href="~/css/home.css">
 }
 <!-- Hero Section -->
 <section class="hero">
-    <img class="hero-bg" src="hero.jpg" alt="">
+    <img class="hero-bg" src="~/img/banner.webp" alt="">
     <div class="hero-content">
-        <h1>CÂY CẢNH MINI KHÔNG TRỒNG ĐẤT</h1>
-        <p>PHƯƠNG PHÁP TRỒNG CÂY THEO PHONG CÁCH NHẬT BẢN</p>
-        <a href="shop.html" class="hero-btn">SHOP NOW</a>
+        <h1>CÂY CẢNH MINI</h1>
+        <p>ĐEM LẠI VẺ ĐẸP THIÊN NHIÊN CHO CUỘC SỐNG CỦA BẠN</p>
+        <a href="/Shop/Shop" class="hero-btn">SHOP NOW</a>
     </div>
     <img class="brush" src="brush.png" alt="">
 </section>
@@ -28,24 +28,16 @@
     </div>
     <div class="category-grid">
         <div class="category-item category-large">
-            <img src="cat1.jpg" alt="Cây để sàn - Góc nhà">
-            <div class="cat-label">CÂY ĐỂ SÀN - GÓC NHÀ</div>
-        </div>
-        <div class="category-item">
-            <img src="cat2.jpg" alt="Cây để bàn">
+            <img src="~/img/caydeban.jpg" alt="Cây để bàn">
             <div class="cat-label">CÂY ĐỂ BÀN</div>
         </div>
         <div class="category-item">
-            <img src="cat3.jpg" alt="Terrarium">
-            <div class="cat-label">TERRARIUM</div>
+            <img src="~/img/chauCay.jpg" alt="Chậu">
+            <div class="cat-label">CHẬU</div>
         </div>
         <div class="category-item">
-            <img src="cat4.jpg" alt="Phụ kiện">
-            <div class="cat-label">PHỤ KIỆN</div>
-        </div>
-        <div class="category-item">
-            <img src="cat5.jpg" alt="Chậu trồng">
-            <div class="cat-label">CHẬU TRỒNG</div>
+            <img src="~/img/thiepCamOn.jpg" alt="Quà tặng">
+            <div class="cat-label">QUÀ TẶNG</div>
         </div>
     </div>
 </section>
@@ -59,46 +51,16 @@
     </div>
 
     <div class="product-list">
-        <div class="product-card" data-category="desk">
-            <img src="sp1.jpg" alt="">
-            <a class="name" href="/ProductDetail/Index">Akira x Vạn Lộc Trắng</a>
-            <div class="price">350,000₫</div>
-        </div>
-        <div class="product-card" data-category="desk">
-            <img src="sp2.jpg" alt="">
-            <a class="name" href="../html/productDetail.html">Akira x Vạn Lộc</a>
-            <div class="price">350,000₫</div>
-        </div>
-        <div class="product-card" data-category="desk">
-            <img src="sp3.jpg" alt="">
-            <a class="name" href="../html/productDetail.html">Akira x Trường Sinh</a>
-            <div class="price">350,000₫</div>
-        </div>
-        <div class="product-card" data-category="desk">
-            <img src="sp4.jpg" alt="">
-            <a class="name" href="../html/productDetail.html">Akira x Trầu Bà Vàng</a>
-            <div class="price">350,000₫</div>
-        </div>
-        <div class="product-card" data-category="terrarium">
-            <img src="sp5.jpg" alt="">
-            <a class="name" href="../html/productDetail.html">Akira x Trầu Bà Neon</a>
-            <div class="price">350,000₫</div>
-        </div>
-        <div class="product-card" data-category="terrarium">
-            <img src="sp6.jpg" alt="">
-            <a class="name" href="../html/productDetail.html">Akira x Trầu Bà Cẩm Thạch</a>
-            <div class="price">350,000₫</div>
-        </div>
-        <div class="product-card" data-category="floor">
-            <img src="sp7.jpg" alt="">
-            <a class="name" href="../html/productDetail.html">Akira x Phát Tài Úc</a>
-            <div class="price">350,000₫</div>
-        </div>
-        <div class="product-card" data-category="floor">
-            <img src="sp8.jpg" alt="">
-            <a class="name" href="../html/productDetail.html">Akira x Môn Trắng</a>
-            <div class="price">350,000₫</div>
-        </div>
+        @foreach (var product in ViewBag.ProductSeller)
+        {
+            <div class="product-card" data-category="floor">
+                <img src="sp8.jpg" alt="">
+                <a class="name" href="../html/productDetail.html">@product.ProductName</a>
+                <div class="price">@string.Format("{0:N0}₫", product.Price)</div>
+            </div>
+        }
+        
+
     </div>
 </section>
 

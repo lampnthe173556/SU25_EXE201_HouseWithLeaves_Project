@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using ProjectHouseWithLeaves.Models;
+using ProjectHouseWithLeaves.Services.ModelService;
+
 namespace ProjectHouseWithLeaves
 {
     public class Program
@@ -5,6 +9,16 @@ namespace ProjectHouseWithLeaves
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            #region Register SQL
+            // Replace the placeholder with your DbContext registration, for example:
+            builder.Services.AddDbContext<MiniPlantStoreContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DBDefault")));
+            #endregion
+
+            #region Register DI
+            builder.Services.AddScoped<IProductService, ProductService>();
+            #endregion
 
             #region Session
             builder.Services.AddSession(options =>
