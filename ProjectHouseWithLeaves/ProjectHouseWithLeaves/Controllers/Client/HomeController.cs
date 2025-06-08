@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ProjectHouseWithLeaves.Models;
 
-namespace ProjectHouseWithLeaves.Controllers
+namespace ProjectHouseWithLeaves.Controllers.Client
 {
     public class HomeController : Controller
     {
@@ -13,16 +13,9 @@ namespace ProjectHouseWithLeaves.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Home()
         {
             return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        
+        }      
     }
 }

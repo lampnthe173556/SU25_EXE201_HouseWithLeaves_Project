@@ -1,0 +1,142 @@
+﻿@media (min-width: 1025px) {
+    .h-custom {
+        height: 100vh !important;
+    }
+}
+
+/* Card thanh toán hiện đại, nhẹ nhàng */
+.card.bg-primary {
+    background: #f8faf6 !important;
+    color: #222 !important;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px #7a8b5c22;
+    border: 1.5px solid #e6e9e2;
+}
+
+    .card.bg-primary h5,
+    .card.bg-primary label,
+    .card.bg-primary .form-label {
+        color: #4b5d3a !important;
+        font-weight: 700;
+    }
+
+    .card.bg-primary .form-control {
+        background: #fff !important;
+        border: 1.5px solid #a7bfa7;
+        color: #222 !important;
+        border-radius: 10px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.05rem;
+        box-shadow: none;
+        margin-bottom: 6px;
+        transition: border 0.2s, box-shadow 0.2s;
+    }
+
+        .card.bg-primary .form-control:focus {
+            border-color: #6b8a4c;
+            box-shadow: 0 0 0 2px #7a8b5c33;
+        }
+
+    .card.bg-primary .d-flex.align-items-center.mb-4 {
+        align-items: flex-start !important;
+    }
+
+    .card.bg-primary img[alt="Avatar"] {
+        float: right;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px #7a8b5c22;
+    }
+
+/* Nút checkout hiện đại */
+.btn-info.btn-block.btn-lg {
+    background: #6b8a4c !important;
+    color: #fff !important;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px #0001;
+    transition: background 0.2s;
+    margin-top: 18px;
+}
+
+    .btn-info.btn-block.btn-lg:hover {
+        background: #5c6b3c !important;
+    }
+
+/* Đảm bảo icon card type luôn rõ nét trên nền sáng */
+.card.bg-primary .fa-cc-mastercard,
+.card.bg-primary .fa-cc-visa,
+.card.bg-primary .fa-cc-amex,
+.card.bg-primary .fa-cc-paypal {
+    color: #4b5d3a !important;
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+/* Nút Xóa tất cả */
+#removeAllPaypalCart {
+    background: #fff !important;
+    color: #e74c3c !important;
+    border: 1.5px solid #e74c3c !important;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+    #removeAllPaypalCart:hover {
+        background: #e74c3c !important;
+        color: #fff !important;
+    }
+
+/* Nút Xóa từng sản phẩm */
+.remove-paypal-cart-item {
+    background: #e6e9e2 !important;
+    color: #7a8b5c !important;
+    border: 1.5px solid #7a8b5c !important;
+    border-radius: 6px;
+    padding: 4px 14px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+    .remove-paypal-cart-item:hover {
+        background: #e74c3c !important;
+        color: #fff !important;
+        border-color: #e74c3c !important;
+    }
+
+/* Nút tăng/giảm số lượng trong paypal */
+.qty-btn-paypal {
+    background: #e6e9e2;
+    color: #7a8b5c;
+    border: none;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    margin: 0 2px;
+}
+
+    .qty-btn-paypal:hover {
+        background: #7a8b5c;
+        color: #fff;
+    }
+
+.qty-input-paypal {
+    width: 38px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 1rem;
+    padding: 2px 0;
+    margin: 0 4px;
+}

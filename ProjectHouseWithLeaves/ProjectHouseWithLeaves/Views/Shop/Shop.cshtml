@@ -1,0 +1,55 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_LayouClientShared";
+}
+@section Css
+{
+    <link rel="stylesheet" href="~/css/shop.css">
+}
+<div class="container">
+    <aside>
+        <h3>Danh Mục Sản Phẩm</h3>
+        <ul id="categoryList">
+            <li><a href="#" class="category-link" data-category="Bình Thủy Tinh">Bình Thủy Tinh</a></li>
+            <li>
+                <a href="#" class="category-link" data-category="Cây Nội Thất">Cây Nội Thất</a>
+                <ul>
+                    <li><a href="#" class="category-link" data-category="Cây Để Bàn - Kệ">Cây Để Bàn - Kệ</a></li>
+                    <li><a href="#" class="category-link" data-category="Cây Để Sàn">Cây Để Sàn</a></li>
+                </ul>
+            </li>
+            <li><a href="#" class="category-link" data-category="Chậu - Lọ">Chậu - Lọ</a></li>
+            <li><a href="#" class="category-link" data-category="DIY KIT">DIY KIT</a></li>
+            <li><a href="#" class="category-link" data-category="Giftset - Quà tặng">Giftset - Quà tặng</a></li>
+            <li><a href="#" class="category-link" data-category="Phụ Kiện Terrarium">Phụ Kiện Terrarium</a></li>
+            <li><a href="#" class="category-link" data-category="Tiểu Cảnh Terrarium">Tiểu Cảnh Terrarium</a></li>
+            <li><a href="#" class="category-link" data-category="Tranh Rêu - Moss Art">Tranh Rêu - Moss Art</a></li>
+        </ul>
+        <div class="filter-group">
+            <label for="priceMin">Giá (₫)</label>
+            <div class="range-slider" style="position:relative; width:100%; height:40px; margin-bottom:8px;">
+                <input type="range" id="priceMin" min="100000" max="400000" value="100000" step="10000">
+                <input type="range" id="priceMax" min="100000" max="400000" value="400000" step="10000">
+                <div class="slider-track"></div>
+                <span class="range-value" id="priceMinValue">100,000₫</span>
+                <span class="range-value" id="priceMaxValue">400,000₫</span>
+            </div>
+        </div>
+        <div class="filter-group">
+            <label for="searchInput">Tìm kiếm</label>
+            <input type="text" id="searchInput" placeholder="Tên cây...">
+        </div>
+    </aside>
+    <main>
+        <div id="productCount" style="margin-bottom:16px;color:#888;"></div>
+        <div class="products" id="productList"></div>
+        <ul class="pagination" id="pagination"></ul>
+    </main>
+</div>
+@section Script
+{
+    <script src="../js/shop.js"></script>
+    <script src="../js/cart.js"></script>
+}

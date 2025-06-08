@@ -1,0 +1,111 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhà Có Lá - Cây Cảnh Mini</title>
+    <link rel="icon" type="image/png" href="~/img/logo.jpg">
+    <link rel="stylesheet" href="~/css/common.css">
+    @await RenderSectionAsync("Css", required: true)
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Quicksand:wght@400;700&display=swap"
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    @await RenderSectionAsync("Bootstrap", required: false)
+</head>
+ <body>
+    <!-- Header -->
+    <header>
+        <div class="main-nav">
+            <div class="logo">
+                <a href="/Home/Home" class="logo" style="text-decoration:none;">
+                    <img src="../img/logo.jpg" alt="Nha Co La"
+                         style="height: 56px; border-radius: 12px; box-shadow: 0 2px 8px #0001;">
+                    <span class="brand-name">Nhà Có Lá</span>
+                </a>
+            </div>
+            <nav>
+                <ul class="nav">
+                    <li><a href="/Home/Home">HOME</a></li>
+                    <li><a href="/Shop/Shop">SHOP ONLINE</a></li>
+                    <li><a href="/Authen/Auth">Đăng Nhập</a></li>
+                    <li class="dropdown">
+                        <a href="#">VỀ CHÚNG TÔI <i class="fa fa-chevron-down dropdown-arrow"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Our Story</a></li>
+                            <li><a href="/Contact/Contact">Liên hệ</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <a href="#" id="cartIcon" class="cart-link">
+                <i class="fa fa-shopping-cart"></i>
+                <span id="cartCount">0</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Mở menu"><i class="fa fa-bars"></i></button>
+        </div>
+    </header>
+    <div class="sidebar">
+        <a href="#"><img src="zalo.svg" alt="Zalo"></a>
+        <a href="#"><img src="chat.svg" alt="Chat"></a>
+        <a href="#"><img src="phone.svg" alt="Phone"></a>
+        <a href="#"><img src="location.svg" alt="Location"></a>
+    </div>
+
+    @RenderBody()
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col about">
+                <h3>About Nhà Có Lá</h3>
+                <div class="footer-underline"></div>
+                <p>
+                    Không đơn thuần là cửa hàng cây xanh, <b>Nhà Có Lá</b> ra đời với mong muốn là điểm nối của mỗi người với
+                    thiên
+                    nhiên bằng những sản phẩm chất lượng, sáng tạo, thuần Việt. Với việc dừng lại chăm sóc và ngắm nhìn những sản
+                    phẩm xanh mỗi ngày, chúng ta sẽ có thêm những khoảng lặng để thấy yêu đời hơn, biết ơn nhiều hơn, tâm hồn mỗi
+                    chúng ta sẽ trở nên đẹp hơn.
+                </p>
+                <a href="https://www.facebook.com/profile.php?id=61576614797459" target="_blank" class="footer-fb">
+                    <i class="fab fa-facebook-f" style="font-size: 32px;"></i>
+                </a>
+            </div>
+            <div class="footer-col support">
+                <h3>Hỗ Trợ Khách Hàng</h3>
+                <div class="footer-underline"></div>
+                <ul>
+                    <li>Chính Sách Khách Hàng Thân Thiết</li>
+                    <li>Hướng dẫn đặt hàng</li>
+                    <li>Bảo hành & Đổi trả</li>
+                    <li>Quy định giao hàng</li>
+                    <li>Hướng dẫn thanh toán</li>
+                </ul>
+            </div>
+            <div class="footer-col contact">
+                <div class="contact-box">
+                    <div class="contact-title">Get In Touch</div>
+                    <ul>
+                        <li><span class="icon">📍</span> <b>Hòa Lạc, Thạch Thật, Hà Nội</b></li>
+                        <li><span class="icon">☎️</span> <b>12345678910</b></li>
+                        <li><span class="icon">✉️</span> <b>nhacola202@gmail.com</b></li>
+                        <li><span class="icon">🌐</span> <b>www.nhacola.com</b></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Script", required: true)
+
+ </body>
+</html>
