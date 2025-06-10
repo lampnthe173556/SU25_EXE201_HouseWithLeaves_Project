@@ -1,5 +1,4 @@
-﻿@model bool?
-@{
+﻿@{
     Layout = null;
 }
 
@@ -14,6 +13,7 @@
     <link rel="stylesheet" href="~/css/login.css" />
     <link rel="icon" type="image/png" href="../img/logo.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <style>
         input {
             transition: border-color 0.3s ease;
@@ -27,20 +27,9 @@
 </head>
 
 <body>
-    @if (Model.HasValue)
+    @if (ViewBag.MessageRegister != null)
     {
-        if (Model.Value)
-        {
-            <div class="alert alert-success" id="register-alert" style="color: green; margin-bottom: 10px;">
-                Đăng ký thành công!
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-danger" id="register-alert" style="color: red; margin-bottom: 10px;">
-                Đăng ký thất bại!, Email đã bị trùng vui lòng đăng ký với email khác
-            </div>
-        }
+        <div id="messageRegister" data-message="@ViewBag.MessageRegister" data-type="@(ViewBag.MessageRegister == "Đăng ký thành công" ? "success" : "error")"></div>
     }
     <div class="container" id="container">
        
@@ -177,7 +166,35 @@
     });
     </script>
     <script src="~/js/login.js"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "timeOut": "3000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            var messageRegisterDiv = $('#messageRegister');
+            if (messageRegisterDiv.length) {
+                var message = messageRegisterDiv.data('message');
+                var type = messageRegisterDiv.data('type');
+                
+                if (type === 'success') {
+                    toastr.success(message);
+                } else {
+                    toastr.error(message);
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

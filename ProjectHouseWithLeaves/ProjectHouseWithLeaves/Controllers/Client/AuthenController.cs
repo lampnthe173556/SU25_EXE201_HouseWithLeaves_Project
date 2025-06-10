@@ -21,8 +21,16 @@ namespace ProjectHouseWithLeaves.Controllers.Client
         public async Task<IActionResult> Register(UserRegisterDtos userRegisterDtos)
         {
             var result = await _authenticationService.RegisterAccount(userRegisterDtos);
-            
-            return View("Auth", result);
+            if (result)
+            {
+                ViewBag.MessageRegister = "Đăng ký thành công";
+            }
+            else
+            {
+                ViewBag.MessageRegister = "Đăng ký thất bại!, Email đã bị trùng vui lòng đăng ký với email khác";
+            }
+
+                return View("Auth", result);
         }
     }
 }

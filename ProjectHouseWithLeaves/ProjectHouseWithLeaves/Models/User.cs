@@ -17,15 +17,15 @@ public partial class User
 
     public DateOnly? DateOfBirth { get; set; }
 
-    public string? Gender { get; set; } = "MALE";
+    public string? Gender { get; set; }
 
-    public int? RoleId { get; set; } = 1;
+    public int? RoleId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
 
-    public int? Status { get; set; } = 1;
+    public int? Status { get; set; }
 
     public virtual Cart? Cart { get; set; }
 

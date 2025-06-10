@@ -25,7 +25,9 @@ namespace ProjectHouseWithLeaves.Controllers.Client
         {
             if (ModelState.IsValid)
             {
-                contact.SendAt = DateTime.Now; // Gán thời gian thực
+                //set default value
+                contact.SendAt = DateTime.Now; 
+                contact.Status = "CHƯA XEM";
 
                 await _emailService.SendEmailAsync(
                     toEmail: "lampnthe173556@fpt.edu.vn",

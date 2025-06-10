@@ -11,5 +11,10 @@
         public string? Phone { get; set; }
 
         public DateOnly? DateOfBirth { get; set; }
+        //set default value
+        public string? Gender { get; set; } = "MALE";
+        public int? RoleId { get; set; } = 1;
+        public int? Status { get; set; } = 1;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace ProjectHouseWithLeaves.Models;
 
 public partial class MiniPlantStoreContext : DbContext
