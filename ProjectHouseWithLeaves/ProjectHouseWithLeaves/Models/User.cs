@@ -7,8 +7,6 @@ public partial class User
 {
     public int UserId { get; set; }
 
-    public string UserName { get; set; } = null!;
-
     public string Email { get; set; } = null!;
 
     public string PasswordHash { get; set; } = null!;
@@ -19,15 +17,15 @@ public partial class User
 
     public DateOnly? DateOfBirth { get; set; }
 
-    public string? Gender { get; set; }
+    public string? Gender { get; set; } = "MALE";
 
-    public int? RoleId { get; set; }
+    public int? RoleId { get; set; } = 1;
 
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
 
-    public int? Status { get; set; }
+    public int? Status { get; set; } = 1;
 
     public virtual Cart? Cart { get; set; }
 

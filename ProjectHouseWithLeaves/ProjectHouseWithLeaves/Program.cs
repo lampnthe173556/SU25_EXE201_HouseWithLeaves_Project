@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectHouseWithLeaves.Helper.Email;
+using ProjectHouseWithLeaves.Helper.Mapping;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.EmailService;
 using ProjectHouseWithLeaves.Services.ModelService;
@@ -18,14 +19,18 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddDbContext<MiniPlantStoreContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DBDefault")));
             #endregion
+
             #region IConfiguration
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
             #endregion
+
             #region Register DI
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IContactService, ContactService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             #endregion
 
             #region Session
@@ -35,6 +40,10 @@ namespace ProjectHouseWithLeaves
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            #endregion
+
+            #region mapper
+            builder.Services.AddAutoMapper(typeof(UserMappingProfile));
             #endregion
 
             // Add services to the container.
@@ -57,6 +66,7 @@ namespace ProjectHouseWithLeaves
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
             app.UseSession();
             app.UseRouting();
 

@@ -311,10 +311,6 @@ public partial class MiniPlantStoreContext : DbContext
 
             entity.HasIndex(e => e.Email, "UQ__Users__A9D105349A5A78E4").IsUnique();
 
-            entity.HasIndex(e => e.UserName, "UQ__Users__C9F28456908296AD").IsUnique();
-
-            entity.HasIndex(e => e.UserName, "UQ__Users__C9F28456D50CBD4B").IsUnique();
-
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -329,7 +325,6 @@ public partial class MiniPlantStoreContext : DbContext
                 .HasColumnName("RoleID");
             entity.Property(e => e.Status).HasDefaultValue(1);
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UserName).HasMaxLength(100);
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)

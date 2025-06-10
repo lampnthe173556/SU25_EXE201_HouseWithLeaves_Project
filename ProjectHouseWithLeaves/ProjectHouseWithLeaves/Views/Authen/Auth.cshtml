@@ -1,4 +1,5 @@
-﻿@{
+﻿@model bool?
+@{
     Layout = null;
 }
 
@@ -13,23 +14,48 @@
     <link rel="stylesheet" href="~/css/login.css" />
     <link rel="icon" type="image/png" href="../img/logo.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        input {
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            border-color: #8b5c2c !important;
+            box-shadow: 0 0 0 2px rgba(139, 92, 44, 0.1);
+        }
+    </style>
 </head>
 
 <body>
-
+    @if (Model.HasValue)
+    {
+        if (Model.Value)
+        {
+            <div class="alert alert-success" id="register-alert" style="color: green; margin-bottom: 10px;">
+                Đăng ký thành công!
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger" id="register-alert" style="color: red; margin-bottom: 10px;">
+                Đăng ký thất bại!, Email đã bị trùng vui lòng đăng ký với email khác
+            </div>
+        }
+    }
     <div class="container" id="container">
+       
         <div class="form-container sign-up-container">
-            <form action="#">
+            <form action="/Authen/Register" method="post">
                 <h1>Tạo tài khoản</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                </div>
-                <span>hoặc sử dụng email để đăng ký</span>
-                <input type="text" placeholder="Họ và tên" />
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Mật khẩu" />
+            
+                <input type="email" name="Email" placeholder="Email" required />
+                <input type="password" name="PasswordHash" placeholder="Mật khẩu" required />
+                <input type="text" name="FullName" placeholder="Họ và tên" required />
+                <input type="text" name="Phone" placeholder="Số điện thoại" required/>
+                <input type="date" name="DateOfBirth" placeholder="Ngày sinh" required />
                 <button class="button">Đăng ký</button>
             </form>
+            
         </div>
         <div class="form-container sign-in-container">
             <form action="#">
@@ -38,8 +64,8 @@
                     <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
                 </div>
                 <span>hoặc sử dụng tài khoản của bạn</span>
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Mật khẩu" />
+                <input type="email" placeholder="Email" required />
+                <input type="password" placeholder="Mật khẩu" required />
                 <a href="#">Quên mật khẩu?</a>
                 <button class="button">Đăng nhập</button>
             </form>
@@ -60,7 +86,98 @@
         </div>
     </div>
     <a href="/Home/Home" id="backToHome">Về trang chủ</a>
+    <script>
+            document.querySelector('form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Lấy tất cả input
+                const inputs = this.querySelectorAll('input');
+                let isValid = true;
+                const errorMessages = [];
+
+                // Hàm kiểm tra khoảng trắng
+                function isOnlyWhitespace(str) {
+                    return str.trim().length === 0;
+                }
+
+                // Validate từng trường
+                inputs.forEach(input => {
+                    const value = input.value.trim();
+                    const placeholder = input.placeholder;
+
+                    // Kiểm tra khoảng trắng
+                    if (isOnlyWhitespace(value)) {
+                        isValid = false;
+                        errorMessages.push(`${placeholder} không được để trống hoặc chỉ chứa khoảng trắng`);
+                        input.style.borderColor = '#e74c3c';
+                    } else {
+                        input.style.borderColor = '#7a8b5c';
+                    }
+                    // Validate số điện thoại
+                    if (placeholder === 'Số điện thoại' && value) {
+                        const phoneRegex = /^[0-9]{10}$/;
+                        if (!phoneRegex.test(value)) {
+                            isValid = false;
+                            errorMessages.push('Số điện thoại phải có 10 chữ số');
+                            input.style.borderColor = '#e74c3c';
+                        }
+                    }
+
+                    // Validate mật khẩu
+                    if (input.type === 'password' && value) {
+                        if (value.length < 8) {
+                            isValid = false;
+                            errorMessages.push('Mật khẩu phải có ít nhất 8 ký tự');
+                            input.style.borderColor = '#e74c3c';
+                        }
+                    }
+
+                    // Validate ngày sinh
+                    if (input.type === 'date' && value) {
+                        const birthDate = new Date(value);
+                        const today = new Date();
+                        // Kiểm tra ngày sinh không được là ngày trong tương lai
+                        if (birthDate > today) {
+                            isValid = false;
+                            errorMessages.push('Ngày sinh không được là ngày trong tương lai');
+                            input.style.borderColor = '#e74c3c';
+                        }
+                    }
+                });
+
+                // Hiển thị thông báo lỗi
+                const errorDiv = document.getElementById('error-messages') || document.createElement('div');
+                errorDiv.id = 'error-messages';
+                errorDiv.style.color = '#e74c3c';
+                errorDiv.style.marginTop = '10px';
+                errorDiv.style.padding = '10px';
+                errorDiv.style.borderRadius = '5px';
+                errorDiv.style.backgroundColor = '#fde8e8';
+                errorDiv.style.fontSize = '14px';
+
+                if (!isValid) {
+                    errorDiv.innerHTML = errorMessages.map(msg => `<p>• ${msg}</p>`).join('');
+                    if (!document.getElementById('error-messages')) {
+                        this.appendChild(errorDiv);
+                    }
+                } else {
+                    
+                    this.submit();
+                }
+            });
+        </script>
+    <script>
+    window.addEventListener('DOMContentLoaded', function() {
+        var alertBox = document.getElementById('register-alert');
+        if (alertBox) {
+            setTimeout(function() {
+                alertBox.style.display = 'none';
+            }, 3000);
+        }
+    });
+    </script>
     <script src="~/js/login.js"></script>
+    
 </body>
 
 </html>
