@@ -1,7 +1,6 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using ProjectHouseWithLeaves.Helper.Session;
 @{
+    var user = Context.Session.GetObject<User>("user");
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -15,20 +14,20 @@
     @await RenderSectionAsync("Css", required: true)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap"
-          rel="stylesheet">
+    rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Quicksand:wght@400;700&display=swap"
-          rel="stylesheet">
+    rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
     @await RenderSectionAsync("Bootstrap", required: false)
 </head>
- <body>
+<body>
     <!-- Header -->
     <header>
         <div class="main-nav">
             <div class="logo">
                 <a href="/Home/Home" class="logo" style="text-decoration:none;">
                     <img src="../img/logo.jpg" alt="Nha Co La"
-                         style="height: 56px; border-radius: 12px; box-shadow: 0 2px 8px #0001;">
+                    style="height: 56px; border-radius: 12px; box-shadow: 0 2px 8px #0001;">
                     <span class="brand-name">Nhà Có Lá</span>
                 </a>
             </div>
@@ -36,7 +35,23 @@
                 <ul class="nav">
                     <li><a href="/Home/Home">HOME</a></li>
                     <li><a href="/Shop/Shop">SHOP ONLINE</a></li>
-                    <li><a href="/Authen/Auth">Đăng Nhập</a></li>
+                    @if(user != null)
+                    {
+                        <li class="dropdown">
+                            <a href="#"><i class="fas fa-user"></i> Tài khoản <i class="fa fa-chevron-down dropdown-arrow"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Thông tin cá nhân</a></li>
+                                <li><a href="#">Thay đổi mật khẩu</a></li>
+                                <li><a href="#">Lịch sử đơn hàng</a></li>
+                                <li><a href="/Authen/Logout">Đăng xuất</a></li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li><a href="/Authen/Auth">Đăng Nhập</a></li>
+                    }
+                    
                     <li class="dropdown">
                         <a href="#">VỀ CHÚNG TÔI <i class="fa fa-chevron-down dropdown-arrow"></i></a>
                         <ul class="dropdown-menu">

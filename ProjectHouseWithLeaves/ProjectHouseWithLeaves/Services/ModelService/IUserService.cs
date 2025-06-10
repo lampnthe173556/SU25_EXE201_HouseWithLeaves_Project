@@ -6,5 +6,6 @@ namespace ProjectHouseWithLeaves.Services.ModelService
     {
         Task<User?> GetUserByEmail(string email); 
         Task CreateUser(User user);
+        Task<User?> GetUserByEmailAndPassword(string email, string password);
     }
 }

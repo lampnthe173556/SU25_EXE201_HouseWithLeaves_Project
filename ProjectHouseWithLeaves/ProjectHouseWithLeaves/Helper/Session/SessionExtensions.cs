@@ -15,5 +15,9 @@ namespace ProjectHouseWithLeaves.Helper.Session
             var json = session.GetString(key);
             return json == null ? default : JsonSerializer.Deserialize<T>(json);
         }
+        public static void RemoveObject(this ISession session, string key)
+        {
+            session.Remove(key);
+        }
     }
 }

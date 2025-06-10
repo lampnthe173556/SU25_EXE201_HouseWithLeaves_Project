@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectHouseWithLeaves.Dtos;
+using ProjectHouseWithLeaves.Helper.Session;
 using ProjectHouseWithLeaves.Services.ModelService;
 using System.Threading.Tasks;
 
@@ -32,5 +33,23 @@ namespace ProjectHouseWithLeaves.Controllers.Client
 
                 return View("Auth", result);
         }
+        [HttpPost]
+        public async Task<IActionResult> Login(UserLoginDtos userLoginDtos)
+        {
+            var result = await _authenticationService.LoginAccount(userLoginDtos);
+            if(result == false)
+            {
+                ViewBag.MessageLogin = "Đăng nhập thất bại, Email hoặc mật khẩu chưa chính xác";
+                return View("Auth", result);
+            }
+            return RedirectToAction("home","home");
+        }
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.RemoveObject("user");
+            return View("Auth");
+        }
+
     }
 }

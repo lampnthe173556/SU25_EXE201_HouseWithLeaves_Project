@@ -25,5 +25,13 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             var user = await _context.Users.SingleOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
             return user;
         }
+
+        public async Task<User?> GetUserByEmailAndPassword(string email, string password)
+        {
+            var user = await _context.Users
+                .SingleOrDefaultAsync(x => x.Email.ToLower() == email.ToLower() 
+                && x.PasswordHash == PasswordHassing.ComputeSha256Hash(password));
+            return user;
+        }
     }
 }

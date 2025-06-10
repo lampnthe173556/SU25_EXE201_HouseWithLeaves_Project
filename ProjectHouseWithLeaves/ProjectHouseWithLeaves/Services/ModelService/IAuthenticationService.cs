@@ -6,7 +6,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
     { 
         public Task<bool> RegisterAccount(UserRegisterDtos userRegister);
         //login
-        
+        public Task<bool> LoginAccount(UserLoginDtos userLogin);
         //forgetPassword
     }
 }
