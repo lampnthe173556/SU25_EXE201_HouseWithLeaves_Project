@@ -1,0 +1,143 @@
+body {
+  font-family: 'Montserrat', Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f3f5e6;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.logo i {
+  font-size: 2.8rem;
+  color: #7bb661;
+  background: #eaf3d6;
+  border-radius: 50%;
+  padding: 0.7rem;
+  box-shadow: 0 2px 8px rgba(123, 182, 97, 0.08);
+}
+
+h2 {
+  text-align: center;
+  color: #3a4d2c;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #5d6d3b;
+  font-weight: 500;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b2c7a2;
+  font-size: 1rem;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+  border: 1.5px solid #dbe6c4;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  background: #f8faef;
+  transition: border 0.2s;
+}
+
+input[type="text"]:focus {
+  border: 1.5px solid #7bb661;
+  outline: none;
+  background: #f3f5e6;
+}
+
+button {
+  width: 100%;
+  padding: 0.9rem;
+  background: #8a9870;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  box-shadow: none;
+  transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background: #7a8662;
+  transform: none;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 1.2rem;
+  color: #7bb661;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #3a4d2c;
+}
+
+@media (max-width: 500px) {
+  .container {
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    max-width: 98vw;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+}

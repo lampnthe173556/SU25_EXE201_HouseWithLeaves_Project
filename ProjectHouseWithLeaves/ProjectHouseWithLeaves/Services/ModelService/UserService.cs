@@ -13,6 +13,14 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             _context = context;
         }
 
+        public async Task ChangePasswordAsync(string email, string newPassword)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
+            user.PasswordHash = PasswordHassing.ComputeSha256Hash(newPassword);
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task CreateUser(User user)
         {
             user.PasswordHash = PasswordHassing.ComputeSha256Hash(user.PasswordHash);

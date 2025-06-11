@@ -1,0 +1,50 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<!-- Source Codes By CodingNepal - www.codingnepalweb.com -->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xác nhận OTP</title>
+    <link rel="icon" type="image/png" href="~/img/logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/verifyotp.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <i class="fa-solid fa-leaf"></i>
+        </div>
+        <h2>Xác nhận OTP</h2>
+        @if (ViewBag.ErrorOtp != null)
+        {
+            <p style="color:red;">@ViewBag.ErrorOtp</p>
+        }
+        <form action="/Forgetpassword/VerifyOTP" method="post" autocomplete="off">
+            <div class="form-group">
+                <label for="otp">Nhập mã OTP:</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <input type="text" id="otp" name="otp" placeholder="Nhập mã OTP" required autocomplete="off">
+                </div>
+            </div>
+            <button type="submit">Xác nhận</button>
+            <a href="/ForgetPassword/ForgetPassword" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Về trang quên mật khẩu
+            </a>
+        </form>
+    </div>
+    <script src="~/js/login.js"></script>
+</body>
+
+</html>

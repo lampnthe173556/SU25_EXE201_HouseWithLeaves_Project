@@ -18,6 +18,7 @@ namespace ProjectHouseWithLeaves.Controllers.Client
         {
             return View();
         }
+        
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDtos userRegisterDtos)
         {
