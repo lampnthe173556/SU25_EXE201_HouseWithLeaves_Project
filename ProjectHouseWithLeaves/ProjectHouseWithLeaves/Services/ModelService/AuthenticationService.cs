@@ -5,7 +5,7 @@ using ProjectHouseWithLeaves.Models;
 
 namespace ProjectHouseWithLeaves.Services.ModelService
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthenticationServices
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;

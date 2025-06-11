@@ -1,3 +1,5 @@
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using ProjectHouseWithLeaves.Helper.Email;
 using ProjectHouseWithLeaves.Helper.Mapping;
@@ -29,7 +31,7 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IContactService, ContactService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
-            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IAuthenticationServices, AuthenticationService>();
             builder.Services.AddScoped<IUserService, UserService>();
             #endregion
 
@@ -54,6 +56,30 @@ namespace ProjectHouseWithLeaves
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
+
+            
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => false;
+                
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration["Google:ClientId"];
+                options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+                options.CallbackPath = "/Authen/GoogleCallback";
+            });
             builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
 
@@ -67,10 +93,10 @@ namespace ProjectHouseWithLeaves
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            app.UseSession();
+            app.UseCookiePolicy();
             app.UseRouting();
-
+            app.UseSession();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
