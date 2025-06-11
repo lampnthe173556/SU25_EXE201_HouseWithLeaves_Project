@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectHouseWithLeaves.Dtos;
 using ProjectHouseWithLeaves.Helper.Session;
+using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
 using System.Threading.Tasks;
 
@@ -43,7 +44,15 @@ namespace ProjectHouseWithLeaves.Controllers.Client
                 ViewBag.MessageLogin = "Đăng nhập thất bại, Email hoặc mật khẩu chưa chính xác";
                 return View("Auth", result);
             }
-            return RedirectToAction("home","home");
+            else
+            {
+                var user = HttpContext.Session.GetObject<User>("user");
+                if(user.Role.RoleId == 1)
+                {
+                    return RedirectToAction("home", "home");
+                }
+            }
+            
         }
         [HttpGet]
         public IActionResult Logout()
