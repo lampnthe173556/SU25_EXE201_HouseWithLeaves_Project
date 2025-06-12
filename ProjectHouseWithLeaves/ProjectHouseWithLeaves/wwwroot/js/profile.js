@@ -50,3 +50,23 @@
         }
     };
 });
+
+function showToast(message, type = "success") {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerHTML = `
+        <span>${type === "success" ? "✅" : "❌"}</span>
+        <span>${message}</span>
+        <span class="toast-close">&times;</span>
+    `;
+    container.appendChild(toast);
+
+    // Tự động ẩn sau 3s
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+
+    // Đóng khi click vào nút close
+    toast.querySelector('.toast-close').onclick = () => toast.remove();
+}

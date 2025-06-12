@@ -25,6 +25,8 @@ namespace ProjectHouseWithLeaves.Controllers.Client
         {
             var user = await _userService.UpdateUserProfileClient(profile);
             HttpContext.Session.SetObject("user", user);
+            TempData["ProfileMessage"] = "Cập nhật thông tin thành công!";
+            TempData["ProfileMessageType"] = "success";
             return RedirectToAction("Profile");
         }
     }

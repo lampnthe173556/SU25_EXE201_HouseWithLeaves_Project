@@ -6,6 +6,7 @@
 {
     <link rel="stylesheet" href="~/css/profile.css">
 }
+<div id="toast-container"></div>
 <div class="container profile-container">
     <h2 class="profile-title"><i class="fa fa-user-circle"></i> Thông tin cá nhân</h2>
     <form id="profileForm" action="/Profile/Profile" method="post" autocomplete="off">
@@ -47,4 +48,12 @@
     </script>
     <script src="~/js/profile.js"></script>
     <script src="~/js/home.js"></script>
+    @if (TempData["ProfileMessage"] != null)
+    {
+        <script>
+            window.addEventListener('DOMContentLoaded', function() {
+                showToast('@TempData["ProfileMessage"]', '@TempData["ProfileMessageType"]' || 'success');
+            });
+        </script>
+    }
 }
