@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using ProjectHouseWithLeaves.Dtos;
 using ProjectHouseWithLeaves.Helper.PasswordHasing;
 using ProjectHouseWithLeaves.Models;
 
@@ -7,10 +9,12 @@ namespace ProjectHouseWithLeaves.Services.ModelService
     public class UserService : IUserService
     {
         private readonly MiniPlantStoreContext _context;
+        private readonly IMapper _mapper;
 
-        public UserService(MiniPlantStoreContext context)
+        public UserService(MiniPlantStoreContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task ChangePasswordAsync(string email, string newPassword)
@@ -39,6 +43,16 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             var user = await _context.Users
                 .SingleOrDefaultAsync(x => x.Email.ToLower() == email.ToLower() 
                 && x.PasswordHash == PasswordHassing.ComputeSha256Hash(password));
+            return user;
+        }
+
+        public async Task<User?> UpdateUserProfileClient(UserUpdateProfileDtos userUpdateProfileDtos)
+        {
+            var user = await _context.Users
+                .SingleOrDefaultAsync(x => x.Email.ToLower() == userUpdateProfileDtos.Email.ToLower());
+            _mapper.Map(userUpdateProfileDtos, user);
+            user.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
             return user;
         }
     }
