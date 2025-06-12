@@ -59,7 +59,7 @@ function renderProducts(list) {
         <div class="product-hover"><i class="fa fa-shopping-cart"></i></div>
       </div>
       <div class="product-name">
-        <a href="../html/productDetail.html">${product.productName}</a>
+        <a href="/ProductDetail/Index/${product.productId}">${product.productName}</a>
       </div>
       <div class="product-price">${product.price.toLocaleString()}₫</div>
     `;

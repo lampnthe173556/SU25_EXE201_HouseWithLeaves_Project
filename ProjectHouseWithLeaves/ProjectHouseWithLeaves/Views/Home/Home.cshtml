@@ -54,8 +54,8 @@
         @foreach (var product in ViewBag.ProductSeller)
         {
             <div class="product-card" data-category="floor">
-                <img src="@((product.ProductImages != null && product.ProductImages.Count > 0) ? product.ProductImages[0].ImageUrl : "")" alt="">
-                <a class="name" href="../html/productDetail.html">@product.ProductName</a>
+                <img src="@((product.ProductImages != null && product.ProductImages.Count > 0) ? product.ProductImages[0].ImageUrl : "")" alt=""/>
+                <a class="name" href="/ProductDetail/Index/@product.ProductId">@product.ProductName</a>
                 <div class="price">@string.Format("{0:N0}₫", product.Price)</div>
             </div>
         }

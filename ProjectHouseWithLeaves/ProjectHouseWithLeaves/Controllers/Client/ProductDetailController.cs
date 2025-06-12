@@ -4,7 +4,8 @@ namespace ProjectHouseWithLeaves.Controllers.Client
 {
     public class ProductDetailController : Controller
     {
-        public IActionResult Index()
+        [HttpGet("/ProductDetail/Index/{productId}")]
+        public IActionResult Index([FromRoute] int productId)
         {
             return View();
         }
