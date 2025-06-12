@@ -1,50 +1,75 @@
-﻿// Dữ liệu mẫu cho demo
-const demoProduct = {
-    name: "Terrarium – Tropical Forest 002",
-    price: 299000,
-    images: [
-        "https://9xgarden.com/wp-content/uploads/2022/10/ami-bang-sing.jpg",
-        "https://9xgarden.com/wp-content/uploads/2022/10/akira-mon-hong.jpg",
-        "https://9xgarden.com/wp-content/uploads/2022/10/akira-trau-ba-brasil.jpg"
-    ],
-    meta: [
-        "<b>Đường kính:</b> Size S (10 cm); Size M (13.5 cm); Size L (16 cm)",
-        "<b>Mức độ dễ sống:</b> 9/10",
-        "<b>Bảo hành:</b> 90 ngày (3 tháng)",
-        "Sản phẩm sẽ được chụp ảnh <b>xác nhận</b> trước khi giao"
-    ],
-    sizes: ["size S", "size M", "size L"],
-    desc: `<p>Terrarium là hệ sinh thái thu nhỏ trong bình thủy tinh, dễ chăm sóc, phù hợp trang trí bàn làm việc, phòng khách, quà tặng ý nghĩa.</p>`,
-    faq: `<ul><li>Bảo hành cây 90 ngày</li><li>Hỗ trợ chăm sóc trọn đời</li></ul>`
-};
+﻿// Fetch product data from API
+async function fetchProductData() {
+    try {
+        const response = await fetch(`https://localhost:7115/ProductDetail/GetJson/${window.productId}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const product = await response.json();
+        console.log(product);
+        
+        return product;
+    } catch (error) {
+        console.error('Error fetching product data:', error);
+        return null;
+    }
+}
 
 function renderProductDetail(product) {
-    document.getElementById('productTitle').textContent = product.name;
+    document.getElementById('productTitle').textContent = product.productName;
     document.getElementById('productPrice').innerHTML = product.price.toLocaleString() + '₫';
-    // Meta
+
+    // Meta (nếu không có thì để trống)
     const meta = document.getElementById('productMeta');
-    meta.innerHTML = product.meta.map(m => `<li>${m}</li>`).join('');
+    meta.innerHTML = [
+        "<b>Mức độ dễ sống:</b> 9/10",
+        "<b>Bảo hành:</b> 7 ngày ",
+        "Sản phẩm sẽ được chụp ảnh <b>xác nhận</b> trước khi giao"
+    ].map(m => `<li>${m}</li>`).join('');
+
+    // Lấy mảng link ảnh
+    const images = Array.isArray(product.productImages)
+        ? product.productImages.map(img => img.imageUrl)
+        : [];
+
     // Ảnh chính và thumbnails
     const mainImg = document.getElementById('mainProductImage');
-    mainImg.src = product.images[0];
-    mainImg.alt = product.name;
+    if (images.length > 0) {
+        mainImg.src = images[0];
+        mainImg.alt = product.productName;
+    } else {
+        mainImg.src = 'link_anh_mac_dinh.jpg'; // hoặc để trống ''
+        mainImg.alt = 'No image';
+    }
+
     const thumbs = document.getElementById('productThumbnails');
-    thumbs.innerHTML = product.images.map((img, i) => `<img src="${img}" class="${i === 0 ? 'active' : ''}" data-idx="${i}">`).join('');
-    thumbs.querySelectorAll('img').forEach(img => {
-        img.onclick = function () {
-            mainImg.src = this.src;
-            thumbs.querySelectorAll('img').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-        };
-    });
+    if (images.length >= 3) {
+        thumbs.innerHTML = images.map((img, i) => `<img src="${img}" class="${i === 0 ? 'active' : ''}" data-idx="${i}">`).join('');
+        thumbs.querySelectorAll('img').forEach(img => {
+            img.onclick = function () {
+                mainImg.src = this.src;
+                thumbs.querySelectorAll('img').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            };
+        });
+    } else {
+        thumbs.style.display = 'none';
+    }
+
     // Tab content
-    document.getElementById('tabDesc').innerHTML = product.desc;
-    document.getElementById('tabFaq').innerHTML = product.faq;
+    document.getElementById('tabDesc').innerHTML = product.description || '';
+    document.getElementById('tabFaq').innerHTML = ''; // Nếu không có FAQ thì để trống
 }
 
 // Tab switching
-document.addEventListener('DOMContentLoaded', function () {
-    renderProductDetail(demoProduct);
+document.addEventListener('DOMContentLoaded', async function () {
+    const product = await fetchProductData();
+    if (product) {
+        renderProductDetail(product);
+    } else {
+        console.error('Failed to load product data');
+    }
+    
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.onclick = function () {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));

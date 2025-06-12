@@ -3,10 +3,11 @@
 *@
 @{
     Layout = "_LayouClientShared";
+    var productId = ViewData["ProductId"];
 }
 @section Css
 {
-    <link rel="stylesheet" href="~/css/productDetail.css">
+<link rel="stylesheet" href="~/css/productDetail.css">
 }
 <div class="container">
     <div class="product-detail-container">
@@ -36,7 +37,7 @@
         </div>
         <div class="product-detail-tabs">
             <button class="tab-btn active" data-tab="desc">MÔ TẢ</button>
-            <button class="tab-btn" data-tab="faq">FAQ</button>
+            <!-- <button class="tab-btn" data-tab="faq">FAQ</button> -->
         </div>
         <div class="product-detail-tab-content" id="tabDesc"></div>
         <div class="product-detail-tab-content" id="tabFaq" style="display:none"></div>
@@ -49,31 +50,22 @@
         </div>
         <div class="bestseller-list">
             <!-- Sản phẩm sẽ được render ở đây -->
-            <div class="product-card">
-                <img src="https://via.placeholder.com/180x180?text=No+Image" alt="Akira x Vạn Lộc Trắng">
-                <a class="name" href="../html/productDetail.html">Akira x Vạn Lộc Trắng</a>
-                <div class="price"><b>350,000₫</b></div>
-            </div>
-            <div class="product-card">
-                <img src="https://via.placeholder.com/180x180?text=No+Image" alt="Akira x Vạn Lộc">
-                <a class="name" href="../html/productDetail.html">Akira x Vạn Lộc</a>
-                <div class="price"><b>350,000₫</b></div>
-            </div>
-            <div class="product-card">
-                <img src="https://via.placeholder.com/180x180?text=No+Image" alt="Akira x Trường Sinh">
-                <a class="name" href="../html/productDetail.html">Akira x Trường Sinh</a>
-                <div class="price"><b>350,000₫</b></div>
-            </div>
-            <div class="product-card">
-                <img src="https://via.placeholder.com/180x180?text=No+Image" alt="Akira x Trầu Bà Vàng">
-                <a class="name" href="../html/productDetail.html">Akira x Trầu Bà Vàng</a>
-                <div class="price"><b>350,000₫</b></div>
-            </div>
+            @foreach (var product in ViewBag.productSame)
+            {
+                <div class="product-card">
+                    <img src="@((product.ProductImages != null && product.ProductImages.Count > 0) ? product.ProductImages[0].ImageUrl : "")" alt="" />
+                    <a class="name" href="/ProductDetail/Index/@product.ProductId">@product.ProductName</a>
+                    <div class="price">@string.Format("{0:N0}₫", product.Price)</div>
+                </div>
+            } 
         </div>
     </div>
 </div>
 @section Script
 {
+    <script>
+        window.productId = '@ViewData["ProductId"]';
+    </script>
     <script src="~/js/productDetail.js"></script>
     <script src="~/js/cart.js"></script>
 }

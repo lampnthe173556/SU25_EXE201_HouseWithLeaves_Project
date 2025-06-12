@@ -38,6 +38,28 @@ namespace ProjectHouseWithLeaves.Services.ModelService
                                         .OrderBy(p => p.Price)
                                         .ToListAsync();
             return cheapestProducts;
-        }      
+        }
+
+        public async Task<Product?> GetProductById(int id)
+        {
+            var product = await _context.Products.Include(x => x.ProductImages).FirstOrDefaultAsync(p => p.ProductId == id);
+            return product;
+        }
+
+        public async Task<IEnumerable<Product>> GetProductSame(int productId)
+        {
+            var product = await _context.Products.Include(x => x.ProductImages)
+                                .FirstOrDefaultAsync(p => p.ProductId == productId);
+            var products = await _context.Products
+                                .Include(x => x.ProductImages)
+                                .Where(x => (x.Price > product.Price - 20000 && x.Price < product.Price + 20000) 
+                                            && x.ProductId != product.ProductId)
+                                .ToListAsync(); 
+            if(products.Count > 4)
+            {
+                return products.Take(4);
+            }
+            return products;
+        }
     }
 }
