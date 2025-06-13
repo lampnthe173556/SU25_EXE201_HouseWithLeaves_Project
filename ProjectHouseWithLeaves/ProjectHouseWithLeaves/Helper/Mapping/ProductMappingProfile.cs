@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ProjectHouseWithLeaves.Dtos;
-using ProjectHouseWithLeaves.DTOs;
 using ProjectHouseWithLeaves.Models;
 
 namespace ProjectHouseWithLeaves.Helper.Mapping

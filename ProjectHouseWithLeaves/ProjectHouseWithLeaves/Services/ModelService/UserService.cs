@@ -77,7 +77,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             var user = await _context.Users
                 .SingleOrDefaultAsync(x => x.Email.ToLower() == userUpdateProfileDtos.Email.ToLower());
             _mapper.Map(userUpdateProfileDtos, user);
-            user.UpdatedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             return user;
         }

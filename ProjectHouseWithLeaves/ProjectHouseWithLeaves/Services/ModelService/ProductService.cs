@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHouseWithLeaves.Dtos;
-using ProjectHouseWithLeaves.DTOs;
 using ProjectHouseWithLeaves.Models;
 
 namespace ProjectHouseWithLeaves.Services.ModelService

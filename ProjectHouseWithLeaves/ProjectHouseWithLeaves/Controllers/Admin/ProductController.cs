@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
-using ProjectHouseWithLeaves.DTOs;
+using ProjectHouseWithLeaves.Dtos;
 
 namespace ProjectHouseWithLeaves.Controllers.Admin
 {
