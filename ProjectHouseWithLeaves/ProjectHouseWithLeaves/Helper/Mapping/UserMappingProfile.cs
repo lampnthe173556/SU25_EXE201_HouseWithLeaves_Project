@@ -9,6 +9,7 @@ namespace ProjectHouseWithLeaves.Helper.Mapping
         public UserMappingProfile()
         {
             CreateMap<UserRegisterDtos, User>().AfterMap((src, dest) => dest.CreatedAt = DateTime.Now);
+            CreateMap<UserUpdateProfileDtos, User>();
         }
     }
 }

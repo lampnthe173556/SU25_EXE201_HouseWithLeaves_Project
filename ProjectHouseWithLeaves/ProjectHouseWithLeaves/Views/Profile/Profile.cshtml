@@ -1,0 +1,59 @@
+﻿@model ProjectHouseWithLeaves.Models.User
+@{
+    Layout = "_LayouClientShared";
+}
+@section Css
+{
+    <link rel="stylesheet" href="~/css/profile.css">
+}
+<div id="toast-container"></div>
+<div class="container profile-container">
+    <h2 class="profile-title"><i class="fa fa-user-circle"></i> Thông tin cá nhân</h2>
+    <form id="profileForm" action="/Profile/Profile" method="post" autocomplete="off">
+        <div class="profile-row">
+            <label class="profile-label" for="profileEmail"><i class="fa fa-envelope"></i> Email</label>
+            <input type="email" id="profileEmail" name="Email" class="profile-input" readonly value="@Model.Email">
+        </div>
+        <div class="profile-row">
+            <label class="profile-label" for="profileFullname"><i class="fa fa-user"></i> Họ tên</label>
+            <input type="text" id="profileFullname" name="FullName" class="profile-input" value="@Model.FullName" required>
+        </div>
+        <div class="profile-row">
+            <label class="profile-label" for="profilePhone"><i class="fa fa-phone"></i> Số điện thoại</label>
+            <input type="tel" id="profilePhone" name="Phone" class="profile-input" value="@Model.Phone" required maxlength="10">
+        </div>
+        <div class="profile-row">
+            <label class="profile-label" for="profileDob"><i class="fa fa-calendar"></i> Ngày sinh</label>
+            <input type="date" id="profileDob" name="DateOfBirth"
+                   value="@(Model.DateOfBirth?.ToString("yyyy-MM-dd"))"
+                   class="profile-input" required>
+        </div>
+        <div class="profile-row">
+            <label class="profile-label" for="profileGender"><i class="fa fa-venus-mars"></i> Giới tính</label>
+            <select id="profileGender" name="Gender" class="profile-input" required>
+                <option value="MALE" selected="@(Model.Gender == "MALE" ? "selected" : null)">Nam</option>
+                <option value="FEMALE" selected="@(Model.Gender == "FEMALE" ? "selected" : null)">Nữ</option>
+            </select>
+        </div>
+        <button type="submit" class="update-btn">
+            <i class="fa fa-save"></i> Cập nhật
+        </button>
+        <div id="profileError" class="profile-error"></div>
+    </form>
+</div>
+@section Script
+{
+    <script>
+        window.profileDob = '@(Model.DateOfBirth?.ToString("yyyy-MM-dd"))';
+    </script>
+    <script src="~/js/profile.js"></script>
+    <script src="~/js/home.js"></script>
+    @if (TempData["ProfileMessage"] != null)
+    {
+        <script>
+            window.addEventListener('DOMContentLoaded', function() {
+                showToast('@TempData["ProfileMessage"]', '@TempData["ProfileMessageType"]' || 'success');
+            });
+        </script>
+    }
+}
