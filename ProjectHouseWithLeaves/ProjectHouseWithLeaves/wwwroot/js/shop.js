@@ -237,31 +237,33 @@ function addToCart(product) {
         // Lấy giỏ hàng hiện tại từ localStorage
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-        const existingProduct = cart.find(item => item.productId === product.productId);
+        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa (dùng name để đồng bộ với cart.js)
+        const existingProduct = cart.find(item => (item.name || item.productName) === (product.productName || product.name));
 
         if (existingProduct) {
             // Nếu đã có thì tăng số lượng
-            existingProduct.quantity += 1;
+            existingProduct.qty = (existingProduct.qty || existingProduct.quantity || 1) + 1;
         } else {
-            // Nếu chưa có thì thêm mới với số lượng là 1
+            // Nếu chưa có thì thêm mới với số lượng là 1, đồng bộ trường
             cart.push({
-                productId: product.productId,
-                productName: product.productName,
+                name: product.productName || product.name || 'undefined',
                 price: product.price,
-                image: product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : '',
-                quantity: 1
+                img: (product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : (product.image || product.img || ''),
+                qty: 1
             });
         }
 
         // Lưu giỏ hàng mới vào localStorage
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        // Thông báo cho người dùng
-        alert('Đã thêm sản phẩm vào giỏ hàng!');
-
         // Log để debug
         console.log('Cart after adding:', cart);
+        // Nếu popup đang mở thì cập nhật lại
+        if (document.getElementById('cartPopup')) {
+            if (typeof renderCartPopup === 'function') renderCartPopup();
+        }
+
+        if (typeof updateCartBadge === 'function') updateCartBadge();
     } catch (error) {
         console.error('Error adding to cart:', error);
         alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');

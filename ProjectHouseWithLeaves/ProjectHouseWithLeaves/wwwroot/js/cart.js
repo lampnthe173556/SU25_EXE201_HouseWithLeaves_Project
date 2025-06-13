@@ -1,6 +1,17 @@
 ﻿// --- CART LOGIC CHUNG ---
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+function getCartFromStorage() {
+    let raw = JSON.parse(localStorage.getItem('cart')) || [];
+    return raw.map(item => ({
+        name: item.name || item.productName || 'undefined',
+        price: item.price,
+        img: item.img || item.image || '',
+        qty: item.qty || item.quantity || 1,
+        meta: item.meta || ''
+    }));
+}
+
 function updateCartBadge() {
     const badge = document.getElementById('cartCount');
     if (badge) {
@@ -36,6 +47,7 @@ function removeAllFromCart() {
     renderCartPopup();
 }
 function renderCartPopup() {
+    cart = getCartFromStorage();
     let popup = document.getElementById('cartPopup');
     if (popup) popup.remove();
     popup = document.createElement('div');
