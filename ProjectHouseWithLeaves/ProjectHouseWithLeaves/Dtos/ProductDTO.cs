@@ -7,15 +7,15 @@ namespace ProjectHouseWithLeaves.DTOs
 {
     public class ProductDTO
     {
-        public int Id { get; set; } // ID của sản phẩm
-        public string Name { get; set; } // Tên sản phẩm
-        public string Description { get; set; } // Mô tả sản phẩm
+        public int Id { get; set; } 
+        public string Name { get; set; } 
+        public string Description { get; set; } 
         public string? Size { get; set; }
 
-        public decimal Price { get; set; } // Giá sản phẩm
-        public int? Stock { get; set; } // Số lượng tồn kho
-        public int? CategoryId { get; set; } // ID danh mục
-        public string CategoryName { get; set; } // Tên danh mục
+        public decimal Price { get; set; } 
+        public int? Stock { get; set; } 
+        public int? CategoryId { get; set; } 
+        public string CategoryName { get; set; } 
 
         // Đường dẫn mặc định cho hình ảnh chính
         public string? MainImage { get; set; } = "";

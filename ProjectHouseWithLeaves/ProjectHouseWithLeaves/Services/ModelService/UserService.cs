@@ -71,5 +71,15 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             _context.Users.Update(existingUser);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<User?> UpdateUserProfileClient(UserUpdateProfileDtos userUpdateProfileDtos)
+        {
+            var user = await _context.Users
+                .SingleOrDefaultAsync(x => x.Email.ToLower() == userUpdateProfileDtos.Email.ToLower());
+            _mapper.Map(userUpdateProfileDtos, user);
+            user.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return user;
+        }
     }
 }

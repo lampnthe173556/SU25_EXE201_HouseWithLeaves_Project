@@ -58,10 +58,10 @@ namespace ProjectHouseWithLeaves.Services.ModelService
                                 .FirstOrDefaultAsync(p => p.ProductId == productId);
             var products = await _context.Products
                                 .Include(x => x.ProductImages)
-                                .Where(x => (x.Price > product.Price - 20000 && x.Price < product.Price + 20000) 
+                                .Where(x => (x.Price > product.Price - 20000 && x.Price < product.Price + 20000)
                                             && x.ProductId != product.ProductId)
-                                .ToListAsync(); 
-            if(products.Count > 4)
+                                .ToListAsync();
+            if (products.Count > 4)
             {
                 return products.Take(4);
             }
@@ -76,7 +76,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
                 .Include(p => p.ProductImages)
                 .Where(p => !p.IsDeleted.Value)
                 .OrderByDescending(p => p.CreatedAt)
-                .Select(static p => new ProductDTO
+                .Select( p => new ProductDTO
                 {
                     Id = p.ProductId,
                     Name = p.ProductName, // Gán Name từ ProductName
@@ -118,9 +118,6 @@ namespace ProjectHouseWithLeaves.Services.ModelService
         {
             try
             {
-                product.CreatedAt = DateTime.Now;
-                product.IsActive = true;
-                product.IsDeleted = false;
 
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
