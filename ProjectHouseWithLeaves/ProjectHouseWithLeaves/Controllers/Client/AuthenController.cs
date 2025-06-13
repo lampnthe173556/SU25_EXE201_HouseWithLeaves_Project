@@ -53,7 +53,7 @@ namespace ProjectHouseWithLeaves.Controllers.Client
                 var user = HttpContext.Session.GetObject<User>("user");
                 if(user.RoleId != 1)
                 {
-                    
+                    return RedirectToAction("Index", "Admin", new { area = "Admin" });
                 }
                 return RedirectToAction("home", "home");
             }

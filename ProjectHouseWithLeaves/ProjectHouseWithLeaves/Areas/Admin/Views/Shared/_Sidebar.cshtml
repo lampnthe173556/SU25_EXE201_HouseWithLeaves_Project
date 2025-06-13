@@ -1,0 +1,192 @@
+<div class="bg-white" id="sidebar-wrapper">
+    <div class="sidebar-brand">
+        <div class="brand-wrapper">
+            <div class="logo-wrapper">
+                <img src="~/img/logo.jpg" alt="Nhà có lá Logo" class="brand-logo">
+            </div>
+            <h1 class="brand-title">Nhà Có Lá</h1>
+            <div class="brand-subtitle">Admin Dashboard</div>
+        </div>
+    </div>
+    <div class="list-group list-group-flush">
+        <a href="@Url.Action("Index", "Admin", new { area = "Admin" })" class="list-group-item list-group-item-action">
+            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+        </a>
+        <a href="@Url.Action("Index", "Product", new { area = "Admin" })" class="list-group-item list-group-item-action">
+            <i class="fas fa-boxes me-2"></i> Sản phẩm
+        </a>
+        <a href="@Url.Action("Index", "Category", new { area = "Admin" })" class="list-group-item list-group-item-action">
+            <i class="fas fa-tags me-2"></i> Danh mục
+        </a>
+        <div class="border-top my-3"></div>
+        <a href="@Url.Action("Index", "Order", new { area = "Admin" })" class="list-group-item list-group-item-action">
+            <i class="fas fa-shopping-cart me-2"></i> Đơn hàng
+        </a>
+        <a href="@Url.Action("Index", "User", new { area = "Admin" })" class="list-group-item list-group-item-action">
+            <i class="fas fa-users me-2"></i> Người dùng
+        </a>
+        <a href="@Url.Action("Index", "Feedback", new { area = "Admin" })" class="list-group-item list-group-item-action">
+            <i class="fas fa-users me-2"></i> Phản hồi
+        </a>
+         @* <div class="border-top my-3"></div>
+         <a href="#" class="list-group-item list-group-item-action">
+             <i class="fas fa-chart-line me-2"></i> Phản hồi người dùng
+         </a> *@
+        <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-cog me-2"></i> Cài đặt
+        </a>
+    </div>
+</div>
+
+<style>
+    #sidebar-wrapper {
+        min-width: 250px;
+        max-width: 280px;
+        background: #ffffff;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    }
+
+    .sidebar-brand {
+        background: linear-gradient(135deg, #1b7742 0%, #25a65a 100%);
+        padding: 2rem 1.5rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sidebar-brand::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        pointer-events: none;
+    }
+
+    .brand-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .logo-wrapper {
+        width: 90px;
+        height: 90px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        backdrop-filter: blur(5px);
+        transition: transform 0.3s ease;
+    }
+
+    .logo-wrapper:hover {
+        transform: translateY(-2px);
+    }
+
+    .brand-logo {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .brand-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .brand-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 0.8rem 1.5rem;
+        color: #495057;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        color: #1b7742;
+        background: #f8f9fa;
+        padding-left: 1.75rem;
+    }
+
+    .list-group-item.active {
+        color: #1b7742;
+        background: #e8f5e9;
+        border-right: 3px solid #1b7742;
+    }
+
+    .list-group-item i {
+        width: 20px;
+        text-align: center;
+        margin-right: 0.75rem;
+        opacity: 0.8;
+    }
+
+    .border-top {
+        border-top: 1px solid #e9ecef !important;
+        opacity: 0.5;
+        margin: 0.5rem 1.5rem;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        #sidebar-wrapper {
+            min-width: 220px;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1rem;
+        }
+
+        .logo-wrapper {
+            width: 75px;
+            height: 75px;
+        }
+
+        .brand-title {
+            font-size: 1.25rem;
+        }
+
+        .brand-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .list-group-item {
+            padding: 0.7rem 1.25rem;
+            font-size: 0.95rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        #sidebar-wrapper {
+            min-width: 200px;
+        }
+
+        .logo-wrapper {
+            width: 65px;
+            height: 65px;
+        }
+
+        .brand-title {
+            font-size: 1.1rem;
+        }
+
+        .list-group-item {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+    }
+</style> 

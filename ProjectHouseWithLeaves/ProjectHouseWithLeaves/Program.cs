@@ -17,7 +17,6 @@ namespace ProjectHouseWithLeaves
             var builder = WebApplication.CreateBuilder(args);
 
             #region Register SQL
-            // Replace the placeholder with your DbContext registration, for example:
             builder.Services.AddDbContext<MiniPlantStoreContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DBDefault")));
             #endregion
@@ -27,12 +26,15 @@ namespace ProjectHouseWithLeaves
             #endregion
 
             #region Register DI
-            builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            // Client Services
+            builder.Services.AddScoped<Services.ModelService.IProductService, Services.ModelService.ProductService>();
+            builder.Services.AddScoped<Services.ModelService.ICategoryService, Services.ModelService.CategoryService>();
             builder.Services.AddScoped<IContactService, ContactService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationService>();
             builder.Services.AddScoped<IUserService, UserService>();
+
+           
             #endregion
 
             #region Session
@@ -46,7 +48,9 @@ namespace ProjectHouseWithLeaves
             #endregion
 
             #region mapper
+            builder.Services.AddAutoMapper(typeof(ProductMappingProfile));
             builder.Services.AddAutoMapper(typeof(UserMappingProfile));
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
             #endregion
 
             // Add services to the container.
@@ -98,7 +102,10 @@ namespace ProjectHouseWithLeaves
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-
+        
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");         
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Home}/{id?}");
