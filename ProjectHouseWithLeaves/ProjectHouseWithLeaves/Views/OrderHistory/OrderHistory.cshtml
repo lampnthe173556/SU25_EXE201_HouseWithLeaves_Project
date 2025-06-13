@@ -1,0 +1,74 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_LayouClientShared";
+}
+@section Css
+{
+    <link rel="stylesheet" href="~/css/orderHistory.css">
+}
+<div class="container order-history-container">
+    <h2 class="order-history-title"><i class="fa fa-history"></i> Lịch sử đơn hàng</h2>
+    <div class="order-history-filter">
+        <label for="orderStatusFilter"><i class="fa fa-filter"></i> Lọc theo trạng thái:</label>
+        <select id="orderStatusFilter">
+            <option value="">Tất cả</option>
+            <option value="Đã giao">Đã giao</option>
+            <option value="Đang xử lý">Đang xử lý</option>
+            <option value="Đã hủy">Đã hủy</option>
+        </select>
+    </div>
+    <div id="orderHistoryTableWrap">
+        <table class="order-history-table">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th id="sortDate" class="sortable">Ngày đặt <i class="fa fa-sort"></i></th>
+                    <th id="sortTotal" class="sortable">Tổng tiền <i class="fa fa-sort"></i></th>
+                    <th>Phương thức thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th>Chi tiết</th>
+                </tr>
+            </thead>
+            <tbody id="orderHistoryBody"></tbody>
+        </table>
+        <div id="orderHistoryEmpty" class="order-history-empty" style="display:none;">
+            <i class="fa fa-box-open"></i> Bạn chưa có đơn hàng nào.
+        </div>
+        <div class="pagination">
+            <button id="prevPage" class="pagination-btn" disabled><i class="fa fa-chevron-left"></i></button>
+            <div id="pageNumbers" class="page-numbers"></div>
+            <button id="nextPage" class="pagination-btn" disabled><i class="fa fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chi tiết đơn hàng -->
+<div id="orderDetailModal" class="order-modal" style="display:none;">
+    <div class="order-modal-content">
+        <span class="order-modal-close" id="orderModalClose">&times;</span>
+        <h3>Chi tiết đơn hàng <span id="modalOrderId"></span></h3>
+        <div id="modalOrderInfo"></div>
+        <table class="order-detail-table">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody id="modalOrderProducts"></tbody>
+        </table>
+        <div class="order-modal-total">
+            <b>Tổng tiền:</b> <span id="modalOrderTotal"></span>
+        </div>
+    </div>
+</div>
+@section Script
+{
+
+    <script src="~/js/home.js"></script>
+    <script src="~/js/orderHistory.js"></script>
+}

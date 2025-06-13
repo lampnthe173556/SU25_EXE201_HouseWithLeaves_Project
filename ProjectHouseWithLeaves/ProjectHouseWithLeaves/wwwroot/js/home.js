@@ -55,41 +55,7 @@ window.addEventListener('scroll', function () {
 });
 
 // Product Filter
-function filterProducts(category) {
-    const products = document.querySelectorAll('.product-card');
-    products.forEach(product => {
-        if (category === 'all' || product.dataset.category === category) {
-            product.style.display = '';
-        } else {
-            product.style.display = 'none';
-        }
-    });
-}
 
-// Add filter button click handlers
-document.addEventListener('DOMContentLoaded', function () {
-    const filterButtons = document.querySelectorAll('.filter button');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            // Remove active class from all buttons
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
-            this.classList.add('active');
-            // Get category from button text
-            let category = 'all';
-            if (this.textContent === 'Cây để bàn') {
-                category = 'desk';
-            } else if (this.textContent === 'Terrarium') {
-                category = 'terrarium';
-            } else if (this.textContent === 'Cây để sàn') {
-                category = 'floor';
-            }
-            console.log('Filter click:', category); // DEBUG LOG
-            // Filter products
-            filterProducts(category);
-        });
-    });
-});
 
 // --- CART LOGIC (dùng chung với shop) ---
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -112,7 +78,7 @@ function addToCart(product) {
     }
     saveCart();
     updateCartBadge();
-    showNotification('Đã thêm sản phẩm vào giỏ hàng!');
+    
 }
 function removeFromCart(name) {
     cart = cart.filter(item => item.name !== name);
@@ -249,14 +215,3 @@ document.querySelectorAll('.product-card').forEach(card => {
     }
 });
 updateCartBadge();
-
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.classList.add('notification');
-    notification.textContent = message;
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
