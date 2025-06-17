@@ -33,6 +33,7 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ICartService, CartService>();
 
            
             #endregion
@@ -50,7 +51,7 @@ namespace ProjectHouseWithLeaves
             #region mapper
             builder.Services.AddAutoMapper(typeof(ProductMappingProfile));
             builder.Services.AddAutoMapper(typeof(UserMappingProfile));
-            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+            builder.Services.AddAutoMapper(typeof(CartMappingProfile));
             #endregion
 
             // Add services to the container.

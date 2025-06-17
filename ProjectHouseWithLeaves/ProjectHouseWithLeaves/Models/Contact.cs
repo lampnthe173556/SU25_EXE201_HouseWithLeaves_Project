@@ -11,7 +11,7 @@ public partial class Contact
 
     public string? DescriptionContact { get; set; }
 
-    public string Status { get; set; } = null!;
+    public string Status { get; set; } = "CHƯA XEM";
 
-    public DateTime? SendAt { get; set; }
+    public DateTime? SendAt { get; set; } = DateTime.Now;
 }
