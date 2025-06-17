@@ -77,6 +77,7 @@ function renderProducts(list) {
             if (result) {
                 if (typeof updateCartBadge === 'function') await updateCartBadge();
                 if (typeof showNotification === 'function') showNotification('Đã thêm sản phẩm vào giỏ hàng!');
+                if (typeof renderCartPopup === 'function') await renderCartPopup();
             }
         });
 

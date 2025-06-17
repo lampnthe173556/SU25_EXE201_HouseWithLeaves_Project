@@ -1,5 +1,7 @@
 ﻿// --- CART LOGIC CHUNG ---
 let cartItems = [];
+let checkedProductIds = new Set(); // Lưu trữ ID của các sản phẩm được check
+let isCartPopupVisible = false;
 
 async function getCartFromStorage() {
     const cartData = await cartService.getCart();
@@ -54,6 +56,17 @@ async function removeAllFromCart() {
     }
 }
 
+async function toggleCartPopup() {
+    const popup = document.getElementById('cartPopup');
+    if (!popup || !isCartPopupVisible) {
+        await renderCartPopup();
+        isCartPopupVisible = true;
+    } else {
+        popup.style.display = 'none';
+        isCartPopupVisible = false;
+    }
+}
+
 async function renderCartPopup() {
     cartItems = await getCartFromStorage();
     let popup = document.getElementById('cartPopup');
@@ -72,7 +85,7 @@ async function renderCartPopup() {
             <div class="cart-list">
                 ${cartItems.map(item => `
                     <div class="cart-item">
-                        <input type="checkbox" class="cart-item-checkbox" data-id="${item.productId}">
+                        <input type="checkbox" class="cart-item-checkbox" data-id="${item.productId}" ${checkedProductIds.has(item.productId.toString()) ? 'checked' : ''}>
                         <div class="cart-item-img-wrap"><img src="${item.img || ''}" alt="${item.name}" class="cart-item-img"></div>
                         <div class="cart-item-info">
                             <div class="cart-item-name">${item.name}</div>
@@ -88,7 +101,7 @@ async function renderCartPopup() {
                     </div>
                 `).join('')}
             </div>
-            <div class="cart-total">Tổng: <b>${cartItems.reduce((sum, i) => sum + i.price * i.qty, 0).toLocaleString()}₫</b></div>
+            <div class="cart-total">Tổng: <b>${cartItems.reduce((sum, i) => sum + (checkedProductIds.has(i.productId.toString()) ? i.price * i.qty : 0), 0).toLocaleString()}₫</b></div>
             <div style="margin: 10px 0;">
                 <label for="payment-method" style="font-weight: 500;">Phương thức thanh toán:</label>
                 <select id="payment-method" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-family: 'Quicksand', sans-serif;">
@@ -111,28 +124,43 @@ async function renderCartPopup() {
 
     popup.style.display = 'flex';
 
+    // Xử lý đóng popup
+    popup.querySelector('.close-cart-popup').onclick = () => {
+        popup.remove();
+    };
+
     // Chỉ thêm event listeners nếu có sản phẩm trong giỏ hàng
     if (cartItems.length > 0) {
-        document.querySelector('.remove-all-cart').onclick = async function () {
+        popup.querySelector('.remove-all-cart').onclick = async function () {
+            checkedProductIds.clear(); // Xóa tất cả checkbox đã chọn
             await removeAllFromCart();
         };
-        document.querySelectorAll('.remove-cart-item').forEach(btn => {
-            btn.onclick = () => removeFromCart(btn.dataset.id);
+
+        popup.querySelectorAll('.remove-cart-item').forEach(btn => {
+            btn.onclick = () => {
+                const productId = btn.dataset.id;
+                checkedProductIds.delete(productId); // Xóa khỏi danh sách đã chọn
+                removeFromCart(productId);
+            };
         });
-        document.querySelectorAll('.qty-btn').forEach(btn => {
+
+        popup.querySelectorAll('.qty-btn').forEach(btn => {
             btn.onclick = async (e) => {
                 const productId = btn.dataset.id;
                 const action = btn.dataset.action;
-                const item = cartItems.find(item => item.productId === productId);
+                
+                const item = cartItems.find(item => item.productId === Number(productId));
                 if (item) {
                     if (action === 'increase') {
                         const result = await cartService.addItem(productId, 1);
                         if (result) {
+                            await updateCartBadge();
                             await renderCartPopup();
                         }
                     } else if (action === 'decrease' && item.qty > 1) {
                         const result = await cartService.decreaseQuantity(productId, 1);
                         if (result) {
+                            await updateCartBadge();
                             await renderCartPopup();
                         }
                     }
@@ -141,30 +169,48 @@ async function renderCartPopup() {
         });
 
         // Checkbox logic
-        const checkoutBtn = document.querySelector('.checkout-btn');
-        checkoutBtn.disabled = true;
-        checkoutBtn.style.opacity = 0.6;
-        const checkboxes = document.querySelectorAll('.cart-item-checkbox');
-        
-        updateCheckoutButtonState();
-        checkboxes.forEach(cb => {
-            cb.onchange = updateCheckoutButtonState;
-        });
+        const checkoutBtn = popup.querySelector('.checkout-btn');
+        const checkboxes = popup.querySelectorAll('.cart-item-checkbox');
         
         function updateCheckoutButtonState() {
-            const anyChecked = Array.from(document.querySelectorAll('.cart-item-checkbox')).some(cb => cb.checked);
+            const anyChecked = Array.from(popup.querySelectorAll('.cart-item-checkbox')).some(cb => cb.checked);
             checkoutBtn.disabled = !anyChecked;
             checkoutBtn.style.opacity = anyChecked ? 1 : 0.6;
+
+            // Cập nhật tổng tiền dựa trên các sản phẩm được chọn
+            const total = cartItems.reduce((sum, item) => {
+                const checkbox = popup.querySelector(`.cart-item-checkbox[data-id="${item.productId}"]`);
+                return sum + (checkbox?.checked ? item.price * item.qty : 0);
+            }, 0);
+            popup.querySelector('.cart-total b').textContent = total.toLocaleString() + '₫';
         }
 
-        // Handle checkout
-        checkoutBtn.onclick = function () {
-            const checkedIds = Array.from(document.querySelectorAll('.cart-item-checkbox'))
-                .filter(cb => cb.checked)
-                .map(cb => cb.dataset.id);
-            const selectedCart = cartItems.filter(item => checkedIds.includes(item.productId));
-            if (selectedCart.length === 0) return;
-            const paymentMethod = document.getElementById('payment-method').value;
+        // Khởi tạo trạng thái ban đầu cho nút checkout
+        checkoutBtn.disabled = checkedProductIds.size === 0;
+        checkoutBtn.style.opacity = checkedProductIds.size === 0 ? 0.6 : 1;
+        
+        // Gắn sự kiện cho checkboxes
+        checkboxes.forEach(cb => {
+            cb.onchange = () => {
+                const productId = cb.dataset.id;
+                if (cb.checked) {
+                    checkedProductIds.add(productId);
+                } else {
+                    checkedProductIds.delete(productId);
+                }
+                updateCheckoutButtonState();
+            };
+        });
+
+        // Cập nhật tổng tiền ban đầu
+        updateCheckoutButtonState();
+
+        // Gắn sự kiện cho nút checkout
+        checkoutBtn.onclick = function() {
+            const checkedIds = Array.from(checkedProductIds);
+            if (checkedIds.length === 0) return;
+            
+            const paymentMethod = popup.querySelector('#payment-method').value;
             if (paymentMethod === 'bank') {
                 window.location.href = '/Payment/Paypal';
             } else {
@@ -172,11 +218,6 @@ async function renderCartPopup() {
             }
         };
     }
-
-    // Luôn thêm nút đóng popup
-    document.querySelector('.close-cart-popup').onclick = () => {
-        document.getElementById('cartPopup').remove();
-    };
 }
 
 function setupCartIconToggle() {
@@ -190,7 +231,6 @@ function setupCartIconToggle() {
     cartIcon.onclick = async function (e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('Cart icon clicked');
         await renderCartPopup();
     };
 }
