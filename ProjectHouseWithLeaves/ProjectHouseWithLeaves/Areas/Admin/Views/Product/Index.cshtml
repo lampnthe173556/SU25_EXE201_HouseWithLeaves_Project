@@ -5,6 +5,28 @@
     var categories = ViewBag.CategoryList as List<ProjectHouseWithLeaves.Models.Category>;
 }
 
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i>
+                <span id="successMessage"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span id="errorMessage"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <style>
     .table thead th {
         color: #000;
@@ -85,7 +107,7 @@
         <h2 class="text-success fw-bold">
             <i class="fas fa-boxes me-2"></i>Quản lý Sản phẩm
         </h2>
-        <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#createForm">
+        <button class="btn btn-success" onclick="showCreateProductModal()">
             <i class="fas fa-plus-circle me-1"></i> Thêm sản phẩm
         </button>
     </div>
@@ -206,64 +228,70 @@
 </div>
 
 <!-- Form thêm sản phẩm -->
-<div class="collapse mb-4" id="createForm">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title mb-3">Thêm sản phẩm mới</h5>
-            <form action="@Url.Action("Create", "Product", new { area = "Admin" })" method="post" enctype="multipart/form-data">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Tên sản phẩm</label>
-                        <input type="text" class="form-control" name="ProductName" required />
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Giá</label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" name="Price" required min="0" />
-                            <span class="input-group-text">VNĐ</span>
+<div class="modal fade" id="createProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Thêm sản phẩm mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createProductForm" action="@Url.Action("Create", "Product", new { area = "Admin" })" method="post" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Tên sản phẩm</label>
+                            <input type="text" class="form-control" name="Name" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Giá</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="Price" required min="0" />
+                                <span class="input-group-text">VNĐ</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Số lượng</label>
+                            <input type="number" class="form-control" name="Stock" required min="0" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Danh mục</label>
+                            <select name="CategoryId" class="form-select" required>
+                                <option value="">Chọn danh mục</option>
+                                @foreach (var cat in categories)
+                                {
+                                    <option value="@cat.CategoryId">@cat.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Kích thước</label>
+                            <input type="text" class="form-control" name="Size" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Hình ảnh chính</label>
+                            <input type="file" class="form-control" name="mainImage" accept="image/*" onchange="previewImage(this, 'mainImagePreview')" />
+                            <img id="mainImagePreview" class="mt-2" style="max-width: 200px; display: none;" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Hình ảnh phụ</label>
+                            <input type="file" class="form-control" name="additionalImages" accept="image/*" multiple onchange="previewAdditionalImages(this)" />
+                            <div id="additionalImagesPreview" class="mt-2 d-flex gap-2"></div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Mô tả</label>
+                            <textarea class="form-control" name="Description" rows="3"></textarea>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Số lượng</label>
-                        <input type="number" class="form-control" name="QuantityInStock" required min="0" />
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Danh mục</label>
-                        <select name="CategoryId" class="form-select" required>
-                            <option value="">Chọn danh mục</option>
-                            @foreach (var cat in categories)
-                            {
-                                <option value="@cat.CategoryId">@cat.CategoryName</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Kích thước</label>
-                        <input type="text" class="form-control" name="Size" required />
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Hình ảnh chính</label>
-                        <input type="file" class="form-control" name="MainImage" accept="image/*" required />
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Hình ảnh phụ</label>
-                        <input type="file" class="form-control" name="AdditionalImages" accept="image/*" multiple />
-                        <small class="text-muted">Có thể chọn nhiều hình ảnh</small>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Mô tả</label>
-                        <textarea class="form-control" name="Description" rows="3"></textarea>
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save me-1"></i> Lưu sản phẩm
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#createForm">
-                            <i class="fas fa-times me-1"></i> Hủy
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="createProductForm" class="btn btn-success">
+                    <i class="fas fa-save me-1"></i> Lưu sản phẩm
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Hủy
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -278,11 +306,11 @@
             </div>
             <div class="modal-body">
                 <form id="editProductForm" action="@Url.Action("Edit", "Product", new { area = "Admin" })" method="post" enctype="multipart/form-data">
-                    <input type="hidden" id="editProductId" name="ProductId" />
+                    <input type="hidden" id="editProductId" name="Id" />
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Tên sản phẩm</label>
-                            <input type="text" class="form-control" id="editProductName" name="ProductName" required />
+                            <input type="text" class="form-control" id="editProductName" name="Name" required />
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Giá</label>
@@ -293,7 +321,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Số lượng</label>
-                            <input type="number" class="form-control" id="editQuantity" name="QuantityInStock" required min="0" />
+                            <input type="number" class="form-control" id="editQuantity" name="Stock" required min="0" />
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Danh mục</label>
@@ -311,13 +339,30 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Hình ảnh chính mới</label>
-                            <input type="file" class="form-control" name="MainImage" accept="image/*" />
-                            <small class="text-muted">Để trống nếu không muốn thay đổi</small>
+                            <input type="file" class="form-control" name="mainImage" accept="image/*" onchange="previewImage(this, 'editMainImagePreview')" />
+                            <img id="editMainImagePreview" class="mt-2" style="max-width: 200px; display: none;" />
+                            <img id="currentMainImage" class="mt-2" style="max-width: 200px;" />
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Hình ảnh phụ mới</label>
-                            <input type="file" class="form-control" name="AdditionalImages" accept="image/*" multiple />
-                            <small class="text-muted">Chọn hình ảnh mới sẽ thay thế tất cả hình ảnh phụ cũ</small>
+                            <label class="form-label">Hình ảnh phụ</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ảnh phụ 1</label>
+                                        <input type="file" class="form-control" name="additionalImage1" accept="image/*" onchange="previewImage(this, 'editAdditionalImage1Preview')" />
+                                        <img id="editAdditionalImage1Preview" class="mt-2" style="max-width: 200px; display: none;" />
+                                        <img id="currentAdditionalImage1" class="mt-2" style="max-width: 200px;" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ảnh phụ 2</label>
+                                        <input type="file" class="form-control" name="additionalImage2" accept="image/*" onchange="previewImage(this, 'editAdditionalImage2Preview')" />
+                                        <img id="editAdditionalImage2Preview" class="mt-2" style="max-width: 200px; display: none;" />
+                                        <img id="currentAdditionalImage2" class="mt-2" style="max-width: 200px;" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-12">
                             <label class="form-label">Mô tả</label>
@@ -513,8 +558,12 @@
             }
 
             // Gắn sự kiện
-            $('#searchInput').on('input', filterProducts);
-            $('#categoryFilter').on('change', filterProducts);
+            $(document).on('input', '#searchInput', function() {
+                filterProducts();
+            });
+            $(document).on('change', '#categoryFilter', function() {
+                filterProducts();
+            });
 
             $('th[data-sort]').on('click', function() {
                 const column = $(this).data('sort');
@@ -532,28 +581,225 @@
             updatePagination();
         });
 
+        function showToast(message, isSuccess = true) {
+            const toastId = isSuccess ? 'successToast' : 'errorToast';
+            const messageId = isSuccess ? 'successMessage' : 'errorMessage';
+            const toast = document.getElementById(toastId);
+            document.getElementById(messageId).textContent = message;
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        }
+
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- Sửa preview ảnh phụ khi cập nhật (triệt để) ---
+        $(document).off('change', '#editProductForm input[name="additionalImages"]');
+        $(document).on('change', '#editProductForm input[name="additionalImages"]', function() {
+            // Ẩn hoàn toàn ảnh phụ cũ
+            $('#currentAdditionalImages').css('display', 'none');
+            // Xóa toàn bộ preview mới trước khi render
+            $('#editAdditionalImagesPreview').empty();
+
+            if (this.files && this.files.length > 0) {
+                const files = Array.from(this.files).slice(0, 2);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    const img = document.createElement('img');
+                    img.style.maxWidth = '200px';
+                    img.style.marginRight = '10px';
+                    img.style.marginBottom = '10px';
+                    reader.onload = function(e) {
+                        img.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                    $('#editAdditionalImagesPreview').append(img);
+                });
+            } else {
+                // Nếu không chọn file, hiện lại ảnh phụ cũ
+                $('#currentAdditionalImages').css('display', '');
+            }
+        });
+
+        // Reset preview khi đóng modal
+        $('#editProductModal').on('hidden.bs.modal', function() {
+            $('#currentAdditionalImages').css('display', '');
+            $('#editAdditionalImagesPreview').empty();
+            $('#editProductForm input[name="additionalImages"]').val('');
+        });
+
+        function showCreateProductModal() {
+            // Reset form
+            $('#createProductForm')[0].reset();
+            $('#mainImagePreview').hide();
+            $('#additionalImagesPreview').empty();
+            $('#createProductModal').modal('show');
+        }
+
+        function previewSingleImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            const currentImage = document.getElementById(previewId.replace('Preview', ''));
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    currentImage.style.display = 'none';
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.style.display = 'none';
+                currentImage.style.display = 'block';
+            }
+        }
+
         function showEditProductModal(productId) {
             $.get('@Url.Action("GetProduct", "Product", new { area = "Admin" })/' + productId, function(response) {
                 if (response.success) {
                     const product = response.data;
-                    $('#editProductId').val(product.productId);
-                    $('#editProductName').val(product.productName);
+                    $('#editProductId').val(product.id);
+                    $('#editProductName').val(product.name);
                     $('#editPrice').val(product.price);
-                    $('#editQuantity').val(product.quantityInStock);
+                    $('#editQuantity').val(product.stock);
                     $('#editCategoryId').val(product.categoryId);
                     $('#editSize').val(product.size);
                     $('#editDescription').val(product.description);
+                    
+                    // Hiển thị ảnh hiện tại
+                    $('#currentMainImage').attr('src', product.mainImage);
+                    $('#editMainImagePreview').hide();
+                    
+                    // Hiển thị ảnh phụ hiện tại
+                    if (product.additionalImages && product.additionalImages.length > 0) {
+                        $('#currentAdditionalImage1').attr('src', product.additionalImages[0] || '');
+                        $('#currentAdditionalImage2').attr('src', product.additionalImages[1] || '');
+                    }
+                    
+                    // Ẩn tất cả preview ảnh mới
+                    $('#editAdditionalImage1Preview').hide();
+                    $('#editAdditionalImage2Preview').hide();
+                    
                     $('#editProductModal').modal('show');
                 } else {
-                    alert('Không thể tải thông tin sản phẩm');
+                    showToast('Không thể tải thông tin sản phẩm', false);
                 }
             });
         }
 
-        function deleteProduct(productId) {
-            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-                window.location.href = '@Url.Action("Delete", "Product", new { area = "Admin" })/' + productId;
+        // Reset preview khi đóng modal
+        $('#editProductModal').on('hidden.bs.modal', function() {
+            // Reset ảnh chính
+            $('#currentMainImage').show();
+            $('#editMainImagePreview').hide();
+            $('#editProductForm input[name="mainImage"]').val('');
+            
+            // Reset ảnh phụ 1
+            $('#currentAdditionalImage1').show();
+            $('#editAdditionalImage1Preview').hide();
+            $('#editProductForm input[name="additionalImage1"]').val('');
+            
+            // Reset ảnh phụ 2
+            $('#currentAdditionalImage2').show();
+            $('#editAdditionalImage2Preview').hide();
+            $('#editProductForm input[name="additionalImage2"]').val('');
+        });
+
+        // Xử lý sự kiện khi chọn ảnh mới trong form edit
+        $(document).on('change', '#editProductForm input[name="mainImage"]', function() {
+            if (this.files && this.files[0]) {
+                $('#currentMainImage').hide();
+                previewImage(this, 'editMainImagePreview');
+            } else {
+                $('#currentMainImage').show();
+                $('#editMainImagePreview').hide();
             }
+        });
+
+        $(document).on('change', '#editProductForm input[name="additionalImage1"]', function() {
+            if (this.files && this.files[0]) {
+                $('#currentAdditionalImage1').hide();
+                previewImage(this, 'editAdditionalImage1Preview');
+            } else {
+                $('#currentAdditionalImage1').show();
+                $('#editAdditionalImage1Preview').hide();
+            }
+        });
+
+        $(document).on('change', '#editProductForm input[name="additionalImage2"]', function() {
+            if (this.files && this.files[0]) {
+                $('#currentAdditionalImage2').hide();
+                previewImage(this, 'editAdditionalImage2Preview');
+            } else {
+                $('#currentAdditionalImage2').show();
+                $('#editAdditionalImage2Preview').hide();
+            }
+        });
+
+        // Xử lý submit form
+        $('#createProductForm').on('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#createProductModal').modal('hide');
+                    showToast('Thêm sản phẩm thành công');
+                    setTimeout(() => window.location.reload(), 1000);
+                },
+                error: function() {
+                    showToast('Có lỗi xảy ra khi thêm sản phẩm', false);
+                }
+            });
+        });
+
+        $('#editProductForm').on('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#editProductModal').modal('hide');
+                    showToast('Cập nhật sản phẩm thành công');
+                    setTimeout(() => window.location.reload(), 1000);
+                },
+                error: function() {
+                    showToast('Có lỗi xảy ra khi cập nhật sản phẩm', false);
+                }
+            });
+        });
+
+        // Hiển thị toast từ TempData
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["SuccessMessage"]');
+            </text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["ErrorMessage"]', false);
+            </text>
         }
     </script>
 } 

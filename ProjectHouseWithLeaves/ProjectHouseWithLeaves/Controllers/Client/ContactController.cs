@@ -23,14 +23,13 @@ namespace ProjectHouseWithLeaves.Controllers.Client
         [HttpPost]
         public async Task<IActionResult> Contact(Contact contact)
         {
+            contact.SendAt = DateTime.Now;
+            contact.Status = "CHƯA XEM";
             if (ModelState.IsValid)
             {
                 //set default value
-                contact.SendAt = DateTime.Now; 
-                contact.Status = "CHƯA XEM";
-
                 await _emailService.SendEmailAsync(
-                    toEmail: "lampnthe173556@fpt.edu.vn",
+                    toEmail: "pntlam12g03@gmail.com",
                     subject: "📬 YÊU CẦU LIÊN HỆ TỪ KHÁCH HÀNG",
                     model: contact
                 );

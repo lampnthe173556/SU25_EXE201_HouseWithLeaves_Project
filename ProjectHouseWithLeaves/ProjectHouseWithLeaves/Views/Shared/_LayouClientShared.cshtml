@@ -1,6 +1,11 @@
 ﻿@using ProjectHouseWithLeaves.Helper.Session;
 @{
     var user = Context.Session.GetObject<User>("user");
+    var isAuthen = false;
+    if(user != null)
+    {
+        isAuthen = true;
+    }
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -127,8 +132,11 @@
             </div>
         </div>
     </footer>
-
+    <script src="~/js/cartService.js"></script>
     @await RenderSectionAsync("Script", required: true)
-
- </body>
+    <script>
+        window.isAuthenticated = @isAuthen.ToString().ToLower();
+        window.userId = '@(user?.UserId)';
+    </script>
+</body>
 </html>

@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Amazon.Runtime;
+using Amazon.S3;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
+using ProjectHouseWithLeaves.Dtos;
 using ProjectHouseWithLeaves.Helper.Email;
 using ProjectHouseWithLeaves.Helper.Mapping;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.EmailService;
 using ProjectHouseWithLeaves.Services.ModelService;
+using ProjectHouseWithLeaves.Services.StoreService;
 using System.Text.Json.Serialization;
 
 namespace ProjectHouseWithLeaves
@@ -27,13 +31,18 @@ namespace ProjectHouseWithLeaves
 
             #region Register DI
             // Client Services
-            builder.Services.AddScoped<Services.ModelService.IProductService, Services.ModelService.ProductService>();
-            builder.Services.AddScoped<Services.ModelService.ICategoryService, Services.ModelService.CategoryService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IContactService, ContactService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IStorageService, R2StorageService>();
 
+
+
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
            
             #endregion
 
@@ -50,7 +59,8 @@ namespace ProjectHouseWithLeaves
             #region mapper
             builder.Services.AddAutoMapper(typeof(ProductMappingProfile));
             builder.Services.AddAutoMapper(typeof(UserMappingProfile));
-            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+            builder.Services.AddAutoMapper(typeof(CartMappingProfile));
+            builder.Services.AddAutoMapper(typeof(PaymentMappingProfile));
             #endregion
 
             // Add services to the container.
@@ -84,6 +94,17 @@ namespace ProjectHouseWithLeaves
                 options.ClientSecret = builder.Configuration["Google:ClientSecret"];
                 options.CallbackPath = "/Authen/GoogleCallback";
             });
+
+            builder.Services.Configure<R2Config>(builder.Configuration.GetSection("R2"));
+            var r2Config = builder.Configuration.GetSection("R2").Get<R2Config>();
+
+            #region s3Client with DI
+            var s3Config = new AmazonS3Config { ServiceURL = r2Config.Endpoint };
+            var credentials = new BasicAWSCredentials(r2Config.AccessKey, r2Config.SecretKey);
+            builder.Services.AddSingleton<IAmazonS3>(new AmazonS3Client(credentials, s3Config));
+
+            #endregion
+
             builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
 

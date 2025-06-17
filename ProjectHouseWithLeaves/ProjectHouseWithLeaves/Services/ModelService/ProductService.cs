@@ -144,17 +144,32 @@ namespace ProjectHouseWithLeaves.Services.ModelService
                 }
 
                 // Update properties
-                _mapper.Map(product, existingProduct);
+                existingProduct.ProductName = product.ProductName;
+                existingProduct.Description = product.Description;
+                existingProduct.Size = product.Size;
+                existingProduct.Price = product.Price;
+                existingProduct.QuantityInStock = product.QuantityInStock;
+                existingProduct.CategoryId = product.CategoryId;
                 existingProduct.UpdatedAt = DateTime.Now;
 
-                // Update images if provided
+                // Update images
                 if (product.ProductImages != null && product.ProductImages.Any())
                 {
-                    _context.ProductImages.RemoveRange(existingProduct.ProductImages);
-                    foreach (var image in product.ProductImages)
+                    // Cập nhật ảnh chính
+                    var mainImage = product.ProductImages.FirstOrDefault(img => img.MainPicture == true);
+                    var existingMainImage = existingProduct.ProductImages.FirstOrDefault(img => img.MainPicture == true);
+                    if (mainImage != null && existingMainImage != null)
                     {
-                        image.ProductId = existingProduct.ProductId;
-                        _context.ProductImages.Add(image);
+                        existingMainImage.ImageUrl = mainImage.ImageUrl;
+                    }
+
+                    // Cập nhật ảnh phụ
+                    var additionalImages = product.ProductImages.Where(img => img.MainPicture == false).ToList();
+                    var existingAdditionalImages = existingProduct.ProductImages.Where(img => img.MainPicture == false).ToList();
+                    
+                    for (int i = 0; i < Math.Min(additionalImages.Count, existingAdditionalImages.Count); i++)
+                    {
+                        existingAdditionalImages[i].ImageUrl = additionalImages[i].ImageUrl;
                     }
                 }
 

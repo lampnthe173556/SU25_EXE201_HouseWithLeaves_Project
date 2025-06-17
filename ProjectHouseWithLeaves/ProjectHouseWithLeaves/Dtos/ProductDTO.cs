@@ -20,6 +20,9 @@ namespace ProjectHouseWithLeaves.Dtos
         // Đường dẫn mặc định cho hình ảnh chính
         public string? MainImage { get; set; } = "";
 
+        // Danh sách ảnh phụ
+        public List<string> AdditionalImages { get; set; } = new List<string>();
+
         // Các giá trị mặc định
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public bool IsActive { get; set; } = true;
