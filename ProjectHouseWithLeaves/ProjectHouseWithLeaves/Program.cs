@@ -27,14 +27,14 @@ namespace ProjectHouseWithLeaves
 
             #region Register DI
             // Client Services
-            builder.Services.AddScoped<Services.ModelService.IProductService, Services.ModelService.ProductService>();
-            builder.Services.AddScoped<Services.ModelService.ICategoryService, Services.ModelService.CategoryService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IContactService, ContactService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICartService, CartService>();
-
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
            
             #endregion
 
@@ -52,6 +52,7 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddAutoMapper(typeof(ProductMappingProfile));
             builder.Services.AddAutoMapper(typeof(UserMappingProfile));
             builder.Services.AddAutoMapper(typeof(CartMappingProfile));
+            builder.Services.AddAutoMapper(typeof(PaymentMappingProfile));
             #endregion
 
             // Add services to the container.

@@ -11,9 +11,12 @@ namespace ProjectHouseWithLeaves.Controllers.Client
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
-        public CartController(ICartService cartService)
+        private readonly IPaymentMethodService _paymentMethodService;
+
+        public CartController(ICartService cartService, IPaymentMethodService paymentMethodService)
         {
             _cartService = cartService;
+            _paymentMethodService = paymentMethodService;
         }
 
         [HttpGet]
@@ -50,6 +53,12 @@ namespace ProjectHouseWithLeaves.Controllers.Client
             var userId = HttpContext.Session.GetObject<User>("user").UserId;
             var result = await _cartService.ClearCartAsync(userId);
             return Json(result); 
+        }
+        [HttpGet("GellAllPayment")]
+        public async Task<IActionResult> GetAllPayment()
+        {
+            var payments = await _paymentMethodService.GetAllPaymentMethod();
+            return Json(payments);
         }
     }
 }

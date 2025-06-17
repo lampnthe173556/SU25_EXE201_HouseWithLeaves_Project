@@ -67,6 +67,22 @@ async function toggleCartPopup() {
     }
 }
 
+async function loadPaymentMethods() {
+    try {
+        const res = await fetch('https://localhost:7115/Cart/GellAllPayment');
+        if (!res.ok) throw new Error('Lỗi lấy phương thức thanh toán');
+        const methods = await res.json(); // [{paymentMethodId, methodName, status}]
+        const select = document.getElementById('payment-method');
+        if (select) {
+            select.innerHTML = methods
+                .map(m => `<option value="${m.paymentMethodId}">${m.methodName}</option>`)
+                .join('');
+        }
+    } catch (e) {
+        alert('Không lấy được phương thức thanh toán!');
+    }
+}
+
 async function renderCartPopup() {
     cartItems = await getCartFromStorage();
     let popup = document.getElementById('cartPopup');
@@ -104,11 +120,7 @@ async function renderCartPopup() {
             <div class="cart-total">Tổng: <b>${cartItems.reduce((sum, i) => sum + (checkedProductIds.has(i.productId.toString()) ? i.price * i.qty : 0), 0).toLocaleString()}₫</b></div>
             <div style="margin: 10px 0;">
                 <label for="payment-method" style="font-weight: 500;">Phương thức thanh toán:</label>
-                <select id="payment-method" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-family: 'Quicksand', sans-serif;">
-                    <option value="cash">Tiền mặt</option>
-                    <option value="bank">Thẻ tín dụng</option>
-                    <option value="vnpay">VNPay</option>
-                </select>
+                <select id="payment-method" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; font-family: 'Quicksand', sans-serif;"></select>
             </div>
             <button class="checkout-btn">Thanh toán</button>
             `
@@ -116,13 +128,16 @@ async function renderCartPopup() {
             <div class="empty-cart-message" style="text-align: center; padding: 20px;">
                 <i class="fa fa-shopping-cart" style="font-size: 50px; color: #ccc; margin-bottom: 10px;"></i>
                 <p style="color: #666; font-size: 16px;">Chưa có sản phẩm nào.</p>
-                <a href="/Shop" style="display: inline-block; margin-top: 10px; padding: 8px 15px; background: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">Tiếp tục mua sắm</a>
+                <a href="/Shop/Shop" style="display: inline-block; margin-top: 10px; padding: 8px 15px; background: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">Tiếp tục mua sắm</a>
             </div>
             `
         }
     </div>`;
 
     popup.style.display = 'flex';
+
+    // Gọi API để render phương thức thanh toán
+    await loadPaymentMethods();
 
     // Xử lý đóng popup
     popup.querySelector('.close-cart-popup').onclick = () => {
@@ -210,6 +225,12 @@ async function renderCartPopup() {
             const checkedIds = Array.from(checkedProductIds);
             if (checkedIds.length === 0) return;
             
+            // Lấy danh sách sản phẩm đã chọn
+            const selectedCart = cartItems.filter(item => checkedIds.includes(item.productId.toString()));
+
+            // Lưu vào localStorage
+            localStorage.setItem('checkout_cart', JSON.stringify(selectedCart));
+
             const paymentMethod = popup.querySelector('#payment-method').value;
             if (paymentMethod === 'bank') {
                 window.location.href = '/Payment/Paypal';
