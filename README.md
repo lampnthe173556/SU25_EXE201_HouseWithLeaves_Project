@@ -78,7 +78,7 @@
 
 3. **Cập nhật cơ sở dữ liệu**
     ```bash
-    dotnet ef dbcontext scaffold "Server=(local);Database=MiniPlantStore;UID=sa;PWD=lamlam276762;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models
+    dotnet ef dbcontext scaffold "Server=(local);Database=MiniPlantStore;UID=sa;PWD=xxxxxxxx;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --force
     ```
 
 4. **Khởi chạy ứng dụng**
