@@ -106,18 +106,16 @@
     - Xử lý luồng thanh toán an toàn
 
 - **🔐 Bảo mật & Phân quyền**
-    - Xây dựng hệ thống phân quyền (Admin, User, Guest)
-    - Triển khai xác thực JWT & cookie-based authentication
-    - Kiểm soát truy cập dựa trên vai trò
+    - Xây dựng hệ thống phân quyền (Admin, User, Guest) theo ROLE
 
 - **📧 Email tự động & Quản lý mật khẩu**
     - Gửi email tự động với RazorLight
     - Quên mật khẩu với OTP qua email
-    - Template email cho xác nhận đơn hàng, phản hồi mới, khôi phục mật khẩu
+    - Template email cho feedback, khôi phục mật khẩu
 
 - **📂 Quản lý file với MinIO**
     - Lưu trữ hình ảnh đám mây với MinIO
-    - API upload/download file an toàn
+    - Upload file an toàn
     - Tối ưu hiệu năng truy xuất ảnh sản phẩm
 
 ---
