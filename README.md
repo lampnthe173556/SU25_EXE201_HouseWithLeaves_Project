@@ -31,13 +31,21 @@ Thống kê doanh thu và báo cáo bán hàng
 🛠️ Công nghệ sử dụng
 
 Category	Technologies & Tools
+
 Backend	C#, ASP.NET Core MVC, Entity Framework Core
+
 Frontend	HTML5, CSS3, JavaScript, Bootstrap 5, Razor Views
+
 Database	SQL Server
+
 Storage	MinIO (Object Storage)
+
 Email	RazorLight (Template Engine)
+
 Validation	FluentValidation
+
 Tools	Visual Studio, Git, Postman
+
 
 🚀 Hướng dẫn cài đặt
 Yêu cầu hệ thống
