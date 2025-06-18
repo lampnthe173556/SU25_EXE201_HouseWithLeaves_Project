@@ -3,8 +3,8 @@
 ![image](https://github.com/user-attachments/assets/4ac8bca7-c137-4781-87e7-6262eac83318)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![.NET 6.0](https://img.shields.io/badge/.NET-6.0-blue.svg)]()
-[![SQL Server 2019+](https://img.shields.io/badge/SQL_Server-2019+-CC2927.svg?logo=microsoft-sql-server)]()
+[![.NET 8.0](https://img.shields.io/badge/.NET-8.0-blue.svg)]()
+[![SQL Server 2022+](https://img.shields.io/badge/SQL_Server-2022+-CC2927.svg?logo=microsoft-sql-server)]()
 
 ---
 
@@ -42,7 +42,7 @@
 ## 🚀 Hướng dẫn cài đặt
 
 ### **Yêu cầu hệ thống**
-- .NET 6 SDK
+- .NET 8 SDK
 - Visual Studio 2022 (hoặc VS Code)
 - SQL Server
 - MinIO Server (cho lưu trữ file)
