@@ -2,3 +2,5 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+window.BASE_API_URL = 'https://localhost:7115';

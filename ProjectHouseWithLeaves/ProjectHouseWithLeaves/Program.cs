@@ -38,12 +38,9 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IStorageService, R2StorageService>();
-
-
-
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-           
+            builder.Services.AddScoped<IShippingMethodService, ShippingMethodService>();
             #endregion
 
             #region Session
@@ -95,10 +92,11 @@ namespace ProjectHouseWithLeaves
                 options.CallbackPath = "/Authen/GoogleCallback";
             });
 
-            builder.Services.Configure<R2Config>(builder.Configuration.GetSection("R2"));
-            var r2Config = builder.Configuration.GetSection("R2").Get<R2Config>();
+
 
             #region s3Client with DI
+            builder.Services.Configure<R2Config>(builder.Configuration.GetSection("R2"));
+            var r2Config = builder.Configuration.GetSection("R2").Get<R2Config>();
             var s3Config = new AmazonS3Config { ServiceURL = r2Config.Endpoint };
             var credentials = new BasicAWSCredentials(r2Config.AccessKey, r2Config.SecretKey);
             builder.Services.AddSingleton<IAmazonS3>(new AmazonS3Client(credentials, s3Config));

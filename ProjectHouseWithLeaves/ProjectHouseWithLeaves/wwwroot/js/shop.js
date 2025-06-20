@@ -3,7 +3,7 @@ let products = [];
 
 async function fetchProducts() {
     try {
-        const response = await fetch('https://localhost:7115/Shop/GetAllProductJson');
+        const response = await fetch(window.BASE_API_URL + '/Shop/GetAllProductJson');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

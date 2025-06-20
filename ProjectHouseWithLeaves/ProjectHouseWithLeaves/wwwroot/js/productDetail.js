@@ -1,7 +1,7 @@
 ﻿// Fetch product data from API
 async function fetchProductData() {
     try {
-        const response = await fetch(`https://localhost:7115/ProductDetail/GetJson/${window.productId}`);
+        const response = await fetch(window.BASE_API_URL + `/ProductDetail/GetJson/${window.productId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }

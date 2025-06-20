@@ -133,10 +133,11 @@
         </div>
     </footer>
     <script src="~/js/cartService.js"></script>
-    @await RenderSectionAsync("Script", required: true)
     <script>
+        window.BASE_API_URL = '@ViewBag.BaseUrl';
         window.isAuthenticated = @isAuthen.ToString().ToLower();
         window.userId = '@(user?.UserId)';
     </script>
+    @await RenderSectionAsync("Script", required: true)
 </body>
 </html>

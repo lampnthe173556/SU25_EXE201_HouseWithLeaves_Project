@@ -1,4 +1,4 @@
-﻿function renderPaypalCart() {
+﻿async function renderPaypalCart() {
     const cart = JSON.parse(localStorage.getItem('checkout_cart') || '[]');
     const cartCol = document.querySelector('.col-lg-7');
     if (!cartCol) return;
@@ -7,13 +7,37 @@
         updatePaypalTotal();
         return;
     }
+
+    let shippingOptionsHtml = '';
+    try {
+        const shippingMethods = await fetchShippingMethods();
+        const storedShipping = localStorage.getItem('paypal_shipping');
+        let isShippingSelected = false;
+
+        if (shippingMethods && shippingMethods.length > 0) {
+            shippingMethods.forEach(method => {
+
+                
+                const isSelected = method.shippingMethodId === 1;
+                if (isSelected) isShippingSelected = true;
+                shippingOptionsHtml += `<option value="${method.shippingCost}" ${isSelected ? 'selected' : ''}>${method.methodName}</option>`;
+            });
+        }
+        
+        if (!isShippingSelected && shippingMethods && shippingMethods.length > 0) {
+            localStorage.setItem('paypal_shipping', shippingMethods[0].price);
+        }
+
+    } catch (e) {
+        console.error("Failed to load shipping methods:", e);
+        shippingOptionsHtml = `<option value="">Lỗi khi tải PTVC</option>`;
+    }
+
     let html = `<h5 class="mb-3"><a href="../html/shop.html" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Tiếp tục mua hàng</a></h5><hr>`;
     html += `<div style="margin: 10px 0 18px 0;">
     <label for="shipping-method" style="font-weight: 500;">Phương thức vận chuyển:</label>
     <select id="shipping-method" style="width: 220px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; margin-left: 8px; font-family: 'Quicksand', sans-serif;">
-      <option value="20000">Giao hàng tiêu chuẩn </option>
-      <option value="40000">Giao hàng nhanh </option>
-      <option value="0">Nhận tại cửa hàng </option>
+      ${shippingOptionsHtml}
     </select>
   </div>`;
     html += `<div class="d-flex justify-content-between align-items-center mb-4">
@@ -181,26 +205,59 @@ window.addEventListener('DOMContentLoaded', function () {
             const district = document.getElementById('district');
             const ward = document.getElementById('ward');
             const addressDetail = document.getElementById('address-detail');
-            const typeName = document.getElementById('typeName');
-            const typeTextCard = document.getElementById('typeTextCard');
-            const typeExp = document.getElementById('typeExp');
-            const typeCvv = document.getElementById('typeCvv');
+
             let valid = true;
             let msg = '';
             if (!province.value) { valid = false; msg = 'Vui lòng chọn Tỉnh/Thành phố.'; province.focus(); }
             else if (!district.value) { valid = false; msg = 'Vui lòng chọn Quận/Huyện.'; district.focus(); }
             else if (!ward.value) { valid = false; msg = 'Vui lòng chọn Phường/Xã.'; ward.focus(); }
             else if (!addressDetail.value.trim()) { valid = false; msg = 'Vui lòng nhập địa chỉ chi tiết.'; addressDetail.focus(); }
-            else if (!typeName.value.trim()) { valid = false; msg = 'Vui lòng nhập tên chủ thẻ.'; typeName.focus(); }
-            else if (!typeTextCard.value.trim() || typeTextCard.value.length !== 19) { valid = false; msg = 'Vui lòng nhập số thẻ hợp lệ (19 ký tự).'; typeTextCard.focus(); }
-            else if (!typeExp.value.trim() || !/^\d{2}\/\d{4}$/.test(typeExp.value)) { valid = false; msg = 'Vui lòng nhập ngày hết hạn đúng định dạng MM/YYYY.'; typeExp.focus(); }
-            else if (!typeCvv.value.trim() || typeCvv.value.length !== 3) { valid = false; msg = 'Vui lòng nhập mã CVV hợp lệ (3 số).'; typeCvv.focus(); }
+            
+            const cart = JSON.parse(localStorage.getItem('checkout_cart') || '[]');
+            if (cart.length === 0) {
+                valid = false;
+                msg = 'Giỏ hàng của bạn đang trống.';
+            }
+
             if (!valid) {
                 e.preventDefault();
                 showDangerNotification(msg);
                 return false;
             }
-            // Nếu hợp lệ, cho submit
+
+            // Populate hidden fields before submission
+            const shippingSelect = document.getElementById('shipping-method');
+            const shippingValue = parseInt(shippingSelect.value, 10);
+            const shippingName = shippingSelect.options[shippingSelect.selectedIndex].text;
+            
+            const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+            const total = subtotal + shippingValue;
+
+            document.getElementById('cartData').value = JSON.stringify(cart);
+            document.getElementById('shippingMethodInfo').value = JSON.stringify({
+                name: shippingName,
+                price: shippingValue
+            });
+            document.getElementById('totalAmount').value = total;
+            e.preventDefault();
+
+            const provinceSelect = document.getElementById('province');
+            const districtSelect = document.getElementById('district');
+            const wardSelect = document.getElementById('ward');
+
+            const provinceText = provinceSelect.options[provinceSelect.selectedIndex].text;
+            const districtText = districtSelect.options[districtSelect.selectedIndex].text;
+            const wardText = wardSelect.options[wardSelect.selectedIndex].text;
+
+            console.log(document.getElementById('cartData').value);
+            console.log(document.getElementById('shippingMethodInfo').value);
+            console.log(document.getElementById('totalAmount').value);
+            console.log(provinceText);
+            console.log(districtText);
+            console.log(wardText);
+            console.log(document.getElementById('address-detail').value);
+            console.log(localStorage.getItem('payment_method_id'));
+            
         });
     }
 });
@@ -238,4 +295,10 @@ function showDangerNotification(message) {
     setTimeout(() => {
         toast.remove();
     }, 3500);
+}
+
+async function fetchShippingMethods() {
+    const res = await fetch(window.BASE_API_URL + '/Payment/GetShippingMethodJson');
+    if (!res.ok) throw new Error('Lỗi lấy danh sách phương thức vận chuyển');
+    return await res.json();
 }

@@ -69,7 +69,7 @@ async function toggleCartPopup() {
 
 async function loadPaymentMethods() {
     try {
-        const res = await fetch('https://localhost:7115/Cart/GellAllPayment');
+        const res = await fetch(window.BASE_API_URL + '/Cart/GellAllPayment');
         if (!res.ok) throw new Error('Lỗi lấy phương thức thanh toán');
         const methods = await res.json(); // [{paymentMethodId, methodName, status}]
         const select = document.getElementById('payment-method');
@@ -219,7 +219,7 @@ async function renderCartPopup() {
 
         // Cập nhật tổng tiền ban đầu
         updateCheckoutButtonState();
-
+       
         // Gắn sự kiện cho nút checkout
         checkoutBtn.onclick = function() {
             const checkedIds = Array.from(checkedProductIds);
@@ -230,8 +230,11 @@ async function renderCartPopup() {
 
             // Lưu vào localStorage
             localStorage.setItem('checkout_cart', JSON.stringify(selectedCart));
-
+            
             const paymentMethod = popup.querySelector('#payment-method').value;
+            localStorage.setItem('payment_method_id', paymentMethod);
+            
+
             if (paymentMethod === 'bank') {
                 window.location.href = '/Payment/Paypal';
             } else {
