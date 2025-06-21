@@ -9,29 +9,26 @@
         </div>
     </div>
     <div class="list-group list-group-flush">
-        <a href="@Url.Action("Index", "Admin", new { area = "Admin" })" class="list-group-item list-group-item-action">
+        <a href="@Url.Action("Admin", "Admin", new { area = "Admin" })" class="list-group-item list-group-item-action">
             <i class="fas fa-tachometer-alt me-2"></i> Dashboard
         </a>
-        <a href="@Url.Action("Index", "Product", new { area = "Admin" })" class="list-group-item list-group-item-action">
+        <a href="@Url.Action("Product", "Product", new { area = "Admin" })" class="list-group-item list-group-item-action">
             <i class="fas fa-boxes me-2"></i> Sản phẩm
         </a>
-        <a href="@Url.Action("Index", "Category", new { area = "Admin" })" class="list-group-item list-group-item-action">
+        <a href="@Url.Action("Category", "Category", new { area = "Admin" })" class="list-group-item list-group-item-action">
             <i class="fas fa-tags me-2"></i> Danh mục
         </a>
         <div class="border-top my-3"></div>
-        <a href="@Url.Action("Index", "Order", new { area = "Admin" })" class="list-group-item list-group-item-action">
+        <a href="@Url.Action("Order", "Order", new { area = "Admin" })" class="list-group-item list-group-item-action">
             <i class="fas fa-shopping-cart me-2"></i> Đơn hàng
         </a>
-        <a href="@Url.Action("Index", "User", new { area = "Admin" })" class="list-group-item list-group-item-action">
+        <a href="@Url.Action("User", "User", new { area = "Admin" })" class="list-group-item list-group-item-action">
             <i class="fas fa-users me-2"></i> Người dùng
         </a>
-        <a href="@Url.Action("Index", "Feedback", new { area = "Admin" })" class="list-group-item list-group-item-action">
-            <i class="fas fa-users me-2"></i> Phản hồi
+        <a href="@Url.Action("Feedback", "Feedback", new { area = "Admin" })" class="list-group-item list-group-item-action">
+            <i class="fas fa-comments me-2"></i> Phản hồi
         </a>
-         @* <div class="border-top my-3"></div>
-         <a href="#" class="list-group-item list-group-item-action">
-             <i class="fas fa-chart-line me-2"></i> Phản hồi người dùng
-         </a> *@
+         
         <a href="#" class="list-group-item list-group-item-action">
             <i class="fas fa-cog me-2"></i> Cài đặt
         </a>
@@ -188,5 +185,33 @@
             padding: 0.6rem 1rem;
             font-size: 0.9rem;
         }
+    }
+</style>
+
+<script>
+    // Đảm bảo chỉ chạy sau khi DOM đã sẵn sàng
+    document.addEventListener('DOMContentLoaded', function() {
+        var sidebar = document.getElementById('sidebar-wrapper');
+        var toggleBtn = document.getElementById('sidebarToggle');
+        if (sidebar && toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+            });
+        }
+    });
+</script>
+
+<style>
+    /* Thêm hiệu ứng đóng/mở sidebar */
+    #sidebar-wrapper.collapsed {
+        min-width: 0 !important;
+        max-width: 0 !important;
+        overflow: hidden !important;
+        transition: all 0.3s;
+        box-shadow: none;
+        padding: 0;
+    }
+    #sidebar-wrapper {
+        transition: all 0.3s;
     }
 </style> 

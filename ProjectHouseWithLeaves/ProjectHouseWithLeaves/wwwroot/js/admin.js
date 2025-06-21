@@ -47,15 +47,18 @@ function initializeProductsPage() {
     // Load products từ server
     loadProducts();
 
-    // Xử lý tìm kiếm real-time
+    // Xử lý tìm kiếm sản phẩm
     $("#searchInput").on('input', function() {
-        const searchTerm = $(this).val().toLowerCase();
+        const value = $(this).val();
+        const searchTerm = value ? String(value).toLowerCase() : '';
         filterProducts(searchTerm);
     });
 
     // Xử lý lọc theo danh mục
     $("#categoryFilter").change(function() {
-        filterProducts($("#searchInput").val().toLowerCase());
+        const categoryId = $(this).val();
+        const searchTerm = $("#searchInput").val() ? String($("#searchInput").val()).toLowerCase() : '';
+        filterProducts(searchTerm, categoryId);
     });
 
     // Xử lý sắp xếp khi click vào header của bảng
@@ -118,16 +121,16 @@ function loadProducts() {
 }
 
 // Hàm lọc sản phẩm
-function filterProducts(searchTerm) {
-    const categoryId = $("#categoryFilter").val();
+function filterProducts(searchTerm, categoryId = null) {
+    const selectedCategoryId = categoryId || $("#categoryFilter").val();
     
     filteredItems = products.filter(product => {
         const matchesSearch = !searchTerm || 
-            product.productName.toLowerCase().includes(searchTerm) ||
-            product.description?.toLowerCase().includes(searchTerm) ||
-            product.size?.toLowerCase().includes(searchTerm);
-            
-        const matchesCategory = !categoryId || product.categoryId.toString() === categoryId;
+            (product.productName && product.productName.toLowerCase().includes(searchTerm)) ||
+            (product.description && product.description.toLowerCase().includes(searchTerm)) ||
+            (product.size && product.size.toLowerCase().includes(searchTerm));
+        
+        const matchesCategory = !selectedCategoryId || product.categoryId == selectedCategoryId;
         
         return matchesSearch && matchesCategory;
     });
@@ -138,34 +141,28 @@ function filterProducts(searchTerm) {
 
 // Hàm sắp xếp sản phẩm
 function sortProducts(column) {
-    if (currentSort.column === column) {
-        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-    } else {
-        currentSort.column = column;
-        currentSort.direction = 'asc';
-    }
-
+    const isAsc = currentSort.column === column && currentSort.direction === 'asc';
+    currentSort.column = column;
+    currentSort.direction = isAsc ? 'desc' : 'asc';
+    
     filteredItems.sort((a, b) => {
-        let valueA = a[column];
-        let valueB = b[column];
-
-        if (typeof valueA === 'string') {
-            valueA = valueA.toLowerCase();
-            valueB = valueB.toLowerCase();
-        }
-
-        if (valueA === null) return 1;
-        if (valueB === null) return -1;
-
+        let valueA = a[column] || '';
+        let valueB = b[column] || '';
+        
+        // Chuyển đổi sang string và lowercase cho so sánh
+        valueA = String(valueA).toLowerCase();
+        valueB = String(valueB).toLowerCase();
+        
         if (currentSort.direction === 'asc') {
-            return valueA > valueB ? 1 : -1;
+            return valueA.localeCompare(valueB);
         } else {
-            return valueA < valueB ? 1 : -1;
+            return valueB.localeCompare(valueA);
         }
     });
-
-    updateSortIcons();
+    
+    currentPage = 1;
     displayProducts();
+    updateSortIcons();
 }
 
 // Hàm hiển thị sản phẩm với phân trang
@@ -331,15 +328,18 @@ function populateEditForm(product) {
 // Các hàm xử lý cho trang Categories
 function initializeCategoriesPage() {
     // Xử lý tìm kiếm danh mục
-    $("#searchCategory").on('input', function() {
-        const searchTerm = $(this).val().toLowerCase();
+    $("#searchInput").on('input', function() {
+        const value = $(this).val();
+        const searchTerm = value ? String(value).toLowerCase() : '';
         filterCategories(searchTerm);
     });
 
     // Xử lý lọc theo trạng thái
     $("#statusFilter").change(function() {
         const status = $(this).val();
-        filterCategories($("#searchCategory").val().toLowerCase(), status);
+        const searchInput = $("#searchInput");
+        const searchTerm = searchInput.length > 0 && searchInput.val() ? String(searchInput.val()).toLowerCase() : '';
+        filterCategories(searchTerm, status);
     });
 
     // Xử lý sắp xếp
@@ -374,7 +374,6 @@ function initializeCategoriesPage() {
     // Xử lý lưu danh mục
     $("#btnSaveCategory").click(function() {
         const formData = {
-            CategoryId: $("#CategoryId").val(),
             CategoryName: $("#CategoryName").val(),
             Description: $("#Description").val(),
             Status: $("#Status").val()
@@ -428,14 +427,14 @@ function initializeCategoriesPage() {
 }
 
 // Hàm lọc danh mục
-function filterCategories(searchTerm, status = '') {
+function filterCategories(searchTerm = '', status = '') {
     const rows = $("#categoryTableBody tr");
     rows.each(function() {
         const name = $(this).find('td:eq(1)').text().toLowerCase();
         const description = $(this).find('td:eq(2)').text().toLowerCase();
         const categoryStatus = $(this).find('td:eq(3) .badge').text().toLowerCase();
         
-        const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
+        const matchesSearch = !searchTerm || name.includes(searchTerm) || description.includes(searchTerm);
         const matchesStatus = !status || categoryStatus === (status === '1' ? 'hoạt động' : 'không hoạt động');
 
         $(this).toggle(matchesSearch && matchesStatus);
@@ -548,12 +547,14 @@ function initTableSorting() {
 
 // Search filter helper
 function initSearchFilter() {
-    $('#searchInput').on('keyup', function() {
-        const value = $(this).val().toLowerCase();
-        const table = $(this).data('table');
+    $('#searchInput').on('input', function() {
+        const value = $(this).val();
+        const searchTerm = value ? String(value).toLowerCase() : '';
         
-        $(`#${table} tbody tr`).filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        $('.table tbody tr').each(function() {
+            const text = $(this).text();
+            const matches = !searchTerm || text.toLowerCase().indexOf(searchTerm) > -1;
+            $(this).toggle(matches);
         });
     });
 }

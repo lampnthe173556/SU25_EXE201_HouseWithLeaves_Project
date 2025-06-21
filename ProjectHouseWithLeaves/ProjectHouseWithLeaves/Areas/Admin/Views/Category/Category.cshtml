@@ -15,16 +15,9 @@
         cursor: pointer;
         user-select: none;
     }
-    .table thead th i {
-        margin-left: 5px;
-        opacity: 0.3;
-    }
     .table thead th.active {
         background-color: #198754 !important;
         color: #000;
-    }
-    .table thead th.active i {
-        opacity: 1;
     }
     .search-box {
         position: relative;
@@ -69,24 +62,16 @@
         cursor: pointer;
         position: relative;
     }
-    .sortable:after {
-        content: '↑';
-        margin-left: 5px;
-        color: #000;
-        opacity: 0.4;
-        display: inline-block;
+    th.sortable::after {
+        content: ' \2195'; /* Up-Down Arrow */
+        opacity: 0.3;
     }
-    .sortable:before {
-        content: '↓';
-        margin-left: 5px;
-        color: #000;
-        opacity: 0.4;
-        display: inline-block;
-    }
-    .sortable.asc:after {
+    th.sortable.asc::after {
+        content: ' \2191'; /* Up Arrow */
         opacity: 1;
     }
-    .sortable.desc:before {
+    th.sortable.desc::after {
+        content: ' \2193'; /* Down Arrow */
         opacity: 1;
     }
     .bg-success {
@@ -153,17 +138,17 @@
             <table class="table table-hover">
                 <thead class="table-success">
                     <tr>
-                        <th data-sort="categoryId" style="width: 80px">
-                            #<i class="fas fa-sort"></i>
+                        <th class="sortable" data-sort="categoryId" style="width: 80px">
+                            #
                         </th>
-                        <th data-sort="categoryName">
-                            Tên danh mục<i class="fas fa-sort"></i>
+                        <th class="sortable" data-sort="categoryName">
+                            Tên danh mục
                         </th>
-                        <th data-sort="description">
-                            Mô tả<i class="fas fa-sort"></i>
+                        <th class="sortable" data-sort="description">
+                            Mô tả
                         </th>
-                        <th data-sort="status" style="width: 150px">
-                            Trạng thái<i class="fas fa-sort"></i>
+                        <th class="sortable" data-sort="status" style="width: 150px">
+                            Trạng thái
                         </th>
                         <th style="width: 100px">Thao tác</th>
                     </tr>
@@ -269,82 +254,95 @@
             let currentPage = 1;
             let itemsPerPage = 10;
 
+            // Hàm cập nhật icon sort
+            function updateSortIcons() {
+                $('.sortable').each(function() {
+                    $(this).removeClass('active asc desc');
+                    const $icon = $(this).find('i');
+                    $icon.removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+                });
+                const $active = $(`.sortable[data-sort="${currentSort.column}"]`);
+                $active.addClass('active').addClass(currentSort.direction);
+                const $icon = $active.find('i');
+                $icon.removeClass('fa-sort');
+                if (currentSort.direction === 'asc') {
+                    $icon.addClass('fa-sort-up');
+                } else {
+                    $icon.addClass('fa-sort-down');
+                }
+            }
+
             // Hàm sắp xếp bảng
             function sortTable(column) {
-                const $table = $('.table');
-                const $header = $table.find(`th[data-sort="${column}"]`);
-                const $rows = $('#categoryTableBody tr').get();
-
-                // Cập nhật trạng thái sort
                 if (currentSort.column === column) {
                     currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
                 } else {
                     currentSort.column = column;
                     currentSort.direction = 'asc';
                 }
-
-                // Cập nhật giao diện header
-                $table.find('th').removeClass('active');
-                $header.addClass('active');
-
-                // Sắp xếp các dòng
+                let $rows = $('#categoryTableBody tr').not('.hidden').get();
+                const colIdx = $(`th[data-sort="${column}"]`).index();
                 $rows.sort(function(a, b) {
-                    const aValue = $(a).find(`td:eq(${$header.index()})`).text().toLowerCase();
-                    const bValue = $(b).find(`td:eq(${$header.index()})`).text().toLowerCase();
+                    let aValue = $(a).find(`td:eq(${colIdx})`).text().trim();
+                    let bValue = $(b).find(`td:eq(${colIdx})`).text().trim();
 
                     if (column === 'categoryId') {
-                        return currentSort.direction === 'asc' 
-                            ? parseInt(aValue) - parseInt(bValue)
-                            : parseInt(bValue) - parseInt(aValue);
+                        aValue = parseInt(aValue, 10);
+                        bValue = parseInt(bValue, 10);
+                        return currentSort.direction === 'asc' ? aValue - bValue : bValue - aValue;
                     }
-
+                    if (column === 'categoryName') {
+                        // So sánh chuẩn tiếng Việt, không phân biệt hoa thường
+                        return currentSort.direction === 'asc'
+                            ? aValue.localeCompare(bValue, 'vi', { sensitivity: 'base' })
+                            : bValue.localeCompare(aValue, 'vi', { sensitivity: 'base' });
+                    }
                     if (column === 'status') {
-                        const aStatus = aValue.includes('Hoạt động') ? 1 : 0;
-                        const bStatus = bValue.includes('Hoạt động') ? 1 : 0;
-                        return currentSort.direction === 'asc' 
-                            ? aStatus - bStatus
-                            : bStatus - aStatus;
+                        aValue = aValue.toLowerCase().includes('hoạt động') ? 1 : 0;
+                        bValue = bValue.toLowerCase().includes('hoạt động') ? 1 : 0;
+                        return currentSort.direction === 'asc' ? aValue - bValue : bValue - aValue;
                     }
-
+                    // Mặc định: so sánh chữ cái không phân biệt hoa thường
                     return currentSort.direction === 'asc'
-                        ? aValue.localeCompare(bValue)
-                        : bValue.localeCompare(aValue);
+                        ? aValue.localeCompare(bValue, undefined, { sensitivity: 'base' })
+                        : bValue.localeCompare(aValue, undefined, { sensitivity: 'base' });
                 });
-
-                // Cập nhật DOM
-                const $tbody = $('#categoryTableBody');
-                $tbody.empty();
-                $rows.forEach(row => $tbody.append(row));
-
-                // Cập nhật phân trang
+                $('#categoryTableBody').append($rows);
+                updateSortIcons();
                 currentPage = 1;
                 updatePagination();
             }
 
             // Tìm kiếm realtime
             function filterCategories() {
-                const searchTerm = $('#searchInput').val().toLowerCase();
-                const statusFilter = $('#statusFilter').val();
+                const searchTerm = ($('#searchInput')?.val() || '').toLowerCase().trim();
+                const statusFilter = $('#statusFilter')?.val();
 
-                $('#categoryTableBody tr.category-row').each(function() {
+                $('#categoryTableBody tr.category-row').each(function () {
                     const $row = $(this);
-                    const name = $row.find('td:eq(1)').text().toLowerCase();
+                    const name = $row.find('td:eq(1)').text();
                     const description = $row.find('td:eq(2)').text().toLowerCase();
-                    const statusText = $row.find('td:eq(3) .badge').text().toLowerCase();
-                    const status = statusText === 'hoạt động' ? '1' : '0';
+                    
+                    // Lấy trạng thái từ badge text và chuyển đổi thành số
+                    const statusText = ($row.find('td:eq(3) .badge').text() || '').toLowerCase().trim();
+                    const status = statusText.includes('hoạt động') ? '1' : '0';
 
+                    // So sánh tìm kiếm
                     const matchesSearch = !searchTerm || 
                         name.includes(searchTerm) || 
                         description.includes(searchTerm);
-
+                    
+                    // So sánh trạng thái - chỉ so sánh khi có filter được chọn
                     const matchesStatus = !statusFilter || status === statusFilter;
 
-                    $row.toggleClass('hidden', !(matchesSearch && matchesStatus));
+                    // Hiển thị/ẩn dòng dựa trên cả hai điều kiện
+                    $row.toggleClass('hidden', !(matchesSearch || matchesStatus));
                 });
 
                 currentPage = 1;
                 updatePagination();
             }
+
 
             // Cập nhật phân trang
             function updatePagination() {
@@ -414,7 +412,7 @@
                 updatePagination();
             });
 
-            $('th[data-sort]').on('click', function() {
+            $('.sortable').off('click').on('click', function() {
                 const column = $(this).data('sort');
                 sortTable(column);
             });
@@ -462,15 +460,22 @@
 
         $('#btnSaveCategory').click(function() {
             const category = {
-                categoryId: $('#CategoryId').val(),
                 categoryName: $('#CategoryName').val(),
                 description: $('#Description').val(),
                 status: parseInt($('#Status').val())
             };
 
             const isNew = !category.categoryId;
-            const url = isNew ? '/Admin/Category/Create' : '/Admin/Category/Edit';
+            const createUrl = '@Url.Action("Create", "Category", new { area = "Admin" })';
+            const editUrl = '@Url.Action("Edit", "Category", new { area = "Admin" })';
+            const url = isNew ? createUrl : editUrl;
 
+            console.log(url);
+            console.log(category);
+            if (!category.categoryName) {
+                alert('Tên danh mục không được để trống');
+                return;
+            }
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -501,4 +506,16 @@
             }
         }
     </script>
-} 
+}
+
+<script>
+// Đặt ngoài $(document).ready) để gọi được từ onclick
+function showAddCategoryModal() {
+    $('#categoryModalLabel').text('Thêm danh mục mới');
+    $('#CategoryId').val('');
+    $('#CategoryName').val('');
+    $('#Description').val('');
+    $('#Status').val('1');
+    $('#categoryModal').modal('show');
+}
+</script> 

@@ -3,11 +3,13 @@ using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
 using ProjectHouseWithLeaves.Dtos;
 using ProjectHouseWithLeaves.Services.StoreService;
+using ProjectHouseWithLeaves.Helper.Authorization;
 using Microsoft.Extensions.Configuration;
 
 namespace ProjectHouseWithLeaves.Controllers.Admin
 {
     [Area("Admin")]
+    [AdminAuthorize]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
@@ -33,7 +35,7 @@ namespace ProjectHouseWithLeaves.Controllers.Admin
             _configuration = configuration;
         }
 
-        public async Task<IActionResult> Index(string searchTerm = "", int? categoryId = null)
+        public async Task<IActionResult> Product(string searchTerm = "", int? categoryId = null)
         {
             try
             {

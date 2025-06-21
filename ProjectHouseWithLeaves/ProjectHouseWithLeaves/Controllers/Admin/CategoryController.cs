@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
+using ProjectHouseWithLeaves.Helper.Authorization;
 
 namespace ProjectHouseWithLeaves.Controllers.Admin
 {
     [Area("Admin")]
+    [AdminAuthorize]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -21,27 +23,13 @@ namespace ProjectHouseWithLeaves.Controllers.Admin
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Category()
         {
             var categories = await _categoryService.GetAllCategory();
             return View(categories);
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetCategories()
-        {
-            try
-            {
-                var categories = await _categoryService.GetAllCategory();
-                return Json(new { success = true, data = categories });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting categories");
-                return Json(new { success = false, message = "Không thể lấy danh sách danh mục" });
-            }
-        }
-
+        
         [HttpPost]
         public async Task<JsonResult> Create([FromBody] Category category)
         {

@@ -38,10 +38,18 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IStorageService, R2StorageService>();
+<<<<<<< Updated upstream
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             builder.Services.AddScoped<IShippingMethodService, ShippingMethodService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+=======
+            builder.Services.AddScoped<IFavoriteProductService, FavoriteProductService>();
+
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+
+>>>>>>> Stashed changes
             #endregion
 
             #region Session
@@ -69,11 +77,11 @@ namespace ProjectHouseWithLeaves
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
-            
+
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => false;
-                
+
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -122,10 +130,10 @@ namespace ProjectHouseWithLeaves
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-        
+
             app.MapControllerRoute(
                 name: "areas",
-                pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");         
+                pattern: "{area:exists}/{controller}/{action}/{id?}");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Home}/{id?}");

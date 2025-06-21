@@ -1,4 +1,4 @@
-@* @model IEnumerable<ProjectHouseWithLeaves.Models.User>
+@model IEnumerable<ProjectHouseWithLeaves.Dtos.UserDTO>
 
 @{
     ViewData["Title"] = "Quản lý người dùng";
@@ -14,10 +14,6 @@
         font-weight: 600;
         cursor: pointer;
         user-select: none;
-    }
-    .table thead th i {
-        margin-left: 5px;
-        opacity: 0.3;
     }
     .table thead th.active {
         background-color: #198754 !important;
@@ -69,24 +65,16 @@
         cursor: pointer;
         position: relative;
     }
-    .sortable:after {
-        content: '↑';
-        margin-left: 5px;
-        color: #000;
-        opacity: 0.4;
-        display: inline-block;
+    th.sortable::after {
+        content: ' \2195'; /* Up-Down Arrow */
+        opacity: 0.3;
     }
-    .sortable:before {
-        content: '↓';
-        margin-left: 5px;
-        color: #000;
-        opacity: 0.4;
-        display: inline-block;
-    }
-    .sortable.asc:after {
+    th.sortable.asc::after {
+        content: ' \2191'; /* Up Arrow */
         opacity: 1;
     }
-    .sortable.desc:before {
+    th.sortable.desc::after {
+        content: ' \2193'; /* Down Arrow */
         opacity: 1;
     }
     .bg-success {
@@ -130,10 +118,11 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <select class="form-select" id="roleFilter">
-                    <option value="">Tất cả vai trò</option>
-                    <option value="Admin">Admin</option>
-                    <option value="User">User</option>
+                <select class="form-select" id="genderFilter">
+                    <option value="">Tất cả giới tính</option>
+                    <option value="MALE">Nam</option>
+                    <option value="FEMALE">Nữ</option>
+                    <option value="OTHER">Khác</option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -153,23 +142,29 @@
         <table class="table table-hover">
             <thead class="table-success">
                 <tr>
-                    <th data-sort="userName">
-                        Tên đăng nhập<i class="fas fa-sort"></i>
+                    <th data-sort="fullName" class="sortable">
+                        Họ tên
                     </th>
-                    <th data-sort="email">
-                        Email<i class="fas fa-sort"></i>
+                    <th data-sort="email" class="sortable">
+                        Email
                     </th>
-                    <th data-sort="phoneNumber">
-                        Số điện thoại<i class="fas fa-sort"></i>
+                    <th data-sort="phoneNumber" class="sortable">
+                        Số điện thoại
                     </th>
-                    <th data-sort="roles">
-                        Vai trò<i class="fas fa-sort"></i>
+                    <th data-sort="dateOfBirth" class="sortable">
+                        Ngày Sinh
                     </th>
-                    <th data-sort="status">
-                        Trạng thái<i class="fas fa-sort"></i>
+                    <th data-sort="gender" class="sortable">
+                        Giới tính
                     </th>
-                    <th data-sort="createdAt">
-                        Ngày tạo<i class="fas fa-sort"></i>
+                    <th data-sort="status" class="sortable">
+                        Trạng thái
+                    </th>
+                    <th data-sort="createdAt" class="sortable">
+                        Ngày tạo
+                    </th>
+                    <th data-sort="updatedAt" class="sortable">
+                        Ngày cập nhật
                     </th>
                     <th style="width: 100px">Thao tác</th>
                 </tr>
@@ -178,42 +173,34 @@
                 @foreach (var user in Model)
                 {
                     <tr class="user-row" 
-                        data-username="@user.UserName?.ToLower()" 
+                        data-fullname="@user.FullName?.ToLower()" 
                         data-email="@user.Email?.ToLower()"
-                        data-roles="@string.Join(",", user.Roles ?? new List<string>())"
-        data-status="@(user.Status.HasValue && user.Status.Value == 1 ? 1 : 0)">
-                        <td>@user.UserName</td>
+                        data-phone="@user.Phone?.ToLower()"
+                        data-gender="@user.Gender"
+                        data-status="@(user.IsActive == true)">
+                        <td>@user.FullName</td>
                         <td>@user.Email</td>
                         <td>@(user.Phone ?? "Chưa cập nhật")</td>
+                        <td>@(user.DateOfBirth.HasValue ? user.DateOfBirth.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")</td>
+                        <td>@(user.Gender == "MALE" ? "Nam" : user.Gender == "FEMALE" ? "Nữ" : "Khác")</td>
                         <td>
-                            @foreach (var role in user.Roles)
-                            {
-                                <span class="badge bg-@(role == "Admin" ? "danger" : "primary") me-1">@role</span>
-                            }
+                            <span class="badge bg-@(user.IsActive ? "success" : "warning")">
+                                @(user.IsActive ? "Đang hoạt động" : "Đã khóa")
+                            </span>
                         </td>
-                        <td>
-                            <form asp-action="ToggleStatus" method="post" class="d-inline">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@user.UserId" />
-                                <button type="submit" class="btn btn-sm @(user.Status.HasValue && user.Status.Value == 1 ? "btn-success" : "btn-warning")"
-                        onclick="return confirm('Bạn có chắc muốn @(user.Status.HasValue && user.Status.Value == 1 ? "khóa" : "mở khóa") người dùng này?')">
-                    <i class="fas fa-@(user.Status.HasValue && user.Status.Value == 1 ? "lock-open" : "lock") me-1"></i>
-                    @(user.Status.HasValue && user.Status.Value == 1 ? "Đang hoạt động" : "Đã khóa")
-                </button>
-                            </form>
-                        </td>
-                        <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@(user.CreatedAt.HasValue ? user.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa cập nhật")</td>
+                        <td>@(user.UpdatedAt.HasValue ? user.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa cập nhật")</td>
                         <td>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-primary" 
-                                        onclick="editUser('@user.UserId')" 
+                                        onclick="editUser('@user.Id')" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#editUserModal">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <form asp-action="Delete" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@user.UserId" />
+                                    <input type="hidden" name="id" value="@user.Id" />
                                     <button type="submit" class="btn btn-sm btn-danger"
                                             onclick="return confirm('Bạn có chắc muốn xóa người dùng này?')">
                                         <i class="fas fa-trash"></i>
@@ -258,8 +245,8 @@
                 <div class="modal-body">
                     <input type="hidden" id="editUserId" name="Id" />
                     <div class="mb-3">
-                        <label class="form-label">Tên đăng nhập</label>
-                        <input type="text" class="form-control" id="editUserName" name="UserName" required />
+                        <label class="form-label">Họ tên</label>
+                        <input type="text" class="form-control" id="editFullName" name="FullName" required />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Email</label>
@@ -267,13 +254,14 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Số điện thoại</label>
-                        <input type="tel" class="form-control" id="editPhoneNumber" name="PhoneNumber" />
+                        <input type="tel" class="form-control" id="editPhoneNumber" name="Phone" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Vai trò</label>
-                        <select class="form-select" id="editRoles" name="Roles" multiple required>
-                            <option value="Admin">Admin</option>
-                            <option value="User">User</option>
+                        <label class="form-label">Giới tính</label>
+                        <select class="form-select" id="editGender" name="Gender">
+                            <option value="MALE">Nam</option>
+                            <option value="FEMALE">Nữ</option>
+                            <option value="OTHER">Khác</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -301,16 +289,9 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Initialize select2 for roles
-            $('#editRoles').select2({
-                placeholder: 'Chọn vai trò',
-                width: '100%',
-                dropdownParent: $('#editUserModal')
-            });
-
             // Khởi tạo biến
             let currentSort = {
-                column: 'userName',
+                column: 'fullName',
                 direction: 'asc'
             };
             let currentPage = 1;
@@ -320,7 +301,7 @@
             function sortTable(column) {
                 const $table = $('.table');
                 const $header = $table.find(`th[data-sort="${column}"]`);
-                const $rows = $('#userTableBody tr').get();
+                const $rows = $('#userTableBody tr:not(.hidden)').get();
 
                 // Cập nhật trạng thái sort
                 if (currentSort.column === column) {
@@ -331,26 +312,37 @@
                 }
 
                 // Cập nhật giao diện header
-                $table.find('th').removeClass('active');
-                $header.addClass('active');
+                $table.find('th').removeClass('active asc desc');
+                $header.addClass('active ' + currentSort.direction);
 
                 // Sắp xếp các dòng
                 $rows.sort(function(a, b) {
-                    const aValue = $(a).find(`td:eq(${$header.index()})`).text().toLowerCase();
-                    const bValue = $(b).find(`td:eq(${$header.index()})`).text().toLowerCase();
+                    const aValue = $(a).find(`td:eq(${$header.index()})`).text().trim().toLowerCase();
+                    const bValue = $(b).find(`td:eq(${$header.index()})`).text().trim().toLowerCase();
 
-                    if (column === 'createdAt') {
-                        return currentSort.direction === 'asc'
-                            ? new Date(aValue) - new Date(bValue)
-                            : new Date(bValue) - new Date(aValue);
+                    if (column === 'createdAt' || column === 'updatedAt') {
+                        const aDate = aValue === 'chưa cập nhật' ? new Date(0) : new Date(aValue.split(' ')[0].split('/').reverse().join('-'));
+                        const bDate = bValue === 'chưa cập nhật' ? new Date(0) : new Date(bValue.split(' ')[0].split('/').reverse().join('-'));
+                        return currentSort.direction === 'asc' ? aDate - bDate : bDate - aDate;
+                    }
+
+                    if (column === 'dateOfBirth') {
+                        const aDate = aValue === 'chưa cập nhật' ? new Date(0) : new Date(aValue.split('/').reverse().join('-'));
+                        const bDate = bValue === 'chưa cập nhật' ? new Date(0) : new Date(bValue.split('/').reverse().join('-'));
+                        return currentSort.direction === 'asc' ? aDate - bDate : bDate - aDate;
                     }
 
                     if (column === 'status') {
-                        const aStatus = aValue.includes('Đang hoạt động') ? 1 : 0;
-                        const bStatus = bValue.includes('Đang hoạt động') ? 1 : 0;
-                        return currentSort.direction === 'asc'
-                            ? aStatus - bStatus
-                            : bStatus - aStatus;
+                        const aStatus = aValue.includes('đang hoạt động') ? 1 : 0;
+                        const bStatus = bValue.includes('đang hoạt động') ? 1 : 0;
+                        return currentSort.direction === 'asc' ? aStatus - bStatus : bStatus - aStatus;
+                    }
+
+                    if (column === 'gender') {
+                        const genderOrder = { 'nam': 1, 'nữ': 2, 'khác': 3 };
+                        const aOrder = genderOrder[aValue] || 4;
+                        const bOrder = genderOrder[bValue] || 4;
+                        return currentSort.direction === 'asc' ? aOrder - bOrder : bOrder - aOrder;
                     }
 
                     return currentSort.direction === 'asc'
@@ -360,7 +352,6 @@
 
                 // Cập nhật DOM
                 const $tbody = $('#userTableBody');
-                $tbody.empty();
                 $rows.forEach(row => $tbody.append(row));
 
                 // Cập nhật phân trang
@@ -368,26 +359,28 @@
                 updatePagination();
             }
 
-            // Tìm kiếm realtime
+            // Tìm kiếm và lọc realtime
             function filterUsers() {
                 const searchTerm = $('#searchInput').val().toLowerCase();
-                const roleFilter = $('#roleFilter').val().toLowerCase();
-                const statusFilter = $('#statusFilter').val().toLowerCase();
+                const genderFilter = $('#genderFilter').val();
+                const statusFilter = $('#statusFilter').val();
 
                 $('.user-row').each(function() {
                     const $row = $(this);
-                    const username = $row.data('username');
-                    const email = $row.data('email');
-                    const roles = $row.data('roles').toLowerCase();
+                    const fullname = $row.data('fullname') || '';
+                    const email = $row.data('email') || '';
+                    const phone = ($row.data('phone') || '').toString();
+                    const gender = $row.data('gender') || '';
                     const status = $row.data('status');
 
                     const matchesSearch = !searchTerm ||
-                        username.includes(searchTerm) ||
-                        email.includes(searchTerm);
-                    const matchesRole = !roleFilter || roles.includes(roleFilter);
-                    const matchesStatus = !statusFilter || status === statusFilter;
+                        fullname.includes(searchTerm) ||
+                        email.includes(searchTerm) ||
+                        phone.includes(searchTerm);
+                    const matchesGender = !genderFilter || gender === genderFilter;
+                    const matchesStatus = !statusFilter || status.toString() === statusFilter;
 
-                    if (matchesSearch && matchesRole && matchesStatus) {
+                    if (matchesSearch && matchesGender && matchesStatus) {
                         $row.removeClass('hidden');
                     } else {
                         $row.addClass('hidden');
@@ -413,6 +406,10 @@
                 // Cập nhật UI phân trang
                 const $pagination = $('#pagination');
                 $pagination.empty();
+
+                if (totalPages <= 1) {
+                    return;
+                }
 
                 // Nút Previous
                 $pagination.append(`
@@ -459,7 +456,7 @@
 
             // Gắn sự kiện
             $('#searchInput').on('input', filterUsers);
-            $('#roleFilter, #statusFilter').on('change', filterUsers);
+            $('#genderFilter, #statusFilter').on('change', filterUsers);
 
             $('th[data-sort]').on('click', function() {
                 const column = $(this).data('sort');
@@ -483,7 +480,6 @@
             });
 
             // Khởi tạo ban đầu
-            sortTable('userName');
             updatePagination();
         });
 
@@ -491,13 +487,13 @@
         function editUser(userId) {
             $.get(`/Admin/User/GetUser/${userId}`, function(data) {
                 $('#editUserId').val(data.id);
-                $('#editUserName').val(data.userName);
+                $('#editFullName').val(data.fullName);
                 $('#editEmail').val(data.email);
-                $('#editPhoneNumber').val(data.phoneNumber);
+                $('#editPhoneNumber').val(data.phone);
+                $('#editGender').val(data.gender);
                 $('#editIsActive').prop('checked', data.isActive);
-                $('#editRoles').val(data.roles).trigger('change');
             });
         }
     </script>
 }
- *@
+ 

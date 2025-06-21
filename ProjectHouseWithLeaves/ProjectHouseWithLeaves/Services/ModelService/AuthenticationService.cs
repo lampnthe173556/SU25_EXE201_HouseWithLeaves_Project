@@ -40,5 +40,6 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             await _userService.CreateUser(user);
             return true;
         }
+
     }
 }

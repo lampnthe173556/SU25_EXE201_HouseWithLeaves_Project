@@ -26,8 +26,4 @@
     <PackageReference Include="RazorLight" Version="2.3.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Views\User\" />
-  </ItemGroup>
-
 </Project>

@@ -51,9 +51,9 @@ namespace ProjectHouseWithLeaves.Controllers.Client
             else
             {
                 var user = HttpContext.Session.GetObject<User>("user");
-                if(user.RoleId != 1)
+                if(user.RoleId == 2) // RoleId = 2 là admin
                 {
-                    return RedirectToAction("Index", "Admin", new { area = "Admin" });
+                    return RedirectToAction("Admin", "Admin", new { area = "Admin" });
                 }
                 return RedirectToAction("home", "home");
             }

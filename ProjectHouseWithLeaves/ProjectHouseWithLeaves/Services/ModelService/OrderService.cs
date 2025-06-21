@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 ﻿
 using ProjectHouseWithLeaves.Dtos;
+=======
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+>>>>>>> Stashed changes
 using ProjectHouseWithLeaves.Models;
 
 namespace ProjectHouseWithLeaves.Services.ModelService
@@ -7,6 +12,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
     public class OrderService : IOrderService
     {
         private readonly MiniPlantStoreContext _context;
+<<<<<<< Updated upstream
 
         public OrderService(MiniPlantStoreContext context)
         {
@@ -59,6 +65,48 @@ namespace ProjectHouseWithLeaves.Services.ModelService
                     return false;
                 }
             }
+=======
+        private readonly ILogger<OrderService> _logger;
+        private readonly IMapper _mapper;
+        public OrderService(MiniPlantStoreContext context, ILogger<OrderService> logger, IMapper mapper)
+        {
+            _context = context;
+            _logger = logger;
+            _mapper = mapper;
+        }
+        public async Task CreateOrder(Order order)
+        {
+            try
+            {
+                await _context.Orders.AddAsync(order);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating order");
+                throw;
+            }
+        }
+        public async Task<List<Order>> GetAllOrders()
+        {
+            try
+            {
+                return await _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving all orders");
+                throw;
+            }
+        }
+
+        public Task<Order> GetOrderById(int id)
+        {
+            throw new NotImplementedException();
+>>>>>>> Stashed changes
         }
     }
 }

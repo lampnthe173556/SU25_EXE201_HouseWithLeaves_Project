@@ -83,7 +83,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-uppercase mb-0">Người dùng</h6>
-                            <h2 class="mb-0">0</h2>
+                            <h2 class="mb-0">@ViewBag.UserCount</h2>
                         </div>
                         <i class="fas fa-users fa-2x opacity-50"></i>
                     </div>
@@ -113,21 +113,32 @@
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-header bg-white">
-                    <h5 class="card-title mb-0">Sản phẩm bán chạy</h5>
+                    <h5 class="card-title mb-0">Sản phẩm yêu thích</h5>
                 </div>
                 <div class="card-body">
                     <div class="list-group list-group-flush">
-                        <!-- Placeholder for top products -->
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Sản phẩm 1</h6>
-                                    <small class="text-muted">100 đã bán</small>
+                        @if (ViewBag.TopFavoriteProducts != null && ((IEnumerable<ProjectHouseWithLeaves.Models.FavoriteProduct>)ViewBag.TopFavoriteProducts).Any())
+                        {
+                            @foreach (var favoriteProduct in (IEnumerable<ProjectHouseWithLeaves.Models.FavoriteProduct>)ViewBag.TopFavoriteProducts)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">@favoriteProduct.Product?.ProductName</h6>
+                                            <small class="text-muted">@favoriteProduct.CreatedAt?.ToString("dd/MM/yyyy")</small>
+                                        </div>
+                                        <span class="badge bg-success">@(favoriteProduct.Product?.Price.ToString("N0") ?? "0")đ</span>
+                                    </div>
                                 </div>
-                                <span class="badge bg-success">1.000.000đ</span>
+                            }
+                        }
+                        else
+                        {
+                            <div class="list-group-item text-center text-muted">
+                                <i class="fas fa-heart fa-2x mb-2"></i>
+                                <p class="mb-0">Chưa có sản phẩm yêu thích</p>
                             </div>
-                        </div>
-                        <!-- Add more items as needed -->
+                        }
                     </div>
                 </div>
             </div>
