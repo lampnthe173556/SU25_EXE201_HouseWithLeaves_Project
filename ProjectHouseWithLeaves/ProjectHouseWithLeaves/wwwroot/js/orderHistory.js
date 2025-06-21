@@ -6,7 +6,7 @@ const orders = [
     },
     {
         id: 'DH002', date: '2024-06-05', total: 120000, payment: 'Chuyển khoản', status: 'Đang xử lý', statusClass: 'pending',
-        products: [{ name: 'Sen Đá', qty: 3, price: 40000 },{ name: 'Sen Đá', qty: 3, price: 40000 },{ name: 'Sen Đá', qty: 3, price: 40000 },{ name: 'Sen Đá', qty: 3, price: 40000 },{ name: 'Sen Đá', qty: 3, price: 40000 }]
+        products: [{ name: 'Sen Đá', qty: 3, price: 40000 }, { name: 'Sen Đá', qty: 3, price: 40000 }, { name: 'Sen Đá', qty: 3, price: 40000 }, { name: 'Sen Đá', qty: 3, price: 40000 }, { name: 'Sen Đá', qty: 3, price: 40000 }]
     },
     {
         id: 'DH003', date: '2024-06-10', total: 500000, payment: 'COD', status: 'Đã hủy', statusClass: 'cancelled',
@@ -234,7 +234,7 @@ function showOrderDetailModal(order) {
     ${order.payment === 'Chuyển khoản' ? `
       <div class="order-qr-wrap">
         <div class="order-qr-title"><i class="fa fa-qrcode"></i> Quét mã QR để chuyển khoản</div>
-        <img src="/img/QRCode.jpg" alt="QR chuyển khoản" class="order-qr-img">
+        <img src="/img/QR.png" alt="QR chuyển khoản" class="order-qr-img">
         <div class="order-qr-note">Nội dung chuyển khoản: <b>${order.id}</b></div>
       </div>
     ` : ''}
