@@ -17,13 +17,12 @@
         if (shippingMethods && shippingMethods.length > 0) {
             shippingMethods.forEach(method => {
 
-                
                 const isSelected = method.shippingMethodId === 1;
                 if (isSelected) isShippingSelected = true;
-                shippingOptionsHtml += `<option value="${method.shippingCost}" ${isSelected ? 'selected' : ''}>${method.methodName}</option>`;
+                shippingOptionsHtml += `<option id="${method.shippingMethodId}" value="${method.shippingCost}" ${isSelected ? 'selected' : ''}>${method.methodName}</option>`;
             });
         }
-        
+
         if (!isShippingSelected && shippingMethods && shippingMethods.length > 0) {
             localStorage.setItem('paypal_shipping', shippingMethods[0].price);
         }
@@ -53,9 +52,7 @@
         <div class="ms-3"><h5>${item.name}</h5><p class="small mb-0">${item.meta || ''}</p></div>
       </div>
       <div class="d-flex flex-row align-items-center">
-        <button class="qty-btn-paypal" data-name="${item.name}" data-action="decrease" style="background:#e6e9e2;color:#7a8b5c;border:none;border-radius:4px;width:28px;height:28px;font-size:1.1rem;cursor:pointer;">-</button>
-        <input type="number" min="1" value="${item.qty}" class="qty-input-paypal" data-name="${item.name}" style="width:38px;text-align:center;border:1px solid #e0e0e0;border-radius:4px;font-size:1rem;padding:2px 0;margin:0 4px;">
-        <button class="qty-btn-paypal" data-name="${item.name}" data-action="increase" style="background:#e6e9e2;color:#7a8b5c;border:none;border-radius:4px;width:28px;height:28px;font-size:1.1rem;cursor:pointer;">+</button>
+        <input type="text" disabled min="1" value="${item.qty}" class="qty-input-paypal" data-name="${item.name}" style="width:38px;text-align:center;border:1px solid #e0e0e0;border-radius:4px;font-size:1rem;padding:2px 0;margin:0 4px;">
         <div style="width: 80px;text-align:right;font-weight:700;color:#222;font-size:1.05rem;margin-left:10px;">${item.price.toLocaleString()}₫</div>
         <button class="remove-paypal-cart-item" data-name="${item.name}" style="background:#e74c3c;color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:0.95rem;cursor:pointer;margin-left:8px;">Xóa</button>
       </div>
@@ -199,7 +196,10 @@ window.addEventListener('DOMContentLoaded', function () {
 
     const paymentForm = document.getElementById('payment-form');
     if (paymentForm) {
-        paymentForm.addEventListener('submit', function (e) {
+        paymentForm.addEventListener('submit', async function (e) {
+            // Ngăn form submit mặc định
+            e.preventDefault();
+
             // Lấy các trường
             const province = document.getElementById('province');
             const district = document.getElementById('district');
@@ -212,7 +212,7 @@ window.addEventListener('DOMContentLoaded', function () {
             else if (!district.value) { valid = false; msg = 'Vui lòng chọn Quận/Huyện.'; district.focus(); }
             else if (!ward.value) { valid = false; msg = 'Vui lòng chọn Phường/Xã.'; ward.focus(); }
             else if (!addressDetail.value.trim()) { valid = false; msg = 'Vui lòng nhập địa chỉ chi tiết.'; addressDetail.focus(); }
-            
+
             const cart = JSON.parse(localStorage.getItem('checkout_cart') || '[]');
             if (cart.length === 0) {
                 valid = false;
@@ -220,7 +220,6 @@ window.addEventListener('DOMContentLoaded', function () {
             }
 
             if (!valid) {
-                e.preventDefault();
                 showDangerNotification(msg);
                 return false;
             }
@@ -228,18 +227,20 @@ window.addEventListener('DOMContentLoaded', function () {
             // Populate hidden fields before submission
             const shippingSelect = document.getElementById('shipping-method');
             const shippingValue = parseInt(shippingSelect.value, 10);
+            const shippingId = shippingSelect.options[shippingSelect.selectedIndex].id;
             const shippingName = shippingSelect.options[shippingSelect.selectedIndex].text;
-            
+
             const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
             const total = subtotal + shippingValue;
 
             document.getElementById('cartData').value = JSON.stringify(cart);
             document.getElementById('shippingMethodInfo').value = JSON.stringify({
-                name: shippingName,
-                price: shippingValue
+                shippingMethodId: shippingId,
+                methodName: shippingName,
+                shippingCost: shippingValue
             });
             document.getElementById('totalAmount').value = total;
-            e.preventDefault();
+
 
             const provinceSelect = document.getElementById('province');
             const districtSelect = document.getElementById('district');
@@ -248,16 +249,87 @@ window.addEventListener('DOMContentLoaded', function () {
             const provinceText = provinceSelect.options[provinceSelect.selectedIndex].text;
             const districtText = districtSelect.options[districtSelect.selectedIndex].text;
             const wardText = wardSelect.options[wardSelect.selectedIndex].text;
+            const addressText = {
+                province: provinceSelect.options[provinceSelect.selectedIndex].text,
+                district: districtSelect.options[districtSelect.selectedIndex].text,
+                ward: wardSelect.options[wardSelect.selectedIndex].text,
+                addressDetail: document.getElementById('address-detail').value
+            };
+            const productList = JSON.parse(document.getElementById('cartData').value);
+            const paymentMethodId = localStorage.getItem('payment_method_id');
 
-            console.log(document.getElementById('cartData').value);
-            console.log(document.getElementById('shippingMethodInfo').value);
-            console.log(document.getElementById('totalAmount').value);
-            console.log(provinceText);
-            console.log(districtText);
-            console.log(wardText);
-            console.log(document.getElementById('address-detail').value);
-            console.log(localStorage.getItem('payment_method_id'));
-            
+            const orderData = {
+                totalAmount: document.getElementById('totalAmount').value,
+                shipping: JSON.parse(document.getElementById('shippingMethodInfo').value),
+                addressDetail: addressText,
+                paymentMethodId: paymentMethodId,
+                items: productList.map(p => ({
+                    productId: p.productId,
+                    quantity: p.qty,
+                    unitPrice: p.price,
+                }))
+            }
+
+            console.log('OrderData:', orderData);
+
+            // Disable the button to prevent multiple clicks
+            const submitBtn = document.getElementById('btn-pay');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý...`;
+
+            // Gửi dữ liệu đơn hàng đến API
+            try {
+                const response = await fetch(window.BASE_API_URL + '/api/orders/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                console.log(response);
+
+                if (!response.ok) {
+                    throw new Error('Lỗi khi tạo đơn hàng');
+                }
+
+                const result = await response.json();
+                console.log('PaymentMethodId:', paymentMethodId);
+                console.log('API Response:', result);
+
+                // Xử lý kết quả thành công
+                if (result.success) {
+                    if (paymentMethodId == 1) {
+                        showSuccessNotification(
+                            'Đặt hàng thành công, quý khách vui lòng theo dõi đơn hàng tại lịch sử đơn hàng ở phần tài khoản!',
+                            10, // Thời gian đếm ngược (giây)
+                            '/Home/home' // URL để chuyển hướng
+                        );
+                    } else {
+                        // Chuyển hướng hoặc hiển thị thông báo thành công
+                        showSuccessNotification(
+                            'Đặt hàng thành công, quý khách vui lòng thanh toán mã QR ở lịch sử đơn hàng ở phần tài khoản để hoàn tất đơn hàng!',
+                            10, // Thời gian đếm ngược (giây)
+                            '/Home/home' // URL để chuyển hướng
+                        );
+                    }
+
+                    // Xóa giỏ hàng sau khi đặt hàng thành công
+                    localStorage.setItem('checkout_cart', '[]');
+                    localStorage.removeItem('paypal_shipping');
+
+                } else {
+                    showDangerNotification(result.message || 'Có lỗi xảy ra khi đặt hàng');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            } catch (error) {
+                console.error('Lỗi khi gửi đơn hàng:', error);
+                showDangerNotification('Lỗi kết nối. Vui lòng thử lại sau.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
         });
     }
 });
@@ -295,6 +367,60 @@ function showDangerNotification(message) {
     setTimeout(() => {
         toast.remove();
     }, 3500);
+}
+
+function showSuccessNotification(message, countdownSeconds = 0, redirectUrl = '') {
+    const container = document.getElementById('notification-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification toast-success';
+
+    let countdownHtml = '';
+    if (countdownSeconds > 0 && redirectUrl) {
+        countdownHtml = ` <span class="countdown-timer">(Chuyển hướng sau ${countdownSeconds}s)</span>`;
+    }
+
+    toast.innerHTML = `
+        <span>${message}</span>
+        ${countdownHtml}
+        <span class="toast-close" onclick="this.parentElement.remove()">&times;</span>
+    `;
+    container.appendChild(toast);
+
+    let intervalId;
+
+    if (countdownSeconds > 0 && redirectUrl) {
+        let remaining = countdownSeconds;
+        const timerSpan = toast.querySelector('.countdown-timer');
+
+        intervalId = setInterval(() => {
+            remaining--;
+            if (timerSpan) {
+                timerSpan.textContent = ` (Chuyển hướng sau ${remaining}s)`;
+            }
+            if (remaining <= 0) {
+                clearInterval(intervalId);
+                window.location.href = redirectUrl;
+            }
+        }, 1000);
+
+        // Fallback redirection in case interval fails
+        setTimeout(() => {
+            clearInterval(intervalId); // Clear interval before redirecting
+            window.location.href = redirectUrl;
+        }, countdownSeconds * 1000);
+    } else {
+        // Auto-remove toast if not redirecting
+        setTimeout(() => {
+            toast.remove();
+        }, 3500);
+    }
+
+    // Allow manual closing
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+        clearInterval(intervalId);
+        toast.remove();
+    });
 }
 
 async function fetchShippingMethods() {

@@ -1,0 +1,64 @@
+﻿
+using ProjectHouseWithLeaves.Dtos;
+using ProjectHouseWithLeaves.Models;
+
+namespace ProjectHouseWithLeaves.Services.ModelService
+{
+    public class OrderService : IOrderService
+    {
+        private readonly MiniPlantStoreContext _context;
+
+        public OrderService(MiniPlantStoreContext context)
+        {
+            _context = context;
+        }
+        public async Task<bool> CreateOrder(OrderDtos model)
+        {
+
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var order = new Order
+                    {
+                        UserId = model.UserId,
+                        OrderDate = DateTime.Now,
+                        SubtotalAmount = model.TotalAmount - model.Shipping.ShippingCost,
+                        ShippingCostApplied = model.Shipping.ShippingCost,
+                        TotalAmount = model.TotalAmount,
+                        ShippingAddress = model.AddressDetail.AddressDetail,
+                        Ward = model.AddressDetail.Ward,
+                        District = model.AddressDetail.District,
+                        City = model.AddressDetail.Province,
+                        PaymentMethodId = model.PaymentMethodId,
+                        ShippingMethodId = model.Shipping.ShippingMethodId,
+                        Status = "PENDING"
+                    };
+                    _context.Orders.Add(order);
+                    await _context.SaveChangesAsync();
+
+                    //create orderItem
+                    foreach (var item in model.Items)
+                    {
+                        var orderItem = new OrderDetail
+                        {
+                            OrderId = order.OrderId,
+                            ProductId = item.ProductId,
+                            Quantity = item.Quantity,
+                            UnitPrice = item.UnitPrice
+                        };
+                        _context.OrderDetails.Add(orderItem);
+                    }
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+            }
+        }
+    }
+}

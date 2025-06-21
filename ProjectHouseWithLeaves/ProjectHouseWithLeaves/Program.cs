@@ -41,6 +41,7 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             builder.Services.AddScoped<IShippingMethodService, ShippingMethodService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             #endregion
 
             #region Session
