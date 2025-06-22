@@ -1,0 +1,38 @@
+name: Build and Deploy ASP.NET MVC
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and Push ASP.NET MVC Image
+        run: |
+          docker build -t tranvukien125/housemvc:latest ./ProjectHouseWithLeaves/ProjectHouseWithLeaves
+          docker push tranvukien125/housemvc:latest
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /root/housemvc
+            docker-compose down
+            docker image prune -af
+            docker-compose pull
+            docker-compose up -d
