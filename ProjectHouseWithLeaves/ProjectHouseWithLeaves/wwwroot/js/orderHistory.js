@@ -5,9 +5,10 @@ function mapStatus(apiStatus) {
         case 'PENDING':
             return 'Đang xử lý';
         case 'SUCCESS':
-        case 'DELIVERED':
+        case 'ACCEPTED':
             return 'Đã giao';
         case 'CANCELLED':
+        case 'REJECTED':
             return 'Đã hủy';
         default:
             return apiStatus;
@@ -19,20 +20,26 @@ function transformOrderData(apiOrders) {
         console.error("Expected an array of orders, but received:", apiOrders);
         return [];
     }
-    return apiOrders.map(order => ({
-        id: `DH${String(order.orderId).padStart(3, '0')}`,
-        date: new Date(order.orderDate).toISOString().split('T')[0],
-        total: order.totalAmount,
-        payment: order.payment,
-        shipping: order.shipping,
-        status: mapStatus(order.status),
-        statusClass: order.statusClass,
-        products: order.details.map(detail => ({
-            name: detail.productName,
-            qty: detail.quantity,
-            price: detail.unitPrice
-        }))
-    }));
+    return apiOrders.map(order => {
+        let statusClass = order.statusClass;
+        if (order.status === 'REJECTED') {
+            statusClass = 'cancelled';
+        }
+        return {
+            id: `DH${String(order.orderId).padStart(3, '0')}`,
+            date: new Date(order.orderDate).toISOString().split('T')[0],
+            total: order.totalAmount,
+            payment: order.payment,
+            shipping: order.shipping,
+            status: mapStatus(order.status),
+            statusClass: statusClass,
+            products: order.details.map(detail => ({
+                name: detail.productName,
+                qty: detail.quantity,
+                price: detail.unitPrice
+            }))
+        }
+    });
 }
 
 async function fetchAndRenderOrders() {
