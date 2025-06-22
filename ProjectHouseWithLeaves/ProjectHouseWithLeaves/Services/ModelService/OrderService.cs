@@ -8,7 +8,6 @@ namespace ProjectHouseWithLeaves.Services.ModelService
     public class OrderService : IOrderService
     {
         private readonly MiniPlantStoreContext _context;
-
         private readonly ILogger<OrderService> _logger;
         private readonly IMapper _mapper;
         public OrderService(MiniPlantStoreContext context, ILogger<OrderService> logger, IMapper mapper)
@@ -81,9 +80,17 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             }
         }
 
-        public Task<Order> GetOrderById(int id)
+        public async Task<IEnumerable<OrderHistoryDtos>> GetOrderById(int id)
         {
-            throw new NotImplementedException();
+            var order = await _context.Orders
+                                .Include(o => o.OrderDetails)
+                                .ThenInclude(od => od.Product)
+                                .Include(s => s.ShippingMethod)
+                                .Include(p => p.PaymentMethod)
+                                .Where(x => x.UserId == id)
+                                .ToListAsync();
+            var orderHistoryList = _mapper.Map<List<OrderHistoryDtos>>(order);
+            return orderHistoryList;
         }
     }
 }

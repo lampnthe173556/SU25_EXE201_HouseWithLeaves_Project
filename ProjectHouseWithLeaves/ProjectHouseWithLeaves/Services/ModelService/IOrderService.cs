@@ -15,6 +15,6 @@ namespace ProjectHouseWithLeaves.Services.ModelService
         /// Retrieves an order by its ID.
         /// <param name="id">The ID of the order to retrieve.</param>
         /// <returns>A task that represents the asynchronous operation, containing the order if found, otherwise null.</returns>
-        Task<Order> GetOrderById(int id);
+        Task<IEnumerable<OrderHistoryDtos>> GetOrderById(int id);
     }
 }
