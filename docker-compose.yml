@@ -5,6 +5,7 @@ services:
     ports:
       - "8080:80"
     depends_on:
+      - ASPNETCORE_URLS=http://0.0.0.0:80
       - sqlserver
     environment:
       - ConnectionStrings__DBDefault=Server=sqlserver;Database=MiniPlantStore;User ID=sa;Password=Your_password123;
