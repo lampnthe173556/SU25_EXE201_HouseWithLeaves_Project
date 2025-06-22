@@ -4,25 +4,7 @@ services:
     image: tranvukien125/housemvc:latest
     ports:
       - "8080:80"
-    depends_on:
-      - sqlserver
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://0.0.0.0:80
-      - ConnectionStrings__DBDefault=Server=sqlserver;Database=MiniPlantStore;User ID=sa;Password=Your_password123;
-
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      SA_PASSWORD: "Your_password123"
-      ACCEPT_EULA: "Y"
-    ports:
-      - "1433:1433"
-    volumes:
-      - ./scriptEXE.sql:/scriptEXE.sql
-    command: >
-      /bin/bash -c "
-        /opt/mssql/bin/sqlservr & 
-        sleep 15 && 
-        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Your_password123 -i /scriptEXE.sql
-      "
+      - "ConnectionStrings__DBDefault=Server=tcp:miniplant-sql-1.database.windows.net,1433;Initial Catalog=MiniPlantStore;Persist Security Info=False;User ID=CloudSAb09d5a8a;Password=Your_password123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
