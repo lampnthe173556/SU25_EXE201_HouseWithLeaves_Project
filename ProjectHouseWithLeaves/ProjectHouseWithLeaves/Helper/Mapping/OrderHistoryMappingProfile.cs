@@ -8,7 +8,7 @@ namespace ProjectHouseWithLeaves.Helper.Mapping
     {
         public static string GetStatusClass(string status) => status.ToLower() switch
         {
-            "success" => "success",
+            "accepted" => "accepted",
             "pending" => "pending",
             "cancelled" => "cancelled",
             _ => status
