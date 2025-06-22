@@ -246,9 +246,7 @@ window.addEventListener('DOMContentLoaded', function () {
             const districtSelect = document.getElementById('district');
             const wardSelect = document.getElementById('ward');
 
-            const provinceText = provinceSelect.options[provinceSelect.selectedIndex].text;
-            const districtText = districtSelect.options[districtSelect.selectedIndex].text;
-            const wardText = wardSelect.options[wardSelect.selectedIndex].text;
+
             const addressText = {
                 province: provinceSelect.options[provinceSelect.selectedIndex].text,
                 district: districtSelect.options[districtSelect.selectedIndex].text,
