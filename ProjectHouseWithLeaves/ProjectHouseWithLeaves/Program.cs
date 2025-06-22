@@ -38,18 +38,11 @@ namespace ProjectHouseWithLeaves
             builder.Services.AddScoped<IAuthenticationServices, AuthenticationService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IStorageService, R2StorageService>();
-<<<<<<< Updated upstream
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             builder.Services.AddScoped<IShippingMethodService, ShippingMethodService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
-=======
             builder.Services.AddScoped<IFavoriteProductService, FavoriteProductService>();
-
-            builder.Services.AddScoped<ICartService, CartService>();
-            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-
->>>>>>> Stashed changes
             #endregion
 
             #region Session
