@@ -4,9 +4,11 @@ using ProjectHouseWithLeaves.Dtos;
 using ProjectHouseWithLeaves.Helper.Session;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
+using ProjectHouseWithLeaves.Helper.Authorization;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
+    [ClientAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase

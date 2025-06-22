@@ -432,10 +432,12 @@ function filterCategories(searchTerm = '', status = '') {
     rows.each(function() {
         const name = $(this).find('td:eq(1)').text().toLowerCase();
         const description = $(this).find('td:eq(2)').text().toLowerCase();
-        const categoryStatus = $(this).find('td:eq(3) .badge').text().toLowerCase();
         
         const matchesSearch = !searchTerm || name.includes(searchTerm) || description.includes(searchTerm);
-        const matchesStatus = !status || categoryStatus === (status === '1' ? 'hoạt động' : 'không hoạt động');
+        const matchesStatus = !status ||
+            (status === '1') ||
+            (status === '0' );
+
 
         $(this).toggle(matchesSearch && matchesStatus);
     });

@@ -21,6 +21,11 @@ namespace ProjectHouseWithLeaves.Services.ModelService
 
         public async Task ChangePasswordAsync(string email, string newPassword)
         {
+            if (string.IsNullOrEmpty(newPassword) || newPassword.Length < 8)
+            {
+                throw new ArgumentException("Mật khẩu phải có ít nhất 8 ký tự");
+            }
+            
             var user = await _context.Users.SingleOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
             user.PasswordHash = PasswordHassing.ComputeSha256Hash(newPassword);
             _context.Update(user);
@@ -29,6 +34,11 @@ namespace ProjectHouseWithLeaves.Services.ModelService
 
         public async Task CreateUser(User user)
         {
+            if (string.IsNullOrEmpty(user.PasswordHash) || user.PasswordHash.Length < 8)
+            {
+                throw new ArgumentException("Mật khẩu phải có ít nhất 8 ký tự");
+            }
+            
             user.PasswordHash = PasswordHassing.ComputeSha256Hash(user.PasswordHash);
             await _context.AddAsync(user);
             await _context.SaveChangesAsync();
@@ -54,7 +64,6 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             {
                 var users = await _context.Users
                     .Include(u => u.Role)
-                    .Where(u => u.Status == 1)
                     .OrderByDescending(u => u.CreatedAt)
                     .Select(u => new UserDTO
                     {
@@ -86,7 +95,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             {
                 var user = await _context.Users
                     .Include(u => u.Role)
-                    .FirstOrDefaultAsync(u => u.UserId == id && u.Status == 1);
+                    .FirstOrDefaultAsync(u => u.UserId == id);
 
                 if (user == null)
                 {
@@ -99,7 +108,8 @@ namespace ProjectHouseWithLeaves.Services.ModelService
                     FullName = user.FullName,
                     Email = user.Email,
                     Phone = user.Phone,
-                    Roles = new List<string> { user.Role.RoleName },
+                    Gender = user.Gender,
+                    Roles = new List<string> { user.Role?.RoleName ?? "Chưa có vai trò" },
                     IsActive = user.Status == 1,
                     CreatedAt = user.CreatedAt,
                     UpdatedAt = user.UpdatedAt
@@ -112,53 +122,36 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             }
         }
 
-        //public async Task<User> UpdateUser(UserDTO userUpdateDto)
-        //{
-        //    /*try
-        //    {
-        //        var existingUser = await _context.Users
-        //            .Include(u => u.Role)
-        //            .FirstOrDefaultAsync(u => u.UserId == userUpdateDto.Id && u.Status == 1);
+        public async Task<User> UpdateUser(UserUpdateDTO userDto)
+        {
+            try
+            {
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.UserId == userDto.Id);
 
-        //        if (existingUser == null)
-        //        {
-        //            throw new KeyNotFoundException($"User with ID {userUpdateDto.Id} not found");
-        //        }
+                if (existingUser == null)
+                {
+                    throw new KeyNotFoundException($"User with ID {userDto.Id} not found");
+                }
 
-        //        // Update basic info
-        //        existingUser.FullName = userUpdateDto.FullName;
-        //        existingUser.Email = userUpdateDto.Email;
-        //        existingUser.Phone = userUpdateDto.Phone;
-        //        existingUser.Status = userUpdateDto.IsActive ? 1 : 0;
-        //        existingUser.UpdatedAt = DateTime.UtcNow;
+                // Update basic info (không thay đổi email)
+                existingUser.FullName = userDto.FullName;
+                existingUser.Phone = userDto.Phone;
+                existingUser.Gender = userDto.Gender == "OTHER" ? null : userDto.Gender;
+                existingUser.Status = userDto.IsActive ? 1 : 0;
+                existingUser.UpdatedAt = DateTime.UtcNow;
 
-        //        // Update password if provided
-        //        if (!string.IsNullOrEmpty(userUpdateDto.Pass))
-        //        {
-        //            existingUser.PasswordHash = PasswordHassing.ComputeSha256Hash(userUpdateDto.NewPassword);
-        //        }
+                _context.Users.Update(existingUser);
+                await _context.SaveChangesAsync();
 
-        //        // Update role if provided
-        //        if (userUpdateDto.Roles != null && userUpdateDto.Roles.Any())
-        //        {
-        //            var role = await _context.Roles.FirstOrDefaultAsync(r => r.RoleName == userUpdateDto.Roles.First());
-        //            if (role != null)
-        //            {
-        //                existingUser.RoleId = role.RoleId;
-        //            }
-        //        }
-
-        //        _context.Users.Update(existingUser);
-        //        await _context.SaveChangesAsync();
-
-        //        return existingUser;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error updating user with ID {userUpdateDto.Id}");
-        //        throw;
-        //    }*/
-        //}
+                return existingUser;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating user with ID {userDto.Id}");
+                throw;
+            }
+        }
 
         public async Task ToggleUserStatus(int id)
         {
@@ -214,11 +207,6 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             user.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
             return user;
-        }
-
-        public Task<User> UpdateUser(UserDTO userDto)
-        {
-            throw new NotImplementedException();
         }
     }
 }

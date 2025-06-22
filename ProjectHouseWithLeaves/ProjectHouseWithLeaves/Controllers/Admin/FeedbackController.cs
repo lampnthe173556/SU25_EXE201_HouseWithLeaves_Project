@@ -67,6 +67,14 @@ namespace ProjectHouseWithLeaves.Controllers.Admin
             try
             {
                 await _contactService.UpdateStatus(id, status);
+                
+                // Check if this is an AJAX request
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = true, message = $"Đã cập nhật trạng thái phản hồi thành công." });
+                }
+                
+                // For regular form submissions, redirect
                 string statusText = status == "Processed" ? "đã xử lý" : "đã từ chối";
                 TempData["SuccessMessage"] = $"Đã cập nhật trạng thái phản hồi thành {statusText}.";
                 return RedirectToAction("Feedback");
@@ -74,12 +82,24 @@ namespace ProjectHouseWithLeaves.Controllers.Admin
             catch (KeyNotFoundException ex)
             {
                 _logger.LogWarning(ex, "Feedback with ID {Id} not found.", id);
+                
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phản hồi." });
+                }
+                
                 TempData["ErrorMessage"] = "Không tìm thấy phản hồi.";
                 return RedirectToAction("Feedback");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating feedback status with ID {Id}.", id);
+                
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật trạng thái." });
+                }
+                
                 TempData["ErrorMessage"] = "Có lỗi xảy ra khi cập nhật trạng thái.";
                 return RedirectToAction("Feedback");
             }

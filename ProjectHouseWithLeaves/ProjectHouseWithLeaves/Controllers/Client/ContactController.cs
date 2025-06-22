@@ -2,10 +2,12 @@
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.EmailService;
 using ProjectHouseWithLeaves.Services.ModelService;
+using ProjectHouseWithLeaves.Helper.Authorization;
 using System.Threading.Tasks;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
+    [ClientAuthorize]
     public class ContactController : Controller
     {
         private readonly IEmailService _emailService;

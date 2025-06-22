@@ -4,9 +4,11 @@ using ProjectHouseWithLeaves.Helper.Session;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
 using System.Threading.Tasks;
+using ProjectHouseWithLeaves.Helper.Authorization;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
+    [ClientAuthorize]
     public class ProfileController : Controller
     {
         private readonly IUserService _userService;

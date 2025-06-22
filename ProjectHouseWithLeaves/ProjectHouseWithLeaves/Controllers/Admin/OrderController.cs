@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProjectHouseWithLeaves.Models;
-using System.Text.Json;
 using ProjectHouseWithLeaves.Services.ModelService;
 using ProjectHouseWithLeaves.Helper.Authorization;
 
@@ -11,119 +8,77 @@ namespace ProjectHouseWithLeaves.Controllers.Admin
     [AdminAuthorize]
     public class OrderController : Controller
     {
-        private readonly MiniPlantStoreContext _context;
+        private readonly IOrderService _orderService;
 
-        public OrderController(MiniPlantStoreContext context)
+        public OrderController(IOrderService orderService)
         {
-            _context = context;
+            _orderService = orderService;
         }
 
         public async Task<IActionResult> Order()
         {
-            var orders = await _context.Orders
-                .Include(o => o.User)
-                .Include(o => o.PaymentMethod)
-                .Include(o => o.ShippingMethod)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Product)
-                        .ThenInclude(p => p.ProductImages)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
-
-            return View(orders);
+            try
+            {
+                var orders = await _orderService.GetAllOrders();
+                return View(orders);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if you have logging configured
+                return View(new List<ProjectHouseWithLeaves.Models.Order>());
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetOrder(int id)
         {
-            var order = await _context.Orders
-                .Include(o => o.User)
-                .Include(o => o.PaymentMethod)
-                .Include(o => o.ShippingMethod)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Product)
-                        .ThenInclude(p => p.ProductImages)
-                .FirstOrDefaultAsync(o => o.OrderId == id);
-
-            if (order == null)
+            if (id <= 0)
             {
-                return NotFound();
+                return BadRequest("Invalid order ID");
             }
 
-            var orderData = new
+            try
             {
-                orderId = order.OrderId,
-                orderDate = order.OrderDate,
-                subtotalAmount = order.SubtotalAmount,
-                discountAppliedAmount = order.DiscountAppliedAmount,
-                shippingCostApplied = order.ShippingCostApplied,
-                totalAmount = order.TotalAmount,
-                status = order.Status,
-                shippingAddress = order.ShippingAddress,
-                user = order.User != null ? new
+                var orderData = await _orderService.GetOrderDataForAdmin(id);
+                
+                if (orderData == null)
                 {
-                    email = order.User.Email,
-                    phone = order.User.Phone
-                } : null,
-                paymentMethod = order.PaymentMethod != null ? new
-                {
-                    methodName = order.PaymentMethod.MethodName
-                } : null,
-                shippingMethod = order.ShippingMethod != null ? new
-                {
-                    methodName = order.ShippingMethod.MethodName
-                } : null,
-                orderDetails = order.OrderDetails.Select(od => new
-                {
-                    quantity = od.Quantity,
-                    unitPrice = od.UnitPrice,
-                    product = od.Product != null ? new
-                    {
-                        productName = od.Product.ProductName,
-                        mainImage = od.Product.ProductImages.FirstOrDefault(pi => pi.MainPicture == true)?.ImageUrl,
-                        size = od.Product.Size
-                    } : null
-                }).ToList()
-            };
+                    return NotFound("Order not found");
+                }
 
-            return Json(orderData);
+                return Json(orderData);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Internal server error occurred while retrieving order data" });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateStatus(int orderId, string status)
         {
+            if (orderId <= 0)
+            {
+                return Json(new { success = false, message = "Invalid order ID" });
+            }
+
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                return Json(new { success = false, message = "Status cannot be empty" });
+            }
+
             try
             {
-                var order = await _context.Orders.FindAsync(orderId);
-                if (order == null)
+                var success = await _orderService.UpdateOrderStatus(orderId, status);
+                
+                if (success)
                 {
-                    return Json(new { success = false, message = "Không tìm thấy đơn hàng" });
+                    return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
                 }
-
-                // Validate status transition
-                var validTransitions = new Dictionary<string, string[]>
+                else
                 {
-                    ["Pending"] = new[] { "Processing", "Cancelled" },
-                    ["Processing"] = new[] { "Shipped", "Cancelled" },
-                    ["Shipped"] = new[] { "Delivered", "Returned" },
-                    ["Delivered"] = new[] { "Returned" },
-                    ["Cancelled"] = new string[0],
-                    ["Returned"] = new string[0]
-                };
-
-                if (order.Status != null && validTransitions.ContainsKey(order.Status))
-                {
-                    var allowedTransitions = validTransitions[order.Status];
-                    if (!allowedTransitions.Contains(status))
-                    {
-                        return Json(new { success = false, message = "Không thể chuyển từ trạng thái này sang trạng thái đã chọn" });
-                    }
+                    return Json(new { success = false, message = "Không thể cập nhật trạng thái. Vui lòng kiểm tra lại quy tắc chuyển đổi trạng thái." });
                 }
-
-                order.Status = status;
-                await _context.SaveChangesAsync();
-
-                return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
             }
             catch (Exception ex)
             {

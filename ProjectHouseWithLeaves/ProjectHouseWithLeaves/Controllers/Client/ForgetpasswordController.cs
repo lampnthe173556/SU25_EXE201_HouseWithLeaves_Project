@@ -67,9 +67,13 @@ namespace ProjectHouseWithLeaves.Controllers.Client
         [HttpPost]
         public async Task<IActionResult> NewPassword(string newPassword, string confirmPassword)
         {
-            if (newPassword != confirmPassword)
+            if (string.IsNullOrEmpty(newPassword) || newPassword.Length < 8)
             {
-                ViewBag.ErrorNewPass = "Password not confirm";
+                ViewBag.ErrorNewPass = "Mật khẩu phải có ít nhất 8 ký tự";
+            }
+            else if (newPassword != confirmPassword)
+            {
+                ViewBag.ErrorNewPass = "Mật khẩu không khớp";
             }
             else
             {

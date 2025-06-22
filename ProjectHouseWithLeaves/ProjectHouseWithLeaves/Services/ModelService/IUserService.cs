@@ -14,7 +14,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
         // Admin management methods
         Task<IEnumerable<UserDTO>> GetAllUsers();
         Task<UserDTO> GetUserById(int id);
-        Task<User> UpdateUser(UserDTO userDto);
+        Task<User> UpdateUser(UserUpdateDTO userDto);
         Task ToggleUserStatus(int id);
         Task DeleteUser(int id);
     }

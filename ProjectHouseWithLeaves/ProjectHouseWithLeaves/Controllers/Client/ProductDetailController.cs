@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
+using ProjectHouseWithLeaves.Helper.Authorization;
 using System.Threading.Tasks;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
+    [ClientAuthorize]
     public class ProductDetailController : Controller
     {
         private readonly IProductService _productService;

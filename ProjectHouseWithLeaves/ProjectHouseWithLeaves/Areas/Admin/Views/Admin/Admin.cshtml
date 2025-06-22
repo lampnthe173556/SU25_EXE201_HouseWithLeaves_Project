@@ -64,13 +64,13 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-uppercase mb-0">Đơn hàng</h6>
-                            <h2 class="mb-0">0</h2>
+                            <h2 class="mb-0">@ViewBag.OrderCount</h2>
                         </div>
                         <i class="fas fa-shopping-cart fa-2x opacity-50"></i>
                     </div>
                 </div>
                 <div class="card-footer bg-warning-dark">
-                    <a href="#" class="text-white text-decoration-none">
+                    <a href="@Url.Action("Order", "Order", new { area = "Admin" })" class="text-white text-decoration-none">
                         <i class="fas fa-arrow-right me-1"></i>Chi tiết
                     </a>
                 </div>
@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-info-dark">
-                    <a href="#" class="text-white text-decoration-none">
+                    <a href="@Url.Action("User", "User", new { area = "Admin" })" class="text-white text-decoration-none">
                         <i class="fas fa-arrow-right me-1"></i>Chi tiết
                     </a>
                 </div>
@@ -102,10 +102,44 @@
         <div class="col-md-8">
             <div class="card h-100">
                 <div class="card-header bg-white">
-                    <h5 class="card-title mb-0">Thống kê doanh thu</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Thống kê doanh thu</h5>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-outline-success active" id="btnDaily" onclick="switchChartView('daily')">
+                                <i class="fas fa-calendar-day me-1"></i>Theo ngày
+                            </button>
+                            <button type="button" class="btn btn-outline-success" id="btnWeekly" onclick="switchChartView('weekly')">
+                                <i class="fas fa-calendar-week me-1"></i>Theo tuần
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="revenueChart" height="300"></canvas>
+                    <div class="mb-3">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <h6 class="text-muted mb-1">Tổng doanh thu</h6>
+                                    <h4 class="text-success mb-0" id="totalRevenue">0 VNĐ</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <h6 class="text-muted mb-1">Đơn hàng đã chấp nhận</h6>
+                                    <h4 class="text-primary mb-0" id="totalOrders">0</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <h6 class="text-muted mb-1">Trung bình/đơn</h6>
+                                    <h4 class="text-info mb-0" id="avgOrderValue">0 VNĐ</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,21 +147,21 @@
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-header bg-white">
-                    <h5 class="card-title mb-0">Sản phẩm yêu thích</h5>
+                    <h5 class="card-title mb-0">Top sản phẩm bán chạy</h5>
                 </div>
                 <div class="card-body">
                     <div class="list-group list-group-flush">
-                        @if (ViewBag.TopFavoriteProducts != null && ((IEnumerable<ProjectHouseWithLeaves.Models.FavoriteProduct>)ViewBag.TopFavoriteProducts).Any())
+                        @if (ViewBag.TopSellingProducts != null && ((IEnumerable<dynamic>)ViewBag.TopSellingProducts).Any())
                         {
-                            @foreach (var favoriteProduct in (IEnumerable<ProjectHouseWithLeaves.Models.FavoriteProduct>)ViewBag.TopFavoriteProducts)
+                            @foreach (var product in (IEnumerable<dynamic>)ViewBag.TopSellingProducts)
                             {
                                 <div class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <h6 class="mb-0">@favoriteProduct.Product?.ProductName</h6>
-                                            <small class="text-muted">@favoriteProduct.CreatedAt?.ToString("dd/MM/yyyy")</small>
+                                            <h6 class="mb-0">@product.ProductName</h6>
+                                            <small class="text-muted">Đã bán: @product.TotalSold sản phẩm</small>
                                         </div>
-                                        <span class="badge bg-success">@(favoriteProduct.Product?.Price.ToString("N0") ?? "0")đ</span>
+                                        <span class="badge bg-success">@product.Price.ToString("N0")đ</span>
                                     </div>
                                 </div>
                             }
@@ -135,8 +169,8 @@
                         else
                         {
                             <div class="list-group-item text-center text-muted">
-                                <i class="fas fa-heart fa-2x mb-2"></i>
-                                <p class="mb-0">Chưa có sản phẩm yêu thích</p>
+                                <i class="fas fa-chart-line fa-2x mb-2"></i>
+                                <p class="mb-0">Chưa có dữ liệu bán hàng</p>
                             </div>
                         }
                     </div>
@@ -149,24 +183,148 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        let revenueChart;
+        let currentView = 'daily';
+        
         // Sample data for revenue chart
         const ctx = document.getElementById('revenueChart').getContext('2d');
-        new Chart(ctx, {
+        revenueChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                labels: [],
                 datasets: [{
                     label: 'Doanh thu',
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    data: [],
                     borderColor: '#28a745',
-                    tension: 0.1
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    tension: 0.1,
+                    fill: true
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            padding: 10,
+                            usePointStyle: true
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + ' VNĐ';
+                            },
+                            stepSize: 4000000,
+                            min: 1000000,
+                            maxTicksLimit: 8
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 5,
+                        bottom: 5
+                    }
+                }
             }
         });
+
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRevenueData('daily');
+        });
+
+        function switchChartView(view) {
+            currentView = view;
+            
+            // Update button states
+            document.getElementById('btnDaily').classList.toggle('active', view === 'daily');
+            document.getElementById('btnWeekly').classList.toggle('active', view === 'weekly');
+            
+            // Load data for selected view
+            loadRevenueData(view);
+        }
+
+        function loadRevenueData(view) {
+            // Show loading state
+            const chart = document.getElementById('revenueChart');
+            chart.style.opacity = '0.5';
+            
+            fetch(`/Admin/Admin/GetRevenueData?view=${view}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(data);
+                    updateSummary(data);
+                    chart.style.opacity = '1';
+                })
+                .catch(error => {
+                    console.error('Error loading revenue data:', error);
+                    chart.style.opacity = '1';
+                    showToast('Có lỗi khi tải dữ liệu doanh thu', 'error');
+                });
+        }
+
+        function updateChart(data) {
+            revenueChart.data.labels = data.labels;
+            revenueChart.data.datasets[0].data = data.values;
+            revenueChart.update();
+        }
+
+        function updateSummary(data) {
+            document.getElementById('totalRevenue').textContent = data.totalRevenue.toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('totalOrders').textContent = data.totalOrders;
+            document.getElementById('avgOrderValue').textContent = data.avgOrderValue.toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : 'success'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container position-fixed top-0 end-0 p-3';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+            return container;
+        }
     </script>
 }
 

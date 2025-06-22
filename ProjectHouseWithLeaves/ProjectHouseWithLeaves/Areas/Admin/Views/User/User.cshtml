@@ -27,13 +27,24 @@
     }
     .search-box i {
         position: absolute;
-        left: 10px;
+        left: 12px;
         top: 50%;
         transform: translateY(-50%);
         color: #6c757d;
+        z-index: 10;
     }
     .search-box input {
-        padding-left: 30px;
+        padding-left: 35px;
+        border-radius: 0.375rem;
+    }
+    .search-box input:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+    .form-select:focus,
+    .form-control:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
     }
     .user-row {
         transition: all 0.3s ease;
@@ -98,6 +109,86 @@
         background-color: #28a745;
         color: white;
     }
+    .pagination-info {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    .pagination .page-link:hover {
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+    .pagination .page-item.active .page-link:hover {
+        background-color: #198754;
+        border-color: #198754;
+    }
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+    .table-responsive {
+        min-height: 400px;
+    }
+    .no-results {
+        text-align: center;
+        padding: 2rem;
+        color: #6c757d;
+        font-style: italic;
+    }
+    .filter-card {
+        border: 1px solid #dee2e6;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    .filter-card .card-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-bottom: none;
+    }
+    .form-label {
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+    }
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+        transition: all 0.15s ease-in-out;
+    }
+    .btn-success {
+        transition: all 0.15s ease-in-out;
+    }
+    .filter-stats {
+        background-color: #f8f9fa;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+        margin-top: 1rem;
+    }
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+    }
+    .btn-outline-success:hover {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #212529;
+    }
+    .btn-outline-info:hover {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: white;
+    }
+    .alert {
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
 </style>
 
 <!-- Header -->
@@ -108,29 +199,67 @@
 </div>
 
 <!-- Thanh tìm kiếm và lọc -->
-<div class="card mb-4">
+<div class="card mb-4 filter-card">
+    <div class="card-header bg-success text-white">
+        <h6 class="mb-0">
+            <i class="fas fa-filter me-2"></i>Bộ lọc và tìm kiếm
+        </h6>
+    </div>
     <div class="card-body">
         <div class="row g-3">
+            <!-- Tìm kiếm -->
             <div class="col-md-6">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-search me-1"></i>Tìm kiếm
+                </label>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm người dùng...">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm theo tên, email, số điện thoại...">
                 </div>
             </div>
+            
+            <!-- Lọc theo giới tính -->
             <div class="col-md-3">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-venus-mars me-1"></i>Giới tính
+                </label>
                 <select class="form-select" id="genderFilter">
-                    <option value="">Tất cả giới tính</option>
+                    <option value="">Tất cả</option>
                     <option value="MALE">Nam</option>
                     <option value="FEMALE">Nữ</option>
                     <option value="OTHER">Khác</option>
                 </select>
             </div>
+            
+            <!-- Lọc theo trạng thái -->
             <div class="col-md-3">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-toggle-on me-1"></i>Trạng thái
+                </label>
                 <select class="form-select" id="statusFilter">
-                    <option value="">Tất cả trạng thái</option>
+                    <option value="">Tất cả</option>
                     <option value="true">Đang hoạt động</option>
                     <option value="false">Đã khóa</option>
                 </select>
+            </div>
+        </div>
+        
+        <!-- Thống kê và nút reset -->
+        <div class="row mt-3">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary me-2" id="totalUsersBadge">0</span>
+                    <span class="text-muted">người dùng</span>
+                    <span class="badge bg-success ms-3 me-2" id="activeUsersBadge">0</span>
+                    <span class="text-muted">đang hoạt động</span>
+                    <span class="badge bg-warning ms-3 me-2" id="inactiveUsersBadge">0</span>
+                    <span class="text-muted">đã khóa</span>
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <button type="button" class="btn btn-outline-secondary" id="resetFilters">
+                    <i class="fas fa-undo me-1"></i>Đặt lại bộ lọc
+                </button>
             </div>
         </div>
     </div>
@@ -173,10 +302,10 @@
                 @foreach (var user in Model)
                 {
                     <tr class="user-row" 
-                        data-fullname="@user.FullName?.ToLower()" 
-                        data-email="@user.Email?.ToLower()"
-                        data-phone="@user.Phone?.ToLower()"
-                        data-gender="@user.Gender"
+                        data-fullname="@(user.FullName?.ToLower() ?? "")" 
+                        data-email="@(user.Email?.ToLower() ?? "")"
+                        data-phone="@(user.Phone?.ToLower() ?? "")"
+                        data-gender="@(user.Gender ?? "OTHER")"
                         data-status="@(user.IsActive == true)">
                         <td>@user.FullName</td>
                         <td>@user.Email</td>
@@ -192,20 +321,17 @@
                         <td>@(user.UpdatedAt.HasValue ? user.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa cập nhật")</td>
                         <td>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-primary" 
-                                        onclick="editUser('@user.Id')" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#editUserModal">
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editUserModal"
+                                        data-user-id="@user.Id">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <form asp-action="Delete" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@user.Id" />
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Bạn có chắc muốn xóa người dùng này?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-sm @(user.IsActive ? "btn-warning" : "btn-success")" 
+                                        onclick="toggleUserStatus('@user.Id', '@user.IsActive', '@user.FullName')"
+                                        title="@(user.IsActive ? "Tắt hoạt động" : "Bật hoạt động")">
+                                    <i class="fas @(user.IsActive ? "fa-toggle-off" : "fa-toggle-on")"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -222,6 +348,9 @@
                     <option value="50">50</option>
                 </select>
                 <span class="ms-2">dòng mỗi trang</span>
+                <span class="ms-3 text-muted" id="paginationInfo">
+                    Hiển thị <span id="startItem">1</span> đến <span id="endItem">10</span> trong tổng số <span id="totalItems">0</span> kết quả
+                </span>
             </div>
             <nav>
                 <ul class="pagination" id="pagination">
@@ -250,7 +379,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-control" id="editEmail" name="Email" required />
+                        <input type="email" class="form-control" id="editEmail" name="Email" readonly style="background-color: #f8f9fa;" />
+                        <small class="form-text text-muted">Email không thể thay đổi</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Số điện thoại</label>
@@ -288,6 +418,72 @@
 
 @section Scripts {
     <script>
+        function toggleUserStatus(userId, currentStatus, userName) {
+            const isActive = currentStatus === 'True';
+            const newStatus = !isActive;
+
+            let confirmMessage = '';
+            if (newStatus) {
+                confirmMessage = `Bạn có muốn bật hoạt động cho người dùng "${userName}" không?`;
+            } else {
+                confirmMessage = `Bạn có muốn tắt hoạt động cho người dùng "${userName}" không?`;
+            }
+
+            if (confirm(confirmMessage)) {
+                $.ajax({
+                    url: '/Admin/User/ToggleStatus',
+                    type: 'POST',
+                    data: { id: userId },
+                    success: function(response) {
+                        if (response.success) {
+                            // Cập nhật trạng thái trong DOM thay vì reload
+                            const $row = $(`.user-row button[onclick*="${userId}"]`).closest('tr');
+                            const $statusCell = $row.find('td:nth-child(6)');
+                            const $toggleBtn = $row.find('button:last-child');
+                            
+                            // Cập nhật data attribute
+                            $row.attr('data-status', newStatus ? 'True' : 'False');
+                            
+                            // Cập nhật hiển thị trạng thái
+                            if (newStatus) {
+                                $statusCell.html('<span class="badge bg-success">Đang hoạt động</span>');
+                                $toggleBtn.removeClass('btn-success').addClass('btn-warning')
+                                    .find('i').removeClass('fa-toggle-on').addClass('fa-toggle-off');
+                                $toggleBtn.attr('title', 'Tắt hoạt động');
+                            } else {
+                                $statusCell.html('<span class="badge bg-warning">Đã khóa</span>');
+                                $toggleBtn.removeClass('btn-warning').addClass('btn-success')
+                                    .find('i').removeClass('fa-toggle-off').addClass('fa-toggle-on');
+                                $toggleBtn.attr('title', 'Bật hoạt động');
+                            }
+                            
+                            // Cập nhật onclick attribute
+                            $toggleBtn.attr('onclick', `toggleUserStatus('${userId}', '${newStatus}', '${userName}')`);
+                            
+                            // Cập nhật thống kê
+                            filterUsers();
+                            
+                            // Hiển thị thông báo thành công
+                            alert('Thay đổi trạng thái thành công!');
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi thay đổi trạng thái');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            alert('Lỗi: ' + xhr.responseJSON.message);
+                        } else if (xhr.status === 404) {
+                            alert('Không tìm thấy người dùng');
+                        } else if (xhr.status === 500) {
+                            alert('Lỗi server: Vui lòng thử lại sau');
+                        } else {
+                            alert('Có lỗi xảy ra: ' + error);
+                        }
+                    }
+                });
+            }
+        }
+
         $(document).ready(function() {
             // Khởi tạo biến
             let currentSort = {
@@ -301,7 +497,7 @@
             function sortTable(column) {
                 const $table = $('.table');
                 const $header = $table.find(`th[data-sort="${column}"]`);
-                const $rows = $('#userTableBody tr:not(.hidden)').get();
+                const $visibleRows = $('.user-row:not(.d-none)').get();
 
                 // Cập nhật trạng thái sort
                 if (currentSort.column === column) {
@@ -315,8 +511,8 @@
                 $table.find('th').removeClass('active asc desc');
                 $header.addClass('active ' + currentSort.direction);
 
-                // Sắp xếp các dòng
-                $rows.sort(function(a, b) {
+                // Sắp xếp các dòng hiển thị
+                $visibleRows.sort(function(a, b) {
                     const aValue = $(a).find(`td:eq(${$header.index()})`).text().trim().toLowerCase();
                     const bValue = $(b).find(`td:eq(${$header.index()})`).text().trim().toLowerCase();
 
@@ -350,57 +546,143 @@
                         : bValue.localeCompare(aValue);
                 });
 
-                // Cập nhật DOM
+                // Cập nhật thứ tự các dòng hiển thị trong DOM
                 const $tbody = $('#userTableBody');
-                $rows.forEach(row => $tbody.append(row));
+                $visibleRows.forEach(row => {
+                    $tbody.append(row);
+                });
 
                 // Cập nhật phân trang
                 currentPage = 1;
                 updatePagination();
             }
 
-            // Tìm kiếm và lọc realtime
+            // Tìm kiếm và lọc realtime (theo style Product Admin)
             function filterUsers() {
-                const searchTerm = $('#searchInput').val().toLowerCase();
+                const searchTerm = $('#searchInput').val().toLowerCase().trim();
                 const genderFilter = $('#genderFilter').val();
                 const statusFilter = $('#statusFilter').val();
 
+                let totalUsers = 0;
+                let activeUsers = 0;
+                let inactiveUsers = 0;
+
                 $('.user-row').each(function() {
                     const $row = $(this);
-                    const fullname = $row.data('fullname') || '';
-                    const email = $row.data('email') || '';
-                    const phone = ($row.data('phone') || '').toString();
-                    const gender = $row.data('gender') || '';
-                    const status = $row.data('status');
+                    const fullname = ($row.attr('data-fullname') || '').toString();
+                    const email = ($row.attr('data-email') || '').toString();
+                    const phone = ($row.attr('data-phone') || '').toString();
+                    const gender = ($row.attr('data-gender') || '').toString();
+                    const status = $row.attr('data-status') === 'True';
 
+                    // Tìm kiếm
                     const matchesSearch = !searchTerm ||
                         fullname.includes(searchTerm) ||
                         email.includes(searchTerm) ||
                         phone.includes(searchTerm);
+
+                    // Lọc giới tính
                     const matchesGender = !genderFilter || gender === genderFilter;
-                    const matchesStatus = !statusFilter || status.toString() === statusFilter;
+
+                    // Lọc trạng thái
+                    let matchesStatus = true;
+                    if (statusFilter && statusFilter !== '') {
+                        const filterStatus = statusFilter === 'true';
+                        matchesStatus = status === filterStatus;
+                    }
 
                     if (matchesSearch && matchesGender && matchesStatus) {
-                        $row.removeClass('hidden');
+                        $row.removeClass('d-none');
+                        totalUsers++;
+                        if (status) {
+                            activeUsers++;
+                        } else {
+                            inactiveUsers++;
+                        }
                     } else {
-                        $row.addClass('hidden');
+                        $row.addClass('d-none');
                     }
                 });
+
+                // Cập nhật thống kê
+                $('#totalUsersBadge').text(totalUsers);
+                $('#activeUsersBadge').text(activeUsers);
+                $('#inactiveUsersBadge').text(inactiveUsers);
 
                 currentPage = 1;
                 updatePagination();
             }
 
+            // Gắn sự kiện (theo style Product Admin)
+            $(document).on('input', '#searchInput', function() {
+                filterUsers();
+            });
+            $(document).on('change', '#genderFilter, #statusFilter', function() {
+                filterUsers();
+            });
+            $('#resetFilters').on('click', function() {
+                $('#searchInput').val('');
+                $('#genderFilter').val('');
+                $('#statusFilter').val('');
+                
+                // Đảm bảo tất cả các dòng được hiển thị lại
+                $('.user-row').removeClass('d-none');
+                
+                filterUsers();
+                const $btn = $(this);
+                const originalText = $btn.html();
+                $btn.html('<i class="fas fa-check me-1"></i>Đã đặt lại');
+                $btn.removeClass('btn-outline-secondary').addClass('btn-success');
+                setTimeout(() => {
+                    $btn.html(originalText);
+                    $btn.removeClass('btn-success').addClass('btn-outline-secondary');
+                }, 1500);
+            });
+
             // Cập nhật phân trang
             function updatePagination() {
-                const $rows = $('.user-row:not(.hidden)');
+                const $rows = $('.user-row:not(.d-none)');
                 const totalItems = $rows.length;
                 const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+                // Hiển thị thông báo nếu không có kết quả
+                if (totalItems === 0) {
+                    // Ẩn tất cả các dòng hiện tại
+                    $('.user-row').hide();
+                    
+                    // Kiểm tra xem đã có thông báo "không có kết quả" chưa
+                    if ($('#noResultsRow').length === 0) {
+                        $('#userTableBody').append(`
+                            <tr id="noResultsRow">
+                                <td colspan="9" class="no-results">
+                                    <i class="fas fa-search me-2"></i>
+                                    Không tìm thấy người dùng nào phù hợp với bộ lọc hiện tại
+                                </td>
+                            </tr>
+                        `);
+                    }
+                    $('#noResultsRow').show();
+                    
+                    $('#pagination').empty();
+                    $('#paginationInfo').html('Không có kết quả nào');
+                    return;
+                }
+
+                // Ẩn thông báo "không có kết quả" nếu có
+                $('#noResultsRow').hide();
+
+                // Cập nhật thông tin hiển thị
+                const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+                const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+                
+                $('#startItem').text(startItem);
+                $('#endItem').text(endItem);
+                $('#totalItems').text(totalItems);
 
                 // Ẩn/hiện các dòng theo trang hiện tại
                 $rows.each(function(index) {
                     const shouldShow = index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage;
-                    $(this).toggle(shouldShow);
+                    $(this).show().toggle(shouldShow);
                 });
 
                 // Cập nhật UI phân trang
@@ -414,7 +696,7 @@
                 // Nút Previous
                 $pagination.append(`
                     <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                        <a class="page-link" data-page="${currentPage - 1}">
+                        <a class="page-link" data-page="${currentPage - 1}" title="Trang trước">
                             <i class="fas fa-chevron-left"></i>
                         </a>
                     </li>
@@ -447,53 +729,148 @@
                 // Nút Next
                 $pagination.append(`
                     <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                        <a class="page-link" data-page="${currentPage + 1}">
+                        <a class="page-link" data-page="${currentPage + 1}" title="Trang sau">
                             <i class="fas fa-chevron-right"></i>
                         </a>
                     </li>
                 `);
+
+                // Thêm nút First và Last nếu có nhiều trang
+                if (totalPages > 5) {
+                    if (currentPage > 3) {
+                        $pagination.find('li:first').after(`
+                            <li class="page-item">
+                                <a class="page-link" data-page="1" title="Trang đầu">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                        `);
+                    }
+                    
+                    if (currentPage < totalPages - 2) {
+                        $pagination.find('li:last').before(`
+                            <li class="page-item">
+                                <a class="page-link" data-page="${totalPages}" title="Trang cuối">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        `);
+                    }
+                }
             }
 
             // Gắn sự kiện
-            $('#searchInput').on('input', filterUsers);
-            $('#genderFilter, #statusFilter').on('change', filterUsers);
-
-            $('th[data-sort]').on('click', function() {
-                const column = $(this).data('sort');
-                sortTable(column);
-            });
-
             $('#itemsPerPage').on('change', function() {
                 itemsPerPage = parseInt($(this).val());
                 currentPage = 1;
                 updatePagination();
             });
 
-            $(document).on('click', '.page-link', function() {
+            // Sự kiện click cho header sortable
+            $(document).on('click', 'th.sortable', function() {
+                const column = $(this).data('sort');
+                if (column) {
+                    sortTable(column);
+                }
+            });
+
+            $(document).on('click', '.page-link', function(e) {
+                e.preventDefault();
                 const $link = $(this);
                 const $item = $link.parent();
                 
                 if (!$item.hasClass('disabled') && !$item.hasClass('active')) {
-                    currentPage = parseInt($link.data('page'));
-                    updatePagination();
+                    const newPage = parseInt($link.data('page'));
+                    if (newPage >= 1) {
+                        currentPage = newPage;
+                        updatePagination();
+                        
+                        // Scroll to top of table
+                        $('html, body').animate({
+                            scrollTop: $('.table').offset().top - 100
+                        }, 300);
+                    }
                 }
             });
 
-            // Khởi tạo ban đầu
-            updatePagination();
-        });
+            // Handle edit user modal
+            $('#editUserModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var userId = button.data('user-id');
+                var modal = $(this);
 
-        // Edit user
-        function editUser(userId) {
-            $.get(`/Admin/User/GetUser/${userId}`, function(data) {
-                $('#editUserId').val(data.id);
-                $('#editFullName').val(data.fullName);
-                $('#editEmail').val(data.email);
-                $('#editPhoneNumber').val(data.phone);
-                $('#editGender').val(data.gender);
-                $('#editIsActive').prop('checked', data.isActive);
+                // Clear previous data
+                modal.find('.modal-body input[type="text"]').val('');
+                modal.find('.modal-body input[type="email"]').val('');
+                modal.find('.modal-body input[type="tel"]').val('');
+                modal.find('.modal-body select').val('');
+                modal.find('.modal-body input[type="checkbox"]').prop('checked', false);
+                modal.find('.modal-title').text('Chỉnh sửa người dùng');
+
+                if (userId) {
+                    modal.find('.modal-title').text('Đang tải...');
+                    
+                    $.get(`/Admin/User/getuser/${userId}`, function(data) {
+                        modal.find('.modal-title').text('Chỉnh sửa người dùng');
+                        modal.find('#editUserId').val(data.id);
+                        modal.find('#editFullName').val(data.fullName);
+                        modal.find('#editEmail').val(data.email);
+                        modal.find('#editPhoneNumber').val(data.phone);
+                        modal.find('#editGender').val(data.gender || 'OTHER');
+                        modal.find('#editIsActive').prop('checked', data.isActive);
+                    }).fail(function(xhr, status, error) {
+                        modal.find('.modal-title').text('Lỗi');
+                        let errorMessage = 'Không thể tải thông tin người dùng.';
+                        if (xhr.status === 404) {
+                            errorMessage = 'Không tìm thấy người dùng.';
+                        } else if (xhr.status === 500) {
+                            errorMessage = 'Lỗi server.';
+                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        
+                        alert(errorMessage);
+                        $('#editUserModal').modal('hide');
+                    });
+                }
             });
-        }
+
+            // Handle form submission
+            $('#editUserForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const genderValue = $('#editGender').val();
+                const formData = {
+                    Id: $('#editUserId').val(),
+                    FullName: $('#editFullName').val(),
+                    Phone: $('#editPhoneNumber').val(),
+                    Gender: genderValue === 'OTHER' ? null : genderValue,
+                    IsActive: $('#editIsActive').is(':checked')
+                };
+
+                $.ajax({
+                    url: '/Admin/User/Update',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        alert('Cập nhật người dùng thành công!');
+                        $('#editUserModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            alert('Lỗi: ' + xhr.responseJSON.message);
+                        } else {
+                            alert('Có lỗi xảy ra khi cập nhật người dùng');
+                        }
+                    }
+                });
+            });
+
+            // Khởi tạo ban đầu
+            filterUsers();
+        });
     </script>
 }
  

@@ -57,6 +57,9 @@
     .product-row.hidden {
         display: none;
     }
+    .product-row.pagination-hidden {
+        display: none;
+    }
     .pagination {
         margin-bottom: 0;
     }
@@ -175,6 +178,7 @@
                         @foreach (var product in Model)
                         {
                                 <tr class="product-row" 
+                                    data-productid="@product.Id"
                                     data-name="@product.Name.ToLower()" 
                                     data-description="@(product.Description?.ToLower() ?? "")" 
                                     data-size="@(product.Size?.ToLower() ?? "")"
@@ -183,11 +187,14 @@
                                     <td>
                                     @if (!string.IsNullOrEmpty(product.MainImage))
                                     {
-                                                <img src="@product.MainImage" alt="@product.Name" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" />
+                                                <img src="@product.MainImage" alt="@product.Name" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                                <div class="text-center text-muted" style="width: 80px; height: 80px; display: none; align-items: center; justify-content: center; border: 1px solid #dee2e6; border-radius: 0.375rem;">
+                                                    <i class="fas fa-image fa-2x"></i>
+                                                </div>
                                     }
                                     else
                                     {
-                                                <div class="text-center text-muted">
+                                                <div class="text-center text-muted" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border: 1px solid #dee2e6; border-radius: 0.375rem;">
                                                     <i class="fas fa-image fa-2x"></i>
                                                 </div>
                                     }
@@ -423,9 +430,9 @@
                         const matchesCategory = !categoryId || category === categoryId;
 
                         if (matchesSearch && matchesCategory) {
-                            $row.removeClass('d-none');
+                            $row.removeClass('hidden');
                         } else {
-                            $row.addClass('d-none');
+                            $row.addClass('hidden');
                         }
                     });
 
@@ -500,19 +507,34 @@
 
                 // Phân trang
                 function updatePagination() {
-                    const $rows = $('.product-row:not(.d-none)');
+                    const $rows = $('.product-row:not(.hidden)');
                     const totalItems = $rows.length;
                     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-                    // Ẩn/hiện các dòng theo trang hiện tại
+                    console.log('Pagination debug:', { totalItems, itemsPerPage, totalPages, currentPage });
+
+                    // Ẩn tất cả các dòng theo phân trang
+                    $('.product-row').addClass('pagination-hidden');
+
+                    // Hiển thị các dòng theo trang hiện tại
                     $rows.each(function(index) {
                         const shouldShow = index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage;
-                        $(this).toggleClass('hidden', !shouldShow);
+                        if (shouldShow) {
+                            $(this).removeClass('pagination-hidden');
+                        }
                     });
+
+                    // Đếm lại số dòng hiển thị
+                    const visibleRows = $('.product-row:not(.hidden):not(.pagination-hidden)').length;
+                    console.log('Visible rows:', visibleRows);
 
                     // Cập nhật UI phân trang
                     const $pagination = $('#pagination');
                     $pagination.empty();
+
+                    if (totalPages <= 1) {
+                        return; // Không hiển thị phân trang nếu chỉ có 1 trang
+                    }
 
                     // Nút Previous
                     $pagination.append(`
@@ -559,6 +581,7 @@
                     // Gắn sự kiện cho các nút phân trang
                     $('.page-link[data-page]').on('click', function() {
                         const newPage = parseInt($(this).data('page'));
+                        console.log('Clicking page:', newPage);
                         if (!isNaN(newPage) && newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
                             currentPage = newPage;
                             updatePagination();
@@ -586,7 +609,13 @@
                 });
 
                 // Khởi tạo ban đầu
-                sortTable('productId');
+                currentPage = 1;
+                itemsPerPage = parseInt($('#itemsPerPage').val());
+                
+                // Đảm bảo tất cả dòng đều hiển thị ban đầu (không bị ẩn bởi filter hoặc pagination)
+                $('.product-row').removeClass('hidden pagination-hidden');
+                
+                // Sau đó mới áp dụng phân trang
                 updatePagination();
             });
 
@@ -641,9 +670,35 @@
 
             // Reset preview khi đóng modal
             $('#editProductModal').on('hidden.bs.modal', function() {
-                $('#currentAdditionalImages').css('display', '');
-                $('#editAdditionalImagesPreview').empty();
-                $('#editProductForm input[name="additionalImages"]').val('');
+                // Reset ảnh chính
+                const mainImageSrc = $('#currentMainImage').attr('src');
+                if (mainImageSrc) {
+                    $('#currentMainImage').show();
+                } else {
+                    $('#currentMainImage').hide();
+                }
+                $('#editMainImagePreview').hide();
+                $('#editProductForm input[name="mainImage"]').val('');
+
+                // Reset ảnh phụ 1
+                const additionalImage1Src = $('#currentAdditionalImage1').attr('src');
+                if (additionalImage1Src) {
+                    $('#currentAdditionalImage1').show();
+                } else {
+                    $('#currentAdditionalImage1').hide();
+                }
+                $('#editAdditionalImage1Preview').hide();
+                $('#editProductForm input[name="additionalImage1"]').val('');
+
+                // Reset ảnh phụ 2
+                const additionalImage2Src = $('#currentAdditionalImage2').attr('src');
+                if (additionalImage2Src) {
+                    $('#currentAdditionalImage2').show();
+                } else {
+                    $('#currentAdditionalImage2').hide();
+                }
+                $('#editAdditionalImage2Preview').hide();
+                $('#editProductForm input[name="additionalImage2"]').val('');
             });
 
             function showCreateProductModal() {
@@ -685,13 +740,28 @@
                         $('#editDescription').val(product.description);
 
                         // Hiển thị ảnh hiện tại
-                        $('#currentMainImage').attr('src', product.mainImage);
+                        if (product.mainImage) {
+                            $('#currentMainImage').attr('src', product.mainImage).show();
+                        } else {
+                            $('#currentMainImage').hide();
+                        }
                         $('#editMainImagePreview').hide();
 
                         // Hiển thị ảnh phụ hiện tại
                         if (product.additionalImages && product.additionalImages.length > 0) {
-                            $('#currentAdditionalImage1').attr('src', product.additionalImages[0] || '');
-                            $('#currentAdditionalImage2').attr('src', product.additionalImages[1] || '');
+                            if (product.additionalImages[0]) {
+                                $('#currentAdditionalImage1').attr('src', product.additionalImages[0]).show();
+                            } else {
+                                $('#currentAdditionalImage1').hide();
+                            }
+                            if (product.additionalImages[1]) {
+                                $('#currentAdditionalImage2').attr('src', product.additionalImages[1]).show();
+                            } else {
+                                $('#currentAdditionalImage2').hide();
+                            }
+                        } else {
+                            $('#currentAdditionalImage1').hide();
+                            $('#currentAdditionalImage2').hide();
                         }
 
                         // Ẩn tất cả preview ảnh mới
@@ -705,31 +775,18 @@
                 });
             }
 
-            // Reset preview khi đóng modal
-            $('#editProductModal').on('hidden.bs.modal', function() {
-                // Reset ảnh chính
-                $('#currentMainImage').show();
-                $('#editMainImagePreview').hide();
-                $('#editProductForm input[name="mainImage"]').val('');
-
-                // Reset ảnh phụ 1
-                $('#currentAdditionalImage1').show();
-                $('#editAdditionalImage1Preview').hide();
-                $('#editProductForm input[name="additionalImage1"]').val('');
-
-                // Reset ảnh phụ 2
-                $('#currentAdditionalImage2').show();
-                $('#editAdditionalImage2Preview').hide();
-                $('#editProductForm input[name="additionalImage2"]').val('');
-            });
-
             // Xử lý sự kiện khi chọn ảnh mới trong form edit
             $(document).on('change', '#editProductForm input[name="mainImage"]', function() {
                 if (this.files && this.files[0]) {
                     $('#currentMainImage').hide();
                     previewImage(this, 'editMainImagePreview');
                 } else {
-                    $('#currentMainImage').show();
+                    const mainImageSrc = $('#currentMainImage').attr('src');
+                    if (mainImageSrc) {
+                        $('#currentMainImage').show();
+                    } else {
+                        $('#currentMainImage').hide();
+                    }
                     $('#editMainImagePreview').hide();
                 }
             });
@@ -739,7 +796,12 @@
                     $('#currentAdditionalImage1').hide();
                     previewImage(this, 'editAdditionalImage1Preview');
                 } else {
-                    $('#currentAdditionalImage1').show();
+                    const additionalImage1Src = $('#currentAdditionalImage1').attr('src');
+                    if (additionalImage1Src) {
+                        $('#currentAdditionalImage1').show();
+                    } else {
+                        $('#currentAdditionalImage1').hide();
+                    }
                     $('#editAdditionalImage1Preview').hide();
                 }
             });
@@ -749,7 +811,12 @@
                     $('#currentAdditionalImage2').hide();
                     previewImage(this, 'editAdditionalImage2Preview');
                 } else {
-                    $('#currentAdditionalImage2').show();
+                    const additionalImage2Src = $('#currentAdditionalImage2').attr('src');
+                    if (additionalImage2Src) {
+                        $('#currentAdditionalImage2').show();
+                    } else {
+                        $('#currentAdditionalImage2').hide();
+                    }
                     $('#editAdditionalImage2Preview').hide();
                 }
             });
@@ -810,5 +877,45 @@
                     showToast('@TempData["ErrorMessage"]', false);
             </text>
         }
+
+            // Hàm xóa sản phẩm
+            function deleteProduct(productId) {
+                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?\n\nSản phẩm sẽ được ẩn khỏi danh sách nhưng vẫn được lưu trong hệ thống.')) {
+                    // Hiển thị loading
+                    const $btn = $(`button[onclick="deleteProduct(${productId})"]`);
+                    const originalHtml = $btn.html();
+                    $btn.html('<i class="fas fa-spinner fa-spin"></i>');
+                    $btn.prop('disabled', true);
+
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Product", new { area = "Admin" })',
+                        type: 'POST',
+                        data: { id: productId },
+                        success: function(response) {
+                            if (response.success) {
+                                showToast('Đã ẩn sản phẩm thành công');
+                                // Xóa row khỏi bảng
+                                $(`.product-row[data-productid="${productId}"]`).fadeOut(300, function() {
+                                    $(this).remove();
+                                    // Cập nhật lại phân trang
+                                    filterProducts();
+                                });
+                            } else {
+                                showToast(response.message || 'Không thể ẩn sản phẩm', false);
+                                // Khôi phục button
+                                $btn.html(originalHtml);
+                                $btn.prop('disabled', false);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error deleting product:', error);
+                            showToast('Có lỗi xảy ra khi ẩn sản phẩm', false);
+                            // Khôi phục button
+                            $btn.html(originalHtml);
+                            $btn.prop('disabled', false);
+                        }
+                    });
+                }
+            }
         </script>
 } 

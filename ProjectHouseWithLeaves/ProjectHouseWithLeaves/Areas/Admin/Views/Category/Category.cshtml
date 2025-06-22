@@ -95,6 +95,22 @@
         background-color: #28a745;
         color: white;
     }
+    .form-label {
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+    .text-muted {
+        color: #6c757d !important;
+    }
+    .py-4 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
 </style>
 
 <!-- Header -->
@@ -109,20 +125,36 @@
 
 <!-- Thanh tìm kiếm và lọc -->
 <div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h6 class="mb-0">
+            <i class="fas fa-filter me-2"></i>Bộ lọc và tìm kiếm
+        </h6>
+    </div>
     <div class="card-body">
         <div class="row g-3">
-            <div class="col-md-8">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-search me-1"></i>Tìm kiếm
+                </label>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm danh mục...">
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-toggle-on me-1"></i>Trạng thái
+                </label>
                 <select class="form-select" id="statusFilter">
                     <option value="">Tất cả trạng thái</option>
                     <option value="1">Hoạt động</option>
                     <option value="0">Không hoạt động</option>
                 </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="button" class="btn btn-outline-secondary" id="resetFilters">
+                    <i class="fas fa-undo me-1"></i>Đặt lại bộ lọc
+                </button>
             </div>
         </div>
     </div>
@@ -156,7 +188,7 @@
                 <tbody id="categoryTableBody">
                     @foreach (var category in Model)
                     {
-                        <tr class="category-row">
+                        <tr class="category-row" data-status="@category.Status">
                             <td>@category.CategoryId</td>
                             <td>@category.CategoryName</td>
                             <td>@category.Description</td>
@@ -280,8 +312,11 @@
                     currentSort.column = column;
                     currentSort.direction = 'asc';
                 }
-                let $rows = $('#categoryTableBody tr').not('.hidden').get();
+                
+                // Chỉ sắp xếp các dòng không bị ẩn bởi filter
+                let $rows = $('#categoryTableBody tr.category-row:not(.hidden)').get();
                 const colIdx = $(`th[data-sort="${column}"]`).index();
+                
                 $rows.sort(function(a, b) {
                     let aValue = $(a).find(`td:eq(${colIdx})`).text().trim();
                     let bValue = $(b).find(`td:eq(${colIdx})`).text().trim();
@@ -307,6 +342,8 @@
                         ? aValue.localeCompare(bValue, undefined, { sensitivity: 'base' })
                         : bValue.localeCompare(aValue, undefined, { sensitivity: 'base' });
                 });
+                
+                // Cập nhật thứ tự các dòng trong bảng
                 $('#categoryTableBody').append($rows);
                 updateSortIcons();
                 currentPage = 1;
@@ -320,23 +357,27 @@
 
                 $('#categoryTableBody tr.category-row').each(function () {
                     const $row = $(this);
-                    const name = $row.find('td:eq(1)').text();
+                    const name = $row.find('td:eq(1)').text().toLowerCase();
                     const description = $row.find('td:eq(2)').text().toLowerCase();
                     
-                    // Lấy trạng thái từ badge text và chuyển đổi thành số
-                    const statusText = ($row.find('td:eq(3) .badge').text() || '').toLowerCase().trim();
-                    const status = statusText.includes('hoạt động') ? '1' : '0';
+                    // Lấy trạng thái trực tiếp từ data attribute
+                    const status = $row.attr('data-status');
 
                     // So sánh tìm kiếm
                     const matchesSearch = !searchTerm || 
                         name.includes(searchTerm) || 
                         description.includes(searchTerm);
                     
-                    // So sánh trạng thái - chỉ so sánh khi có filter được chọn
-                    const matchesStatus = !statusFilter || status === statusFilter;
+                    // So sánh trạng thái
+                    let matchesStatus = true; // Mặc định hiển thị tất cả
+                    if (statusFilter && statusFilter !== '') {
+                        // Nếu có filter và không phải "Tất cả", chỉ hiển thị những dòng khớp với filter
+                        matchesStatus = status === statusFilter;
+                    }
 
-                    // Hiển thị/ẩn dòng dựa trên cả hai điều kiện
-                    $row.toggleClass('hidden', !(matchesSearch || matchesStatus));
+                    // Hiển thị/ẩn dòng dựa trên cả hai điều kiện (phải thỏa mãn cả hai)
+                    const shouldShow = matchesSearch && matchesStatus;
+                    $row.toggleClass('hidden', !shouldShow);
                 });
 
                 currentPage = 1;
@@ -346,14 +387,45 @@
 
             // Cập nhật phân trang
             function updatePagination() {
-                const $rows = $('#categoryTableBody tr:not(.hidden)');
-                const totalItems = $rows.length;
+                // Chỉ lấy các dòng không bị ẩn bởi filter
+                const $visibleRows = $('#categoryTableBody tr.category-row:not(.hidden)');
+                const totalItems = $visibleRows.length;
                 const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-                // Ẩn/hiện các dòng theo trang hiện tại
-                $rows.each(function(index) {
+                // Ẩn tất cả các dòng category trước
+                $('#categoryTableBody tr.category-row').hide();
+                
+                // Nếu không có dòng nào hiển thị, hiển thị thông báo
+                if (totalItems === 0) {
+                    // Kiểm tra xem đã có thông báo "không có kết quả" chưa
+                    if ($('#noResultsRow').length === 0) {
+                        $('#categoryTableBody').append(`
+                            <tr id="noResultsRow">
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="fas fa-search me-2"></i>
+                                    Không tìm thấy danh mục nào phù hợp với bộ lọc hiện tại
+                                </td>
+                            </tr>
+                        `);
+                    }
+                    $('#noResultsRow').show();
+                    
+                    // Cập nhật UI phân trang
+                    const $pagination = $('#pagination');
+                    $pagination.empty();
+                    $pagination.append('<li class="page-item disabled"><span class="page-link">Không có dữ liệu</span></li>');
+                    return;
+                }
+
+                // Ẩn thông báo "không có kết quả" nếu có
+                $('#noResultsRow').hide();
+                
+                // Hiển thị các dòng theo trang hiện tại (chỉ những dòng không bị ẩn bởi filter)
+                $visibleRows.each(function(index) {
                     const shouldShow = index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage;
-                    $(this).toggle(shouldShow);
+                    if (shouldShow) {
+                        $(this).show();
+                    }
                 });
 
                 // Cập nhật UI phân trang
@@ -406,6 +478,23 @@
             // Gắn sự kiện
             $('#searchInput').on('input', filterCategories);
             $('#statusFilter').on('change', filterCategories);
+            $('#resetFilters').on('click', function() {
+                $('#searchInput').val('');
+                $('#statusFilter').val('');
+                
+                // Đảm bảo tất cả các dòng được hiển thị lại
+                $('.category-row').removeClass('hidden');
+                
+                filterCategories();
+                const $btn = $(this);
+                const originalText = $btn.html();
+                $btn.html('<i class="fas fa-check me-1"></i>Đã đặt lại');
+                $btn.removeClass('btn-outline-secondary').addClass('btn-success');
+                setTimeout(() => {
+                    $btn.html(originalText);
+                    $btn.removeClass('btn-success').addClass('btn-outline-secondary');
+                }, 1500);
+            });
             $('#itemsPerPage').on('change', function() {
                 itemsPerPage = parseInt($(this).val());
                 currentPage = 1;
@@ -428,8 +517,8 @@
             });
 
             // Khởi tạo ban đầu
+            filterCategories();
             sortTable('categoryId');
-            updatePagination();
         });
 
         // Các hàm xử lý CRUD
@@ -470,8 +559,6 @@
             const editUrl = '@Url.Action("Edit", "Category", new { area = "Admin" })';
             const url = isNew ? createUrl : editUrl;
 
-            console.log(url);
-            console.log(category);
             if (!category.categoryName) {
                 alert('Tên danh mục không được để trống');
                 return;

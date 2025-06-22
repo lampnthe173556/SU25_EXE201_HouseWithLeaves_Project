@@ -88,7 +88,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
                     MainImage = p.ProductImages
                 .Where(img => img.MainPicture.HasValue && img.MainPicture.Value) // Lọc hình ảnh chính
                 .Select(img => img.ImageUrl)
-                .FirstOrDefault() ?? "/images/default-product.jpg", // Đường dẫn mặc định
+                .FirstOrDefault(), // Trả về null nếu không có ảnh chính
                     CreatedAt = p.CreatedAt,
                     IsActive = p.IsActive.Value,
                     IsDeleted = p.IsDeleted.Value

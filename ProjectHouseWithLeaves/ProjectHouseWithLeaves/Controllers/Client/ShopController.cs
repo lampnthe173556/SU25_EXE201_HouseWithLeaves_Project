@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjectHouseWithLeaves.Services.ModelService;
+using ProjectHouseWithLeaves.Helper.Authorization;
 using System.Threading.Tasks;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
+    [ClientAuthorize]
     public class ShopController : Controller
     {
         private readonly ILogger<ShopController> _logger;

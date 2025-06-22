@@ -20,17 +20,33 @@
         font-weight: 600;
         cursor: pointer;
         user-select: none;
+        transition: all 0.2s ease;
+    }
+    .table thead th:hover {
+        background-color: #e8f5e8 !important;
     }
     .table thead th i {
         margin-left: 5px;
         opacity: 0.3;
+        transition: all 0.2s ease;
+    }
+    .table thead th:hover i {
+        opacity: 0.7;
     }
     .table thead th.active {
         background-color: #198754 !important;
-        color: #000;
+        color: white !important;
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,0.3);
     }
     .table thead th.active i {
         opacity: 1;
+        color: white;
+    }
+    .table thead th.active.asc i {
+        transform: rotate(180deg);
+    }
+    .table thead th.active.desc i {
+        transform: rotate(0deg);
     }
     .search-box {
         position: relative;
@@ -71,22 +87,6 @@
         width: auto;
         display: inline-block;
     }
-    .sortable {
-        cursor: pointer;
-        position: relative;
-    }
-    th.sortable::after {
-        content: ' \2195'; /* Up-Down Arrow */
-        opacity: 0.3;
-    }
-    th.sortable.asc::after {
-        content: ' \2191'; /* Up Arrow */
-        opacity: 1;
-    }
-    th.sortable.desc::after {
-        content: ' \2193'; /* Down Arrow */
-        opacity: 1;
-    }
     .bg-success {
         background-color: #28a745 !important;
     }
@@ -118,25 +118,137 @@
         background-color: #ffc107;
         color: #000;
     }
-    .status-processing {
-        background-color: #17a2b8;
-        color: #fff;
-    }
-    .status-shipped {
+    .status-accepted {
         background-color: #28a745;
         color: #fff;
     }
-    .status-delivered {
-        background-color: #28a745;
-        color: #fff;
-    }
-    .status-cancelled {
+    .status-rejected {
         background-color: #dc3545;
         color: #fff;
     }
-    .status-returned {
+    .form-label {
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    .btn-outline-secondary:hover {
         background-color: #6c757d;
-        color: #fff;
+        border-color: #6c757d;
+        color: white;
+    }
+    .text-muted {
+        color: #6c757d !important;
+    }
+    .py-4 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+    .table thead th.sortable {
+        position: relative;
+        cursor: pointer;
+    }
+    .table thead th.sortable:hover {
+        background-color: #e8f5e8 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .table thead th.sortable:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .product-image-container {
+        position: relative;
+        display: inline-block;
+    }
+    .product-image-container img {
+        transition: all 0.3s ease;
+    }
+    .product-image-container:hover img {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .expand-icon {
+        transition: all 0.3s ease;
+    }
+    .product-image-container:hover .expand-icon {
+        background-color: #0056b3 !important;
+        transform: translate(25%, -25%) scale(1.1);
+    }
+    .modal-body img {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .badge {
+        font-size: 0.875rem !important;
+        padding: 0.5em 0.75em !important;
+    }
+    .btn-group .btn {
+        margin-right: 2px;
+        transition: all 0.2s ease;
+    }
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+    .btn-group .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    .btn-group .btn:disabled:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    .btn-success:hover:not(:disabled) {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    .btn-danger:hover:not(:disabled) {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover:not(:disabled) {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    .order-row.updated {
+        background-color: #d4edda !important;
+        transition: all 0.5s ease;
+    }
+    .status-badge {
+        transition: all 0.3s ease;
+    }
+    .status-badge.status-accepted {
+        background-color: #28a745 !important;
+        color: #fff !important;
+    }
+    .status-badge.status-rejected {
+        background-color: #dc3545 !important;
+        color: #fff !important;
+    }
+    .status-badge.status-pending {
+        background-color: #ffc107 !important;
+        color: #000 !important;
+    }
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    .form-control.is-invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
     }
 </style>
 
@@ -145,31 +257,96 @@
     <h2 class="text-success">
         <i class="fas fa-shopping-cart me-2"></i>Quản lý đơn hàng
     </h2>
+    <button type="button" class="btn btn-outline-info btn-sm" onclick="showDebugInfo()">
+        <i class="fas fa-bug me-1"></i>Debug Info
+    </button>
+</div>
+
+<!-- Debug Panel -->
+<div class="card mb-4" id="debugPanel" style="display: none;">
+    <div class="card-header bg-info text-white">
+        <h6 class="mb-0">
+            <i class="fas fa-bug me-2"></i>Debug Information
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Trạng thái đơn hàng:</h6>
+                <div id="debugStatusInfo"></div>
+            </div>
+            <div class="col-md-6">
+                <h6>Thống kê:</h6>
+                <div id="debugStats"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Thanh tìm kiếm và lọc -->
 <div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h6 class="mb-0">
+            <i class="fas fa-filter me-2"></i>Bộ lọc và tìm kiếm
+        </h6>
+    </div>
     <div class="card-body">
         <div class="row g-3">
             <div class="col-md-4">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-search me-1"></i>Tìm kiếm
+                </label>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm theo mã đơn hàng, email...">
                 </div>
             </div>
             <div class="col-md-3">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-toggle-on me-1"></i>Trạng thái
+                </label>
                 <select class="form-select" id="statusFilter">
                     <option value="">Tất cả trạng thái</option>
-                    <option value="Pending">Chờ xử lý</option>
-                    <option value="Processing">Đang xử lý</option>
-                    <option value="Shipped">Đã gửi hàng</option>
-                    <option value="Delivered">Đã giao hàng</option>
-                    <option value="Cancelled">Đã hủy</option>
-                    <option value="Returned">Đã trả hàng</option>
+                    <option value="pending">Chờ xử lý</option>
+                    <option value="accepted">Đã chấp nhận</option>
+                    <option value="rejected">Đã từ chối</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <input type="date" class="form-control" id="dateFilter" placeholder="Lọc theo ngày">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-calendar me-1"></i>Khoảng ngày
+                </label>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <input type="date" class="form-control" id="dateFromFilter" 
+                               placeholder="Từ ngày" title="Chọn ngày bắt đầu khoảng thời gian">
+                    </div>
+                    <div class="col-6">
+                        <input type="date" class="form-control" id="dateToFilter" 
+                               placeholder="Đến ngày" title="Chọn ngày kết thúc khoảng thời gian">
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('today')" title="Hôm nay">
+                            Hôm nay
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('yesterday')" title="Hôm qua">
+                            Hôm qua
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('week')" title="7 ngày qua">
+                            7 ngày
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('month')" title="30 ngày qua">
+                            30 ngày
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-outline-secondary" id="resetFilters">
+                    <i class="fas fa-undo me-1"></i>Đặt lại
+                </button>
             </div>
         </div>
     </div>
@@ -181,20 +358,20 @@
         <table class="table table-hover">
             <thead class="table-success">
                 <tr>
-                    <th class="sortable" data-sort="orderId" style="width: 100px">
-                        Mã đơn hàng
+                    <th class="sortable" data-sort="orderId" style="width: 100px" title="Click để sắp xếp theo mã đơn hàng">
+                        Mã đơn hàng <i class="fas fa-sort"></i>
                     </th>
-                    <th class="sortable" data-sort="customerName" style="width: 150px">
-                        Khách hàng
+                    <th class="sortable" data-sort="customerName" style="width: 150px" title="Click để sắp xếp theo tên khách hàng">
+                        Khách hàng <i class="fas fa-sort"></i>
                     </th>
-                    <th class="sortable" data-sort="orderDate" style="width: 120px">
-                        Ngày đặt
+                    <th class="sortable" data-sort="orderDate" style="width: 120px" title="Click để sắp xếp theo ngày đặt">
+                        Ngày đặt <i class="fas fa-sort"></i>
                     </th>
-                    <th class="sortable" data-sort="totalAmount" class="text-end" style="width: 120px">
-                        Tổng tiền
+                    <th class="sortable" data-sort="totalAmount" class="text-end" style="width: 120px" title="Click để sắp xếp theo tổng tiền">
+                        Tổng tiền <i class="fas fa-sort"></i>
                     </th>
-                    <th class="sortable" data-sort="status" style="width: 120px">
-                        Trạng thái
+                    <th class="sortable" data-sort="status" style="width: 120px" title="Click để sắp xếp theo trạng thái">
+                        Trạng thái <i class="fas fa-sort"></i>
                     </th>
                     <th style="width: 200px">Địa chỉ giao hàng</th>
                     <th style="width: 120px">Thao tác</th>
@@ -208,7 +385,7 @@
                         data-customername="@(order.User?.Email?.ToLower() ?? "")"
                         data-orderdate="@order.OrderDate?.ToString("yyyy-MM-dd")"
                         data-totalamount="@order.TotalAmount"
-                        data-status="@order.Status?.ToLower()">
+                        data-status="@(order.Status?.ToLower() ?? "pending")">
                         <td>
                             <strong>#@order.OrderId</strong>
                         </td>
@@ -222,12 +399,9 @@
                         </td>
                         <td>
                             <span class="status-badge status-@(order.Status?.ToLower() ?? "pending")">
-                                @(order.Status == "Pending" ? "Chờ xử lý" :
-                                  order.Status == "Processing" ? "Đang xử lý" :
-                                  order.Status == "Shipped" ? "Đã gửi hàng" :
-                                  order.Status == "Delivered" ? "Đã giao hàng" :
-                                  order.Status == "Cancelled" ? "Đã hủy" :
-                                  order.Status == "Returned" ? "Đã trả hàng" : "Chờ xử lý")
+                                @(order.Status?.ToLower() == "pending" ? "Chờ xử lý" :
+                                  order.Status?.ToLower() == "accepted" ? "Đã chấp nhận" :
+                                  order.Status?.ToLower() == "rejected" ? "Đã từ chối" : "Chờ xử lý")
                             </span>
                         </td>
                         <td>
@@ -243,29 +417,66 @@
                                 <button type="button" class="btn btn-sm btn-primary"
                                         onclick="viewOrder(@order.OrderId)"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#viewOrderModal">
+                                        data-bs-target="#viewOrderModal"
+                                        title="Xem chi tiết">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-success"
-                                        onclick="updateOrderStatus(@order.OrderId, 'Processing')"
-                                        @(order.Status == "Processing" || order.Status == "Shipped" || order.Status == "Delivered" || order.Status == "Cancelled" || order.Status == "Returned" ? "disabled" : "")>
-                                    <i class="fas fa-cog"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-info"
-                                        onclick="updateOrderStatus(@order.OrderId, 'Shipped')"
-                                        @(order.Status == "Pending" || order.Status == "Shipped" || order.Status == "Delivered" || order.Status == "Cancelled" || order.Status == "Returned" ? "disabled" : "")>
-                                    <i class="fas fa-shipping-fast"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-warning"
-                                        onclick="updateOrderStatus(@order.OrderId, 'Delivered')"
-                                        @(order.Status == "Pending" || order.Status == "Processing" || order.Status == "Delivered" || order.Status == "Cancelled" || order.Status == "Returned" ? "disabled" : "")>
-                                    <i class="fas fa-check"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-danger"
-                                        onclick="updateOrderStatus(@order.OrderId, 'Cancelled')"
-                                        @(order.Status == "Delivered" || order.Status == "Cancelled" || order.Status == "Returned" ? "disabled" : "")>
-                                    <i class="fas fa-times"></i>
-                                </button>
+                                @{
+                                    var orderStatus = order.Status?.ToLower() ?? "pending";
+                                    var isPending = orderStatus == "pending";
+                                    var isAccepted = orderStatus == "accepted";
+                                    var isRejected = orderStatus == "rejected";
+                                }
+                                
+                                @if (isPending)
+                                {
+                                    <button type="button" class="btn btn-sm btn-success"
+                                            onclick="updateOrderStatus(@order.OrderId, 'accepted')"
+                                            title="Chấp nhận đơn hàng">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="updateOrderStatus(@order.OrderId, 'rejected')"
+                                            title="Từ chối đơn hàng">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                }
+                                else if (isAccepted)
+                                {
+                                    <button type="button" class="btn btn-sm btn-success" disabled
+                                            title="Đã chấp nhận">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-secondary" disabled
+                                            title="Không thể từ chối đơn đã chấp nhận">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                }
+                                else if (isRejected)
+                                {
+                                    <button type="button" class="btn btn-sm btn-secondary" disabled
+                                            title="Không thể chấp nhận đơn đã từ chối">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger" disabled
+                                            title="Đã từ chối">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <!-- Trạng thái không xác định - hiển thị nút cho Pending -->
+                                    <button type="button" class="btn btn-sm btn-success"
+                                            onclick="updateOrderStatus(@order.OrderId, 'accepted')"
+                                            title="Chấp nhận đơn hàng">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="updateOrderStatus(@order.OrderId, 'rejected')"
+                                            title="Từ chối đơn hàng">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                }
                             </div>
                         </td>
                     </tr>
@@ -349,6 +560,7 @@
                             <table class="table table-sm">
                                 <thead class="table-light">
                                     <tr>
+                                        <th style="width: 80px">Ảnh</th>
                                         <th>Sản phẩm</th>
                                         <th class="text-center">Số lượng</th>
                                         <th class="text-end">Đơn giá</th>
@@ -409,7 +621,7 @@
             function sortTable(column) {
                 const $table = $('.table');
                 const $header = $table.find(`th[data-sort="${column}"]`);
-                const $rows = $('#orderTableBody tr').get();
+                const $visibleRows = $('.order-row:not(.hidden)').get();
 
                 // Xóa active class từ tất cả headers
                 $table.find('th').removeClass('active asc desc');
@@ -424,29 +636,55 @@
                 $header.addClass('active ' + currentSort.direction);
 
                 // Sắp xếp rows
-                $rows.sort((a, b) => {
-                    const aValue = $(a).data(column)?.toString().toLowerCase() || '';
-                    const bValue = $(b).data(column)?.toString().toLowerCase() || '';
+                $visibleRows.sort((a, b) => {
+                    const $a = $(a);
+                    const $b = $(b);
+                    
+                    let aValue, bValue;
+                    
+                    if (column === 'orderId') {
+                        aValue = parseInt($a.attr('data-orderid')) || 0;
+                        bValue = parseInt($b.attr('data-orderid')) || 0;
+                        return currentSort.direction === 'asc' ? aValue - bValue : bValue - aValue;
+                    }
+                    
+                    if (column === 'customerName') {
+                        aValue = ($a.attr('data-customername') || '').toLowerCase();
+                        bValue = ($b.attr('data-customername') || '').toLowerCase();
+                        return currentSort.direction === 'asc' 
+                            ? aValue.localeCompare(bValue)
+                            : bValue.localeCompare(aValue);
+                    }
                     
                     if (column === 'orderDate') {
+                        aValue = $a.attr('data-orderdate') || '';
+                        bValue = $b.attr('data-orderdate') || '';
                         return currentSort.direction === 'asc' 
                             ? new Date(aValue) - new Date(bValue)
                             : new Date(bValue) - new Date(aValue);
                     }
                     
                     if (column === 'totalAmount') {
-                        return currentSort.direction === 'asc'
-                            ? parseFloat(aValue) - parseFloat(bValue)
-                            : parseFloat(bValue) - parseFloat(aValue);
+                        aValue = parseFloat($a.attr('data-totalamount')) || 0;
+                        bValue = parseFloat($b.attr('data-totalamount')) || 0;
+                        return currentSort.direction === 'asc' ? aValue - bValue : bValue - aValue;
+                    }
+
+                    if (column === 'status') {
+                        aValue = ($a.attr('data-status') || '').toLowerCase();
+                        bValue = ($b.attr('data-status') || '').toLowerCase();
+                        const statusOrder = { 'pending': 1, 'accepted': 2, 'rejected': 3 };
+                        const aOrder = statusOrder[aValue] || 4;
+                        const bOrder = statusOrder[bValue] || 4;
+                        return currentSort.direction === 'asc' ? aOrder - bOrder : bOrder - aOrder;
                     }
                     
-                    return currentSort.direction === 'asc'
-                        ? aValue.localeCompare(bValue)
-                        : bValue.localeCompare(aValue);
+                    return 0;
                 });
 
                 // Reorder rows
-                $.each($rows, (index, row) => $('#orderTableBody').append(row));
+                $.each($visibleRows, (index, row) => $('#orderTableBody').append(row));
+                currentPage = 1;
                 updatePagination();
             }
 
@@ -454,22 +692,30 @@
             function filterOrders() {
                 const searchTerm = $('#searchInput').val().toLowerCase();
                 const statusFilter = $('#statusFilter').val().toLowerCase();
-                const dateFilter = $('#dateFilter').val();
+                const dateFromFilter = $('#dateFromFilter').val();
+                const dateToFilter = $('#dateToFilter').val();
 
                 $('.order-row').each(function() {
                     const $row = $(this);
-                    const orderId = $row.data('orderid').toString();
-                    const customerName = $row.data('customername');
-                    const status = $row.data('status');
-                    const orderDate = $row.data('orderdate');
+                    const orderId = $row.attr('data-orderid').toString();
+                    const customerName = $row.attr('data-customername') || '';
+                    const status = $row.attr('data-status') || '';
+                    const orderDate = $row.attr('data-orderdate') || '';
 
                     const matchesSearch = !searchTerm ||
-                        orderId.includes(searchTerm) ||
-                        customerName.includes(searchTerm);
+                        orderId.toLowerCase().includes(searchTerm) ||
+                        customerName.toLowerCase().includes(searchTerm);
                     
                     const matchesStatus = !statusFilter || status === statusFilter;
                     
-                    const matchesDate = !dateFilter || orderDate === dateFilter;
+                    const matchesDate = !dateFromFilter && !dateToFilter ||
+                        (dateFromFilter && dateToFilter && 
+                         new Date(orderDate) >= new Date(dateFromFilter) && 
+                         new Date(orderDate) <= new Date(dateToFilter)) ||
+                        (dateFromFilter && !dateToFilter && 
+                         new Date(orderDate) >= new Date(dateFromFilter)) ||
+                        (!dateFromFilter && dateToFilter && 
+                         new Date(orderDate) <= new Date(dateToFilter));
 
                     if (matchesSearch && matchesStatus && matchesDate) {
                         $row.removeClass('hidden');
@@ -488,11 +734,39 @@
                 const totalItems = $rows.length;
                 const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+                // Hiển thị thông báo nếu không có kết quả
+                if (totalItems === 0) {
+                    // Ẩn tất cả các dòng hiện tại
+                    $('.order-row').hide();
+                    
+                    // Kiểm tra xem đã có thông báo "không có kết quả" chưa
+                    if ($('#noResultsRow').length === 0) {
+                        $('#orderTableBody').append(`
+                            <tr id="noResultsRow">
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-search me-2"></i>
+                                    Không tìm thấy đơn hàng nào phù hợp với bộ lọc hiện tại
+                                </td>
+                            </tr>
+                        `);
+                    }
+                    $('#noResultsRow').show();
+                    
+                    // Cập nhật UI phân trang
+                    const $pagination = $('#pagination');
+                    $pagination.empty();
+                    $pagination.append('<li class="page-item disabled"><span class="page-link">Không có dữ liệu</span></li>');
+                    return;
+                }
+
+                // Ẩn thông báo "không có kết quả" nếu có
+                $('#noResultsRow').hide();
+
                 // Ẩn/hiện các dòng theo trang hiện tại
                 $rows.each(function(index) {
                     const shouldShow = index >= (currentPage - 1) * itemsPerPage && 
                                     index < currentPage * itemsPerPage;
-                    $(this).toggle(shouldShow);
+                    $(this).show().toggle(shouldShow);
                 });
 
                 // Tạo phân trang
@@ -545,11 +819,61 @@
             // Gắn sự kiện
             $('#searchInput').on('input', filterOrders);
             $('#statusFilter').on('change', filterOrders);
-            $('#dateFilter').on('change', filterOrders);
+            $('#dateFromFilter').on('change', function() {
+                const fromDate = $(this).val();
+                const toDate = $('#dateToFilter').val();
+                
+                if (fromDate && toDate && fromDate > toDate) {
+                    showToast('error', 'Ngày "từ" không thể lớn hơn ngày "đến"!');
+                    $(this).addClass('is-invalid');
+                    return;
+                }
+                
+                $(this).removeClass('is-invalid');
+                filterOrders();
+            });
+            
+            $('#dateToFilter').on('change', function() {
+                const fromDate = $('#dateFromFilter').val();
+                const toDate = $(this).val();
+                
+                if (fromDate && toDate && fromDate > toDate) {
+                    showToast('error', 'Ngày "đến" không thể nhỏ hơn ngày "từ"!');
+                    $(this).addClass('is-invalid');
+                    return;
+                }
+                
+                $(this).removeClass('is-invalid');
+                filterOrders();
+            });
+            $('#resetFilters').on('click', function() {
+                $('#searchInput').val('');
+                $('#statusFilter').val('');
+                $('#dateFromFilter').val('').removeClass('is-invalid');
+                $('#dateToFilter').val('').removeClass('is-invalid');
+                
+                // Đảm bảo tất cả các dòng được hiển thị lại
+                $('.order-row').removeClass('hidden');
+                
+                filterOrders();
+                const $btn = $(this);
+                const originalText = $btn.html();
+                $btn.html('<i class="fas fa-check me-1"></i>Đã đặt lại');
+                $btn.removeClass('btn-outline-secondary').addClass('btn-success');
+                setTimeout(() => {
+                    $btn.html(originalText);
+                    $btn.removeClass('btn-success').addClass('btn-outline-secondary');
+                }, 1500);
+            });
 
-            $('th[data-sort]').on('click', function() {
+            // Sự kiện click cho header sortable
+            $(document).on('click', 'th.sortable', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 const column = $(this).data('sort');
-                sortTable(column);
+                if (column) {
+                    sortTable(column);
+                }
             });
 
             $('#itemsPerPage').on('change', function() {
@@ -569,9 +893,98 @@
             });
 
             // Khởi tạo ban đầu
+            filterOrders();
             sortTable('orderDate');
-            updatePagination();
+
+            // Hàm thiết lập khoảng ngày nhanh
+            window.setDateRange = function(range) {
+                const today = new Date();
+                let fromDate, toDate;
+                
+                switch(range) {
+                    case 'today':
+                        fromDate = today.toISOString().split('T')[0];
+                        toDate = today.toISOString().split('T')[0];
+                        break;
+                    case 'yesterday':
+                        const yesterday = new Date(today);
+                        yesterday.setDate(today.getDate() - 1);
+                        fromDate = yesterday.toISOString().split('T')[0];
+                        toDate = yesterday.toISOString().split('T')[0];
+                        break;
+                    case 'week':
+                        const weekAgo = new Date(today);
+                        weekAgo.setDate(today.getDate() - 7);
+                        fromDate = weekAgo.toISOString().split('T')[0];
+                        toDate = today.toISOString().split('T')[0];
+                        break;
+                    case 'month':
+                        const monthAgo = new Date(today);
+                        monthAgo.setDate(today.getDate() - 30);
+                        fromDate = monthAgo.toISOString().split('T')[0];
+                        toDate = today.toISOString().split('T')[0];
+                        break;
+                    default:
+                        return;
+                }
+                
+                $('#dateFromFilter').val(fromDate).removeClass('is-invalid');
+                $('#dateToFilter').val(toDate).removeClass('is-invalid');
+                filterOrders();
+                
+                // Hiển thị thông báo
+                const rangeText = range === 'today' ? 'Hôm nay' :
+                                 range === 'yesterday' ? 'Hôm qua' :
+                                 range === 'week' ? '7 ngày qua' : '30 ngày qua';
+                showToast('success', `Đã chọn khoảng thời gian: ${rangeText}`);
+            };
         });
+
+        // Hàm hiển thị toast notification
+        function showToast(type, message) {
+            // Tạo toast element
+            const toast = $(`
+                <div class="toast-notification toast-${type}" style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 9999;
+                    padding: 15px 20px;
+                    border-radius: 5px;
+                    color: white;
+                    font-weight: 500;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                ">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>
+                    ${message}
+                </div>
+            `);
+
+            // Thêm style cho toast
+            if (type === 'success') {
+                toast.css('background-color', '#28a745');
+            } else {
+                toast.css('background-color', '#dc3545');
+            }
+
+            // Thêm vào body
+            $('body').append(toast);
+
+            // Hiển thị toast
+            setTimeout(() => {
+                toast.css('transform', 'translateX(0)');
+            }, 100);
+
+            // Tự động ẩn sau 3 giây
+            setTimeout(() => {
+                toast.css('transform', 'translateX(100%)');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
 
         // View order details
         function viewOrder(id) {
@@ -586,12 +999,9 @@
                 
                 $('#viewOrderStatus').html(`
                     <span class="status-badge status-${data.status.toLowerCase()}">
-                        ${data.status === 'Pending' ? 'Chờ xử lý' :
-                          data.status === 'Processing' ? 'Đang xử lý' :
-                          data.status === 'Shipped' ? 'Đã gửi hàng' :
-                          data.status === 'Delivered' ? 'Đã giao hàng' :
-                          data.status === 'Cancelled' ? 'Đã hủy' :
-                          data.status === 'Returned' ? 'Đã trả hàng' : 'Chờ xử lý'}
+                        ${data.status?.toLowerCase() === 'pending' ? 'Chờ xử lý' :
+                          data.status?.toLowerCase() === 'accepted' ? 'Đã chấp nhận' :
+                          data.status?.toLowerCase() === 'rejected' ? 'Đã từ chối' : 'Chờ xử lý'}
                     </span>
                 `);
 
@@ -600,26 +1010,39 @@
                 $orderDetails.empty();
                 
                 data.orderDetails.forEach(function(detail) {
+                    // Lấy ảnh sản phẩm từ cấu trúc dữ liệu thực tế
+                    const productImage = detail.product?.mainImage;
+                    
+                    const productName = detail.product?.productName || 'N/A';
+                    const productSize = detail.product?.size || '';
+                    
                     $orderDetails.append(`
                         <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    ${detail.product?.mainImage ? 
-                                        `<img src="${detail.product.mainImage}" alt="${detail.product.productName}" 
-                                              class="me-2" style="width: 50px; height: 50px; object-fit: cover;">` :
-                                        `<div class="me-2 text-center text-muted" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                            <td class="text-center">
+                                ${productImage ? 
+                                    `<img src="${productImage}" alt="${productName}" 
+                                         class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">` :
+                                    `<div class="text-center text-muted border rounded d-flex align-items-center justify-content-center mx-auto"
+                                          style="width: 50px; height: 50px; background-color: #f8f9fa;">
                                             <i class="fas fa-image"></i>
                                         </div>`
                                     }
-                                    <div>
-                                        <div class="fw-bold">${detail.product?.productName || 'N/A'}</div>
-                                        <small class="text-muted">${detail.product?.size || ''}</small>
-                                    </div>
-                                </div>
                             </td>
-                            <td class="text-center">${detail.quantity}</td>
-                            <td class="text-end">${detail.unitPrice?.toLocaleString()} VNĐ</td>
-                            <td class="text-end">${(detail.quantity * detail.unitPrice)?.toLocaleString()} VNĐ</td>
+                            <td>
+                                <div class="fw-bold text-primary mb-1">${productName}</div>
+                                ${productSize ? `<div class="text-muted small mb-1">Kích thước: ${productSize}</div>` : ''}
+                            </td>
+                            <td class="text-center align-middle">
+                                <span class="badge bg-secondary fs-6">${detail.quantity}</span>
+                            </td>
+                            <td class="text-end align-middle">
+                                <div class="fw-bold">${detail.unitPrice?.toLocaleString()} VNĐ</div>
+                                <small class="text-muted">Đơn giá</small>
+                            </td>
+                            <td class="text-end align-middle">
+                                <div class="fw-bold text-success">${(detail.quantity * detail.unitPrice)?.toLocaleString()} VNĐ</div>
+                                <small class="text-muted">Thành tiền</small>
+                            </td>
                         </tr>
                     `);
                 });
@@ -634,23 +1057,148 @@
 
         // Update order status
         function updateOrderStatus(orderId, status) {
-            const statusText = status === 'Processing' ? 'đang xử lý' :
-                              status === 'Shipped' ? 'đã gửi hàng' :
-                              status === 'Delivered' ? 'đã giao hàng' :
-                              status === 'Cancelled' ? 'đã hủy' : 'đang xử lý';
+            const statusText = status === 'accepted' ? 'chấp nhận' : 'từ chối';
+            const statusDisplay = status === 'accepted' ? 'Đã chấp nhận' : 'Đã từ chối';
+            const statusClass = status === 'accepted' ? 'accepted' : 'rejected';
 
-            if (confirm(`Bạn có chắc muốn cập nhật trạng thái đơn hàng #${orderId} thành "${statusText}"?`)) {
+            if (confirm(`Bạn có chắc muốn ${statusText} đơn hàng #${orderId}?\n\nHành động này sẽ cập nhật trạng thái đơn hàng thành "${statusDisplay}".`)) {
+                // Hiển thị loading
+                const $btn = $(`button[onclick="updateOrderStatus(${orderId}, '${status}')"]`);
+                const originalHtml = $btn.html();
+                $btn.html('<i class="fas fa-spinner fa-spin"></i>');
+                $btn.prop('disabled', true);
+
                 $.post('/Admin/Order/UpdateStatus', {
                     orderId: orderId,
                     status: status
                 }, function(response) {
                     if (response.success) {
-                        location.reload();
+                        // Cập nhật UI động
+                        updateOrderUI(orderId, status, statusDisplay, statusClass);
+                        
+                        // Hiển thị thông báo thành công
+                        showToast('success', `Đã ${statusText} đơn hàng #${orderId} thành công!`);
                     } else {
-                        alert('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng!');
+                        showToast('error', response.message || `Có lỗi xảy ra khi ${statusText} đơn hàng!`);
+                        // Khôi phục button
+                        $btn.html(originalHtml);
+                        $btn.prop('disabled', false);
                     }
+                }).fail(function() {
+                    showToast('error', `Có lỗi xảy ra khi ${statusText} đơn hàng!`);
+                    // Khôi phục button
+                    $btn.html(originalHtml);
+                    $btn.prop('disabled', false);
                 });
             }
+        }
+
+        // Hàm cập nhật UI động
+        function updateOrderUI(orderId, status, statusDisplay, statusClass) {
+            const $row = $(`.order-row[data-orderid="${orderId}"]`);
+            
+            // Cập nhật data attribute
+            $row.attr('data-status', status.toLowerCase());
+            
+            // Cập nhật badge trạng thái
+            const $statusBadge = $row.find('.status-badge');
+            $statusBadge.removeClass('status-pending status-accepted status-rejected')
+                       .addClass(`status-${statusClass}`)
+                       .text(statusDisplay);
+            
+            // Cập nhật các nút thao tác
+            const $btnGroup = $row.find('.btn-group');
+            $btnGroup.empty();
+            
+            // Luôn có nút xem chi tiết
+            $btnGroup.append(`
+                <button type="button" class="btn btn-sm btn-primary"
+                        onclick="viewOrder(${orderId})"
+                        data-bs-toggle="modal"
+                        data-bs-target="#viewOrderModal"
+                        title="Xem chi tiết">
+                    <i class="fas fa-eye"></i>
+                </button>
+            `);
+            
+            // Thêm nút theo trạng thái mới
+            if (status === 'accepted') {
+                $btnGroup.append(`
+                    <button type="button" class="btn btn-sm btn-success" disabled
+                            title="Đã chấp nhận">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" disabled
+                            title="Không thể từ chối đơn đã chấp nhận">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `);
+            } else if (status === 'rejected') {
+                $btnGroup.append(`
+                    <button type="button" class="btn btn-sm btn-secondary" disabled
+                            title="Không thể chấp nhận đơn đã từ chối">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" disabled
+                            title="Đã từ chối">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `);
+            }
+            
+            // Thêm hiệu ứng animation
+            $row.addClass('updated');
+            setTimeout(() => {
+                $row.removeClass('updated');
+            }, 2000);
+        }
+
+        // Hàm hiển thị debug info
+        function showDebugInfo() {
+            const $debugPanel = $('#debugPanel');
+            const $statusInfo = $('#debugStatusInfo');
+            const $stats = $('#debugStats');
+            
+            if ($debugPanel.is(':visible')) {
+                $debugPanel.hide();
+                return;
+            }
+
+            // Thu thập thông tin trạng thái
+            const statusCounts = {};
+            const statusDetails = [];
+            
+            $('.order-row').each(function() {
+                const $row = $(this);
+                const orderId = $row.attr('data-orderid');
+                const status = $row.attr('data-status');
+                const statusText = $row.find('.status-badge').text().trim();
+                
+                statusCounts[status] = (statusCounts[status] || 0) + 1;
+                statusDetails.push(`Đơn #${orderId}: "${status}" (${statusText})`);
+            });
+
+            // Hiển thị thông tin trạng thái
+            let statusHtml = '<ul class="list-unstyled">';
+            statusDetails.forEach(detail => {
+                statusHtml += `<li><small>${detail}</small></li>`;
+            });
+            statusHtml += '</ul>';
+            $statusInfo.html(statusHtml);
+
+            // Hiển thị thống kê
+            let statsHtml = '<ul class="list-unstyled">';
+            Object.keys(statusCounts).forEach(status => {
+                const count = statusCounts[status];
+                const statusText = status === 'pending' ? 'Chờ xử lý' : 
+                                 status === 'accepted' ? 'Đã chấp nhận' : 
+                                 status === 'rejected' ? 'Đã từ chối' : status;
+                statsHtml += `<li><strong>${statusText}:</strong> ${count} đơn hàng</li>`;
+            });
+            statsHtml += '</ul>';
+            $stats.html(statsHtml);
+
+            $debugPanel.show();
         }
     </script>
 }

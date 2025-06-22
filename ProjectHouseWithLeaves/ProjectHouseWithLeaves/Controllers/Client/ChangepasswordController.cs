@@ -5,9 +5,11 @@ using ProjectHouseWithLeaves.Helper.Session;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
 using System.Threading.Tasks;
+using ProjectHouseWithLeaves.Helper.Authorization;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
+    [ClientAuthorize]
     public class ChangepasswordController : Controller
     {
         private readonly IUserService _userService;
@@ -27,6 +29,11 @@ namespace ProjectHouseWithLeaves.Controllers.Client
             if(user.PasswordHash != PasswordHassing.ComputeSha256Hash(changepassword.oldPassword))
             {
                 ViewBag.ChangePassMessage = "Mật khẩu cũ không đúng";
+                ViewBag.ChangePassType = "error";
+            }
+            else if (string.IsNullOrEmpty(changepassword.newPassword) || changepassword.newPassword.Length < 8)
+            {
+                ViewBag.ChangePassMessage = "Mật khẩu mới phải có ít nhất 8 ký tự";
                 ViewBag.ChangePassType = "error";
             }
             else

@@ -215,28 +215,42 @@
             const newPassword = $('#newPassword').val();
             const confirmPassword = $('#confirmPassword').val();
 
+            // Validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Vui lòng điền đầy đủ thông tin');
+                return;
+            }
+
             if (newPassword !== confirmPassword) {
                 alert('Mật khẩu mới và xác nhận mật khẩu không khớp');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                alert('Mật khẩu mới phải có ít nhất 6 ký tự');
                 return;
             }
 
             $.ajax({
                 url: '/Admin/Account/ChangePassword',
                 type: 'POST',
-                data: {
-                    currentPassword: currentPassword,
-                    newPassword: newPassword
-                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    oldPassword: currentPassword,
+                    newPassword: newPassword,
+                    confirmPassword: confirmPassword
+                }),
                 success: function(response) {
                     if (response.success) {
                         $('#changePasswordModal').modal('hide');
+                        $('#changePasswordForm')[0].reset();
                         alert('Đổi mật khẩu thành công');
                     } else {
                         alert(response.message || 'Có lỗi xảy ra');
                     }
                 },
                 error: function() {
-                    alert('Có lỗi xảy ra');
+                    alert('Có lỗi xảy ra khi kết nối server');
                 }
             });
         }

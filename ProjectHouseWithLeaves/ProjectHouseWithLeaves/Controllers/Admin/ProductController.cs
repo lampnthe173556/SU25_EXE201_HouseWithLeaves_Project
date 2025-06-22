@@ -240,5 +240,25 @@ namespace ProjectHouseWithLeaves.Controllers.Admin
                 return Json(new { success = false, message = "Có lỗi xảy ra khi cập nhật sản phẩm" });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _productService.DeleteProduct(id);
+                return Json(new { success = true, message = "Đã ẩn sản phẩm thành công" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex, "Product with ID {Id} not found for deletion", id);
+                return Json(new { success = false, message = "Không tìm thấy sản phẩm để ẩn" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting product with ID {Id}", id);
+                return Json(new { success = false, message = "Có lỗi xảy ra khi ẩn sản phẩm" });
+            }
+        }
     }
 } 

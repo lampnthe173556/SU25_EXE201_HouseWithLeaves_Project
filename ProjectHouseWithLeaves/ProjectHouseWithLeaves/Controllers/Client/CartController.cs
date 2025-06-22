@@ -3,11 +3,13 @@ using ProjectHouseWithLeaves.Dtos.Request;
 using ProjectHouseWithLeaves.Helper.Session;
 using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
+using ProjectHouseWithLeaves.Helper.Authorization;
 using System.Threading.Tasks;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
     [Route("Cart")]
+    [ClientAuthorize]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;

@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjectHouseWithLeaves.Helper.Session;
+using ProjectHouseWithLeaves.Models;
 using ProjectHouseWithLeaves.Services.ModelService;
+using ProjectHouseWithLeaves.Helper.Authorization;
 using System.Threading.Tasks;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
+    [ClientAuthorize]
     public class PaymentController : Controller
     {
         private readonly IShippingMethodService _shippingMethodService;
