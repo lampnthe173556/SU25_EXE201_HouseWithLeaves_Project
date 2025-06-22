@@ -1,101 +1,59 @@
-﻿// 20 đơn hàng mẫu
-const orders = [
-    {
-        id: 'DH001', date: '2024-06-01', total: 350000, payment: 'COD', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Kim Ngân', qty: 1, price: 200000 }, { name: 'Chậu Sứ Trắng', qty: 2, price: 75000 }]
-    },
-    {
-        id: 'DH002', date: '2024-06-05', total: 120000, payment: 'Chuyển khoản', status: 'Đang xử lý', statusClass: 'pending',
-        products: [{ name: 'Sen Đá', qty: 3, price: 40000 },{ name: 'Sen Đá', qty: 3, price: 40000 },{ name: 'Sen Đá', qty: 3, price: 40000 },{ name: 'Sen Đá', qty: 3, price: 40000 },{ name: 'Sen Đá', qty: 3, price: 40000 }]
-    },
-    {
-        id: 'DH003', date: '2024-06-10', total: 500000, payment: 'COD', status: 'Đã hủy', statusClass: 'cancelled',
-        products: [{ name: 'Cây Lưỡi Hổ', qty: 2, price: 250000 }]
-    },
-    {
-        id: 'DH004', date: '2024-06-12', total: 250000, payment: 'Chuyển khoản', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Trầu Bà', qty: 1, price: 250000 }]
-    },
-    {
-        id: 'DH005', date: '2024-06-13', total: 180000, payment: 'COD', status: 'Đang xử lý', statusClass: 'pending',
-        products: [{ name: 'Cây Phát Lộc', qty: 2, price: 90000 }]
-    },
-    {
-        id: 'DH006', date: '2024-06-14', total: 320000, payment: 'Chuyển khoản', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Ngọc Ngân', qty: 2, price: 160000 }]
-    },
-    {
-        id: 'DH007', date: '2024-06-15', total: 210000, payment: 'COD', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Vạn Lộc', qty: 1, price: 210000 }]
-    },
-    {
-        id: 'DH008', date: '2024-06-16', total: 150000, payment: 'Chuyển khoản', status: 'Đã hủy', statusClass: 'cancelled',
-        products: [{ name: 'Cây Kim Tiền', qty: 1, price: 150000 }]
-    },
-    {
-        id: 'DH009', date: '2024-06-17', total: 400000, payment: 'COD', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Bàng Singapore', qty: 1, price: 400000 }]
-    },
-    {
-        id: 'DH010', date: '2024-06-18', total: 220000, payment: 'Chuyển khoản', status: 'Đang xử lý', statusClass: 'pending',
-        products: [{ name: 'Cây Trầu Bà Đế Vương', qty: 2, price: 110000 }]
-    },
-    {
-        id: 'DH011', date: '2024-06-19', total: 170000, payment: 'COD', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Lưỡi Hổ Mini', qty: 1, price: 170000 }]
-    },
-    {
-        id: 'DH012', date: '2024-06-20', total: 300000, payment: 'Chuyển khoản', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Đa Búp Đỏ', qty: 1, price: 300000 }]
-    },
-    {
-        id: 'DH013', date: '2024-06-21', total: 260000, payment: 'COD', status: 'Đã hủy', statusClass: 'cancelled',
-        products: [{ name: 'Cây Cau Tiểu Trâm', qty: 2, price: 130000 }]
-    },
-    {
-        id: 'DH014', date: '2024-06-22', total: 190000, payment: 'Chuyển khoản', status: 'Đang xử lý', statusClass: 'pending',
-        products: [{ name: 'Cây Trầu Bà Sọc', qty: 1, price: 190000 }]
-    },
-    {
-        id: 'DH015', date: '2024-06-23', total: 350000, payment: 'COD', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Kim Ngân', qty: 1, price: 350000 }]
-    },
-    {
-        id: 'DH016', date: '2024-06-24', total: 120000, payment: 'Chuyển khoản', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Sen Đá', qty: 3, price: 40000 }]
-    },
-    {
-        id: 'DH017', date: '2024-06-25', total: 500000, payment: 'COD', status: 'Đã hủy', statusClass: 'cancelled',
-        products: [{ name: 'Cây Lưỡi Hổ', qty: 2, price: 250000 }]
-    },
-    {
-        id: 'DH018', date: '2024-06-26', total: 250000, payment: 'Chuyển khoản', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Trầu Bà', qty: 1, price: 250000 }]
-    },
-    {
-        id: 'DH019', date: '2024-06-27', total: 180000, payment: 'COD', status: 'Đang xử lý', statusClass: 'pending',
-        products: [{ name: 'Cây Phát Lộc', qty: 2, price: 90000 }]
-    },
-    {
-        id: 'DH020', date: '2024-06-28', total: 320000, payment: 'Chuyển khoản', status: 'Đã giao', statusClass: 'success',
-        products: [{ name: 'Cây Ngọc Ngân', qty: 2, price: 160000 }]
-    }
-];
+﻿let orders = [];
 
-// Thêm các đơn hàng mẫu để đủ 200 đơn
-for (let i = 21; i <= 200; i++) {
-    orders.push({
-        id: `DH${i.toString().padStart(3, '0')}`,
-        date: `2024-07-${(i % 30 + 1).toString().padStart(2, '0')}`,
-        total: 100000 + (i * 10000),
-        payment: i % 2 === 0 ? 'COD' : 'Chuyển khoản',
-        status: i % 3 === 0 ? 'Đã giao' : (i % 3 === 1 ? 'Đang xử lý' : 'Đã hủy'),
-        statusClass: i % 3 === 0 ? 'success' : (i % 3 === 1 ? 'pending' : 'cancelled'),
-        products: [
-            { name: 'Cây Demo ' + i, qty: 1 + (i % 3), price: 50000 + (i * 1000) },
-            { name: 'Chậu Demo ' + i, qty: 1, price: 20000 + (i * 500) }
-        ]
-    });
+function mapStatus(apiStatus) {
+    switch (apiStatus) {
+        case 'PENDING':
+            return 'Đang xử lý';
+        case 'SUCCESS':
+        case 'DELIVERED':
+            return 'Đã giao';
+        case 'CANCELLED':
+            return 'Đã hủy';
+        default:
+            return apiStatus;
+    }
+}
+
+function transformOrderData(apiOrders) {
+    if (!Array.isArray(apiOrders)) {
+        console.error("Expected an array of orders, but received:", apiOrders);
+        return [];
+    }
+    return apiOrders.map(order => ({
+        id: `DH${String(order.orderId).padStart(3, '0')}`,
+        date: new Date(order.orderDate).toISOString().split('T')[0],
+        total: order.totalAmount,
+        payment: order.payment,
+        shipping: order.shipping,
+        status: mapStatus(order.status),
+        statusClass: order.statusClass,
+        products: order.details.map(detail => ({
+            name: detail.productName,
+            qty: detail.quantity,
+            price: detail.unitPrice
+        }))
+    }));
+}
+
+async function fetchAndRenderOrders() {
+    try {
+        const response = await fetch(`${window.BASE_API_URL}/OrderHistory/OrderHistoryById`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const apiOrders = await response.json();
+        orders = transformOrderData(apiOrders);
+        rerender();
+    } catch (error) {
+        console.error("Could not fetch order history:", error);
+        const tbody = document.getElementById('orderHistoryBody');
+        const empty = document.getElementById('orderHistoryEmpty');
+        if (tbody) tbody.innerHTML = '';
+        if (empty) {
+            empty.style.display = '';
+            empty.innerHTML = '<i class="fa fa-exclamation-triangle"></i> Không thể tải lịch sử đơn hàng.';
+        }
+    }
 }
 
 let currentSort = { key: '', asc: true };
@@ -129,6 +87,7 @@ function renderOrderHistory(data) {
       <td>${order.date}</td>
       <td>${order.total.toLocaleString()}₫</td>
       <td>${order.payment}</td>
+      <td>${order.shipping}</td>
       <td class="status ${order.statusClass || ''}">${order.status}</td>
       <td><button class="detail-btn" data-idx="${startIndex + idx}"><i class="fa fa-eye"></i> Xem</button></td>
     `;
@@ -230,11 +189,12 @@ function showOrderDetailModal(order) {
     document.getElementById('modalOrderInfo').innerHTML = `
     <b>Ngày đặt:</b> ${order.date} <br>
     <b>Trạng thái:</b> <span class="status ${order.statusClass || ''}">${order.status}</span><br>
-    <b>Phương thức thanh toán:</b> ${order.payment}
-    ${order.payment === 'Chuyển khoản' ? `
+    <b>Phương thức thanh toán:</b> ${order.payment}<br>
+    <b>Phương thức giao hàng:</b> ${order.shipping}
+    ${(order.payment === 'Chuyển khoản' || order.payment === 'QRCode') ? `
       <div class="order-qr-wrap">
         <div class="order-qr-title"><i class="fa fa-qrcode"></i> Quét mã QR để chuyển khoản</div>
-        <img src="/img/QRCode.jpg" alt="QR chuyển khoản" class="order-qr-img">
+        <img src="/img/QR.png" alt="QR chuyển khoản" class="order-qr-img">
         <div class="order-qr-note">Nội dung chuyển khoản: <b>${order.id}</b></div>
       </div>
     ` : ''}
@@ -258,7 +218,7 @@ function showOrderDetailModal(order) {
 
 // Đóng modal
 document.addEventListener('DOMContentLoaded', function () {
-    rerender();
+    fetchAndRenderOrders();
 
     document.getElementById('orderModalClose').onclick = function () {
         document.getElementById('orderDetailModal').style.display = 'none';

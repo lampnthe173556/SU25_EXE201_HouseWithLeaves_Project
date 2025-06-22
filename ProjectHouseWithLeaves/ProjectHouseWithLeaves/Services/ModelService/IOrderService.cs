@@ -9,12 +9,14 @@ namespace ProjectHouseWithLeaves.Services.ModelService
         
         Task<List<Order>> GetAllOrders();
 
-        Task<Order> GetOrderById(int id);
+        Task<Order> GetOrderrById(int id);
 
         Task<Order> GetOrderWithDetails(int id);
 
         Task<bool> UpdateOrderStatus(int orderId, string status);
 
         Task<object> GetOrderDataForAdmin(int id);
+
+         Task<IEnumerable<OrderHistoryDtos>> GetOrderById(int id);
     }
 }

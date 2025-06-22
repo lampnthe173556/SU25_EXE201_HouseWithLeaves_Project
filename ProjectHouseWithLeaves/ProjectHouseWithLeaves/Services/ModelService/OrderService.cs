@@ -8,10 +8,13 @@ namespace ProjectHouseWithLeaves.Services.ModelService
     public class OrderService : IOrderService
     {
         private readonly MiniPlantStoreContext _context;
-
-        public OrderService(MiniPlantStoreContext context)
+        private readonly ILogger<OrderService> _logger;
+        private readonly IMapper _mapper;
+        public OrderService(MiniPlantStoreContext context, ILogger<OrderService> logger, IMapper mapper)
         {
             _context = context;
+            _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<bool> CreateOrder(OrderDtos model)
@@ -87,7 +90,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             }
         }
 
-        public async Task<Order> GetOrderById(int id)
+        public async Task<Order> GetOrderrById(int id)
         {
             if (id <= 0)
             {
@@ -113,7 +116,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
 
         public async Task<Order> GetOrderWithDetails(int id)
         {
-            return await GetOrderById(id);
+            return await GetOrderrById(id);
         }
 
         public async Task<bool> UpdateOrderStatus(int orderId, string status)
@@ -173,7 +176,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             try
             {
                 var order = await GetOrderWithDetails(id);
-                
+
                 if (order == null)
                 {
                     return null;
@@ -209,7 +212,7 @@ namespace ProjectHouseWithLeaves.Services.ModelService
                         product = od.Product != null ? new
                         {
                             productName = od.Product.ProductName,
-                            mainImage = od.Product.ProductImages.FirstOrDefault(pi => pi.MainPicture == true)?.ImageUrl 
+                            mainImage = od.Product.ProductImages.FirstOrDefault(pi => pi.MainPicture == true)?.ImageUrl
                                        ?? od.Product.ProductImages.FirstOrDefault()?.ImageUrl,
                             size = od.Product.Size
                         } : null
@@ -220,6 +223,18 @@ namespace ProjectHouseWithLeaves.Services.ModelService
             {
                 return null;
             }
+        }
+        public async Task<IEnumerable<OrderHistoryDtos>> GetOrderById(int id)
+        {
+            var order = await _context.Orders
+                                .Include(o => o.OrderDetails)
+                                .ThenInclude(od => od.Product)
+                                .Include(s => s.ShippingMethod)
+                                .Include(p => p.PaymentMethod)
+                                .Where(x => x.UserId == id)
+                                .ToListAsync();
+            var orderHistoryList = _mapper.Map<List<OrderHistoryDtos>>(order);
+            return orderHistoryList;
         }
     }
 }
