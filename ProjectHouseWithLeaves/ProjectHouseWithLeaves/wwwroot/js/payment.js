@@ -211,12 +211,23 @@ window.addEventListener('DOMContentLoaded', function () {
     renderPaypalCart();
     setupAddressDropdowns(); // Khởi tạo dropdown địa chỉ khi DOM ready
 
+    // Vô hiệu hóa phím Enter trên form địa chỉ/thanh toán
     const paymentForm = document.getElementById('payment-form');
     if (paymentForm) {
-        paymentForm.addEventListener('submit', async function (e) {
-            // Ngăn form submit mặc định
-            e.preventDefault();
+        paymentForm.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
 
+    // Đảm bảo nút btn-pay là type="button"
+    const btnPay = document.getElementById('btn-pay');
+    if (btnPay) btnPay.setAttribute('type', 'button');
+
+    if (btnPay) {
+        btnPay.onclick = async function (e) {
             // Lấy các trường
             const province = document.getElementById('province');
             const district = document.getElementById('district');
@@ -359,7 +370,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
             }
-        });
+        }
     }
 });
 
