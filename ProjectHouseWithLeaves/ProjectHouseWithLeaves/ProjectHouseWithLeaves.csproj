@@ -24,6 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+  <Content Remove="Views/EmailTemplates/**/*.cshtml" />
+</ItemGroup>
+
+<ItemGroup>
+  <Content Include="Views/EmailTemplates/**/*.cshtml">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </Content>
+</ItemGroup>
+
+  <ItemGroup>
   <Content Update="appsettings*.json">
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
   </Content>

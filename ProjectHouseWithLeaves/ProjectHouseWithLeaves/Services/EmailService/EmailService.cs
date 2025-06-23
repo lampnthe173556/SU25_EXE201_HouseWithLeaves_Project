@@ -20,12 +20,10 @@ namespace ProjectHouseWithLeaves.Services.EmailService
     _emailSettings = options.Value;
 
     var templateRoot = Path.Combine(AppContext.BaseDirectory, "Views", "EmailTemplates");
-
     if (!Directory.Exists(templateRoot))
     {
         throw new DirectoryNotFoundException($"Template folder not found: {templateRoot}");
     }
-
     _razorEngine = new RazorLightEngineBuilder()
         .UseFileSystemProject(templateRoot)
         .UseMemoryCachingProvider()
