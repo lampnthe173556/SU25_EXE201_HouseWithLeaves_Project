@@ -31,7 +31,7 @@ async function addToCart(product) {
         window.location.href = '/Authen/Auth';
         return;
     }
-    
+
     const result = await cartService.addItem(product.productId, 1);
     if (result) {
         await updateCartBadge();
@@ -90,12 +90,11 @@ async function renderCartPopup() {
     popup = document.createElement('div');
     popup.id = 'cartPopup';
     document.body.appendChild(popup);
-    
+
     popup.innerHTML = `<div class="cart-popup-content">
         <h3>Giỏ hàng</h3>
         <button class="close-cart-popup">×</button>
-        ${
-            cartItems.length > 0
+        ${cartItems.length > 0
             ? `
             <button class="remove-all-cart" style="position:absolute;top:18px;right:60px;background:#e74c3c;color:#fff;border:none;border-radius:6px;padding:6px 18px;font-size:1rem;cursor:pointer;">Xóa tất cả</button>
             <div class="cart-list">
@@ -109,7 +108,7 @@ async function renderCartPopup() {
                         </div>
                         <div class="cart-item-qty">
                             <button class="qty-btn" data-id="${item.productId}" data-action="decrease">-</button>
-                            <input type="number" min="1" value="${item.qty}" class="qty-input" data-id="${item.productId}">
+                            <input type="number" min="1" value="${item.qty}" disabled  class="qty-input" data-id="${item.productId}">
                             <button class="qty-btn" data-id="${item.productId}" data-action="increase">+</button>
                         </div>
                         <div class="cart-item-price">${item.price.toLocaleString()}₫</div>
@@ -163,7 +162,7 @@ async function renderCartPopup() {
             btn.onclick = async (e) => {
                 const productId = btn.dataset.id;
                 const action = btn.dataset.action;
-                
+
                 const item = cartItems.find(item => item.productId === Number(productId));
                 if (item) {
                     if (action === 'increase') {
@@ -186,7 +185,7 @@ async function renderCartPopup() {
         // Checkbox logic
         const checkoutBtn = popup.querySelector('.checkout-btn');
         const checkboxes = popup.querySelectorAll('.cart-item-checkbox');
-        
+
         function updateCheckoutButtonState() {
             const anyChecked = Array.from(popup.querySelectorAll('.cart-item-checkbox')).some(cb => cb.checked);
             checkoutBtn.disabled = !anyChecked;
@@ -203,7 +202,7 @@ async function renderCartPopup() {
         // Khởi tạo trạng thái ban đầu cho nút checkout
         checkoutBtn.disabled = checkedProductIds.size === 0;
         checkoutBtn.style.opacity = checkedProductIds.size === 0 ? 0.6 : 1;
-        
+
         // Gắn sự kiện cho checkboxes
         checkboxes.forEach(cb => {
             cb.onchange = () => {
@@ -219,21 +218,21 @@ async function renderCartPopup() {
 
         // Cập nhật tổng tiền ban đầu
         updateCheckoutButtonState();
-       
+
         // Gắn sự kiện cho nút checkout
-        checkoutBtn.onclick = function() {
+        checkoutBtn.onclick = function () {
             const checkedIds = Array.from(checkedProductIds);
             if (checkedIds.length === 0) return;
-            
+
             // Lấy danh sách sản phẩm đã chọn
             const selectedCart = cartItems.filter(item => checkedIds.includes(item.productId.toString()));
 
             // Lưu vào localStorage
             localStorage.setItem('checkout_cart', JSON.stringify(selectedCart));
-            
+
             const paymentMethod = popup.querySelector('#payment-method').value;
             localStorage.setItem('payment_method_id', paymentMethod);
-            
+
 
             if (paymentMethod === 'bank') {
                 window.location.href = '/Payment/Paypal';
@@ -260,7 +259,7 @@ function setupCartIconToggle() {
 }
 
 // Initialize cart when DOM is ready
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     console.log('DOM loaded, initializing cart...');
     await updateCartBadge();
     setupCartIconToggle();

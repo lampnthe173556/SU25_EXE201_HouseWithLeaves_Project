@@ -1,0 +1,10 @@
+version: '3'
+services:
+  aspnet-mvc-app:
+    image: tranvukien125/housemvc:latest
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - "ConnectionStrings__DBDefault=Server=tcp:miniplant-sql-1.database.windows.net,1433;Initial Catalog=MiniPlantStore;Persist Security Info=False;User ID=CloudSAb09d5a8a;Password=Your_password123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
