@@ -8,8 +8,8 @@
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
   </PropertyGroup>
 
-  <ItemGroup>
-  <Content Remove="Views/Shared/_Layout.cshtml.css" />
+<ItemGroup>
+  <Content Remove="**/*.cshtml.css" />
 </ItemGroup>
 
   <ItemGroup>
