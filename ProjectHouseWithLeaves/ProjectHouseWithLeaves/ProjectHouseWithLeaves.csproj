@@ -5,7 +5,7 @@
 	<PreserveCompilationContext>true</PreserveCompilationContext>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems> 
     <EnableScopedCss>false</EnableScopedCss>
   </PropertyGroup>
 
@@ -33,14 +33,11 @@
     <PackageReference Include="RazorLight" Version="2.3.1" />
   </ItemGroup>
 
-   <ItemGroup>
-    <Content Update="appsettings.json">
+<!-- 📄 Các file cần copy khi publish -->
+  <ItemGroup>
+    <Content Include="appsettings*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <!-- Đảm bảo RazorLight có template khi publish -->
-  <ItemGroup>
     <Content Include="Views/EmailTemplates/**/*.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
