@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <EnableScopedCss>false</EnableScopedCss>
   </PropertyGroup>
 
   <!-- 🔥 Bắt buộc loại bỏ scoped css nếu không dùng Blazor -->
