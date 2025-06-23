@@ -23,10 +23,10 @@
     <PackageReference Include="RazorLight" Version="2.3.1" />
   </ItemGroup>
 
-<ItemGroup>
-  <Content update="appsettings*.json">
+  <ItemGroup>
+  <Content Update="appsettings*.json">
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
   </Content>
-</ItemGroup>
+  </ItemGroup>
   
 </Project>
