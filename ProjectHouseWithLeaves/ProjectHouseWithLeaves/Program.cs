@@ -112,6 +112,7 @@ namespace ProjectHouseWithLeaves
             #endregion
 
             builder.Services.AddHttpContextAccessor();
+            builder.WebHost.UseUrls("http://0.0.0.0:80");
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
