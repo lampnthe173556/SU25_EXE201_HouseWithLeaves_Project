@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+  <Content Remove="Views/Shared/_Layout.cshtml.css" />
+</ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.17" />
