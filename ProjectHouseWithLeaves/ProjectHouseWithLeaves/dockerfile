@@ -8,6 +8,12 @@ RUN dotnet publish "./ProjectHouseWithLeaves.csproj" -c Release -o /app/publish
 # Runtime Stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
+
+# Copy publish output
 COPY --from=build /app/publish .
+
+# 💥 Workaround: Copy thủ công thư mục EmailTemplates nếu dotnet publish không mang theo
+COPY Views/EmailTemplates Views/EmailTemplates
+
 EXPOSE 80
 ENTRYPOINT ["dotnet", "ProjectHouseWithLeaves.dll"]

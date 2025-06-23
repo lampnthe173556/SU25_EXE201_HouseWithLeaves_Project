@@ -24,16 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Content Remove="Views/EmailTemplates/**/*.*" />
-</ItemGroup>
-
-<ItemGroup>
-  <Content Include="Views/EmailTemplates/**/*.*">
-    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-  </Content>
-</ItemGroup>
-
-  <ItemGroup>
   <Content Update="appsettings*.json">
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
   </Content>
