@@ -5,8 +5,8 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-  <!-- <EnableDefaultContentItems>false</EnableDefaultContentItems>
-  <EnableScopedCss>false</EnableScopedCss> -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <EnableScopedCss>false</EnableScopedCss>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,11 +30,9 @@
     <Content Include="appsettings*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views/**/*.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-<!-- <ItemGroup>
-  <Content Include="Views/**/*.cshtml">
-    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-  </Content>
-</ItemGroup> -->
 
 </Project>
