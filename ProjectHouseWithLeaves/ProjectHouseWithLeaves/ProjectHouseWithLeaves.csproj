@@ -5,14 +5,14 @@
 	<PreserveCompilationContext>true</PreserveCompilationContext>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableDefaultContentItems>false</EnableDefaultContentItems>
-    <EnableScopedCss>false</EnableScopedCss>
+    <!-- <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <EnableScopedCss>false</EnableScopedCss> -->
   </PropertyGroup>
 
   <!-- 🔥 Bắt buộc loại bỏ scoped css nếu không dùng Blazor -->
-  <ItemGroup>
+  <!-- <ItemGroup>
     <Content Remove="**/*.cshtml.css" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
@@ -40,9 +40,9 @@
   </ItemGroup>
 
   <!-- Đảm bảo RazorLight có template khi publish -->
-  <ItemGroup>
+  <!-- <ItemGroup>
     <Content Include="Views/EmailTemplates/**/*.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
+  </ItemGroup> -->
 </Project>
