@@ -28,9 +28,5 @@
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
   </Content>
   </ItemGroup>
-  <ItemGroup>
-  <Content Include="Views/EmailTemplates/**/*.cshtml">
-    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-  </Content>
-</ItemGroup>
+
 </Project>
