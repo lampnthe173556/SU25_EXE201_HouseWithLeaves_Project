@@ -5,11 +5,10 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableDefaultContentItems>false</EnableDefaultContentItems> <!-- 👈 Tắt auto include để kiểm soát thủ công -->
+  <EnableDefaultContentItems>false</EnableDefaultContentItems>
+  <EnableScopedCss>false</EnableScopedCss>
   </PropertyGroup>
 
-
-  <!-- 📦 Các package -->
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.1.6" />
@@ -27,7 +26,6 @@
     <PackageReference Include="RazorLight" Version="2.3.1" />
   </ItemGroup>
 
-  <!-- 📄 Các file cần include khi publish -->
   <ItemGroup>
     <Content Include="appsettings*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
