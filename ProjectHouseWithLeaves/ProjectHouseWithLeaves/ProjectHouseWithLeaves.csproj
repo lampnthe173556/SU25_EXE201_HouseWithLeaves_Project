@@ -5,7 +5,7 @@
 	<PreserveCompilationContext>true</PreserveCompilationContext>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- <EnableDefaultContentItems>false</EnableDefaultContentItems> -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <EnableScopedCss>false</EnableScopedCss>
   </PropertyGroup>
 
