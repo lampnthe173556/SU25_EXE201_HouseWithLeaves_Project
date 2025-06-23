@@ -19,7 +19,7 @@ namespace ProjectHouseWithLeaves.Services.EmailService
         {
             _emailSettings = options.Value;
             _razorEngine = new RazorLightEngineBuilder()
-                .UseFileSystemProject(Path.Combine(AppContext.BaseDirectory, "Views", "EmailTemplates"))
+                .UseFileSystemProject(Path.Combine(Directory.GetCurrentDirectory(), "Views", "EmailTemplates"))
                 .UseMemoryCachingProvider()
                 .Build();
             _httpContextAccessor = httpContextAccessor;
