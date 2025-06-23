@@ -2,18 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-	<PreserveCompilationContext>true</PreserveCompilationContext>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableDefaultContentItems>false</EnableDefaultContentItems> 
-    <EnableScopedCss>false</EnableScopedCss>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems> <!-- 👈 Tắt auto include để kiểm soát thủ công -->
+    <EnableScopedCss>false</EnableScopedCss> <!-- 👈 Không dùng Blazor nên tắt -->
   </PropertyGroup>
 
-  <!-- 🔥 Bắt buộc loại bỏ scoped css nếu không dùng Blazor -->
+  <!-- ❌ Loại bỏ các file scoped CSS Blazor -->
   <ItemGroup>
     <Content Remove="**/*.cshtml.css" />
   </ItemGroup>
 
+  <!-- 📦 Các package -->
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.1.6" />
@@ -22,25 +23,25 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Minio" Version="6.0.4" />
     <PackageReference Include="RazorLight" Version="2.3.1" />
   </ItemGroup>
 
-<!-- 📄 Các file cần copy khi publish -->
+  <!-- 📄 Các file cần include khi publish -->
   <ItemGroup>
     <Content Include="appsettings*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views/EmailTemplates/**/*.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
-  
+<ItemGroup>
+  <Content Include="Views/**/*.cshtml">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </Content>
+</ItemGroup>
+
 </Project>
