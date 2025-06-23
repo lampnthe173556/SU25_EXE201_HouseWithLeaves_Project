@@ -15,15 +15,24 @@ namespace ProjectHouseWithLeaves.Services.EmailService
         private readonly RazorLightEngine _razorEngine;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EmailService(IOptions<EmailSettings> options, IHttpContextAccessor httpContextAccessor)
-        {
-            _emailSettings = options.Value;
-            _razorEngine = new RazorLightEngineBuilder()
-                .UseFileSystemProject(Path.Combine(AppContext.BaseDirectory, "Views", "EmailTemplates")) // ✅ Đúng trong mọi môi trường
-                .UseMemoryCachingProvider()
-                .Build();
-            _httpContextAccessor = httpContextAccessor;
-        }
+     public EmailService(IOptions<EmailSettings> options, IHttpContextAccessor httpContextAccessor)
+{
+    _emailSettings = options.Value;
+
+    var templateRoot = Path.Combine(AppContext.BaseDirectory, "Views", "EmailTemplates");
+
+    if (!Directory.Exists(templateRoot))
+    {
+        throw new DirectoryNotFoundException($"Template folder not found: {templateRoot}");
+    }
+
+    _razorEngine = new RazorLightEngineBuilder()
+        .UseFileSystemProject(templateRoot)
+        .UseMemoryCachingProvider()
+        .Build();
+
+    _httpContextAccessor = httpContextAccessor;
+}
 
         
         public async Task SendEmailAsync(string toEmail, string subject, Contact model)
