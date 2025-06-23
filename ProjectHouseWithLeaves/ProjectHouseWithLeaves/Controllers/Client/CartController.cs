@@ -39,7 +39,7 @@ namespace ProjectHouseWithLeaves.Controllers.Client
         public async Task<IActionResult> DeleteQuantityItem([FromBody] ItemCartRequest request)
         {
             var userId = HttpContext.Session.GetObject<User>("user").UserId;
-            var result = await _cartService.AddItemToCartAsync(userId, request.ProductId, request.Quantity);
+            var result = await _cartService.DecreaseItemCartAsync(userId, request.ProductId, request.Quantity);
             return Json(result); 
         }
         [HttpPost("RemoveItem")]

@@ -4,7 +4,7 @@
     if (!cartCol) return;
     if (cart.length === 0) {
         cartCol.innerHTML = `<h5 class="mb-3"><a href="../html/shop.html" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Tiếp tục mua hàng</a></h5><hr><div>Chưa có sản phẩm nào trong giỏ hàng.</div>`;
-        updatePaypalTotal();
+        await updatePaypalTotal();
         return;
     }
 
@@ -110,17 +110,34 @@
             updatePaypalTotal();
         };
     }
-    updatePaypalTotal();
+    await updatePaypalTotal();
 }
 
-function updatePaypalTotal() {
+async function updatePaypalTotal() {
     const cart = JSON.parse(localStorage.getItem('checkout_cart') || '[]');
     const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+    // Lấy id phương thức vận chuyển đang chọn
+    const shippingSelect = document.getElementById('shipping-method');
+    let shippingId = 1; // mặc định
+    if (shippingSelect) {
+        shippingId = shippingSelect.options[shippingSelect.selectedIndex].id;
+    }
+
+    // Gọi API lấy danh sách phương thức vận chuyển
+    let shippingValue = 0;
+    try {
+        const shippingMethods = await fetchShippingMethods();
+        const shippingMethod = shippingMethods.find(m => m.shippingMethodId == shippingId);
+        shippingValue = shippingMethod ? (shippingMethod.shippingCost || shippingMethod.price) : 0;
+    } catch (e) {
+        shippingValue = 0;
+    }
+
     const subtotalEl = document.getElementById('paypal-subtotal');
     const shippingEl = document.getElementById('paypal-shipping');
     const totalEl = document.getElementById('paypal-total');
     if (subtotalEl) subtotalEl.textContent = total.toLocaleString() + '₫';
-    const shippingValue = parseInt(localStorage.getItem('paypal_shipping') || '20000', 10);
     if (shippingEl) shippingEl.textContent = shippingValue.toLocaleString() + '₫';
     if (totalEl) totalEl.textContent = (total + shippingValue).toLocaleString() + '₫';
     // Cập nhật nút checkout
@@ -224,12 +241,28 @@ window.addEventListener('DOMContentLoaded', function () {
                 return false;
             }
 
-            // Populate hidden fields before submission
+            // Lấy id phương thức vận chuyển đã chọn
             const shippingSelect = document.getElementById('shipping-method');
-            const shippingValue = parseInt(shippingSelect.value, 10);
             const shippingId = shippingSelect.options[shippingSelect.selectedIndex].id;
             const shippingName = shippingSelect.options[shippingSelect.selectedIndex].text;
 
+            // Gọi lại API để lấy danh sách phương thức vận chuyển
+            let shippingMethods = [];
+            try {
+                shippingMethods = await fetchShippingMethods();
+            } catch (e) {
+                showDangerNotification('Không lấy được phí vận chuyển mới nhất!');
+                return false;
+            }
+            // Tìm đúng object phương thức vận chuyển
+            const shippingMethod = shippingMethods.find(m => m.shippingMethodId == shippingId);
+            if (!shippingMethod) {
+                showDangerNotification('Phương thức vận chuyển không hợp lệ!');
+                return false;
+            }
+            const shippingValue = shippingMethod.shippingCost || shippingMethod.price; // fallback nếu API trả về price
+
+            // Tính lại tổng tiền
             const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
             const total = subtotal + shippingValue;
 
@@ -241,11 +274,9 @@ window.addEventListener('DOMContentLoaded', function () {
             });
             document.getElementById('totalAmount').value = total;
 
-
             const provinceSelect = document.getElementById('province');
             const districtSelect = document.getElementById('district');
             const wardSelect = document.getElementById('ward');
-
 
             const addressText = {
                 province: provinceSelect.options[provinceSelect.selectedIndex].text,
