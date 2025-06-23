@@ -6,13 +6,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultContentItems>false</EnableDefaultContentItems> <!-- 👈 Tắt auto include để kiểm soát thủ công -->
-    <EnableScopedCss>false</EnableScopedCss> <!-- 👈 Không dùng Blazor nên tắt -->
   </PropertyGroup>
 
-  <!-- ❌ Loại bỏ các file scoped CSS Blazor -->
-  <ItemGroup>
-    <Content Remove="**/*.cshtml.css" />
-  </ItemGroup>
 
   <!-- 📦 Các package -->
   <ItemGroup>
