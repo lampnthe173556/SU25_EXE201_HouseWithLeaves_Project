@@ -419,7 +419,7 @@
 @section Scripts {
     <script>
         function toggleUserStatus(userId, currentStatus, userName) {
-            const isActive = currentStatus === 'True';
+            const isActive = currentStatus === 'True' || currentStatus === true;
             const newStatus = !isActive;
 
             let confirmMessage = '';
@@ -457,8 +457,8 @@
                                 $toggleBtn.attr('title', 'Bật hoạt động');
                             }
                             
-                            // Cập nhật onclick attribute
-                            $toggleBtn.attr('onclick', `toggleUserStatus('${userId}', '${newStatus}', '${userName}')`);
+                            // Sửa: luôn truyền 'True' hoặc 'False' (string) vào onclick
+                            $toggleBtn.attr('onclick', `toggleUserStatus('${userId}', '${newStatus ? 'True' : 'False'}', '${userName}')`);
                             
                             // Cập nhật thống kê
                             filterUsers();
