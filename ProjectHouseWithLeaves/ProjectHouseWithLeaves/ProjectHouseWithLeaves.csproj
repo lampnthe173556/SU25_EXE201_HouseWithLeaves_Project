@@ -5,11 +5,11 @@
 	<PreserveCompilationContext>true</PreserveCompilationContext>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- <EnableDefaultContentItems>false</EnableDefaultContentItems> -->
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
   </PropertyGroup>
 
 <ItemGroup>
-  <Content Remove="**/*.cshtml.css" />
+  <Content Remove="Views/Shared/_Layout.cshtml.css" />
 </ItemGroup>
 
   <ItemGroup>
