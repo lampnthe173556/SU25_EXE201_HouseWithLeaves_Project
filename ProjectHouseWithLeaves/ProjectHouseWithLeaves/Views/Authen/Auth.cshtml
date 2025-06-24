@@ -55,6 +55,11 @@
         <div id="messageLogin" data-message="@ViewBag.MessageLogin" data-type="error"></div>
 
     }
+    @if (ViewBag.MessageLogin != null && ViewBag.MessageLogin == "Tài khoản của bạn đã bị khóa do vi phạm chính sách")
+    {
+        <div id="messageLogin" data-message="@ViewBag.MessageLogin" data-type="error"></div>
+
+    }
     <div class="container" id="container">
        
         <div class="form-container sign-up-container">

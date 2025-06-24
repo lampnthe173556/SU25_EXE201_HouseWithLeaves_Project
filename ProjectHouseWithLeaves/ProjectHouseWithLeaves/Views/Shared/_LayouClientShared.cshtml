@@ -40,7 +40,7 @@
                 <ul class="nav">
                     <li><a href="/Home/Home">HOME</a></li>
                     <li><a href="/Shop/Shop">SHOP ONLINE</a></li>
-                    @if(user != null)
+                    @if(user != null && user.Status == 1)
                     {
                         <li class="dropdown">
                             <a href="#"><i class="fas fa-user"></i> Tài khoản <i class="fa fa-chevron-down dropdown-arrow"></i></a>

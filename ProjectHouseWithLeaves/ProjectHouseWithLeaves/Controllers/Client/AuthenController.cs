@@ -54,6 +54,11 @@ namespace ProjectHouseWithLeaves.Controllers.Client
                 if(user.RoleId == 2) // RoleId = 2 là admin
                 {
                     return RedirectToAction("Admin", "Admin", new { area = "Admin" });
+                }else if(user.RoleId == 1 && user.Status == 0)
+                {
+                    result = false;
+                    ViewBag.MessageLogin = "Tài khoản của bạn đã bị khóa do vi phạm chính sách";
+                    return View("Auth", result);
                 }
                 return RedirectToAction("home", "home");
             }
