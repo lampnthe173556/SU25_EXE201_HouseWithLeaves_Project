@@ -3,7 +3,7 @@
     const cartCol = document.querySelector('.col-lg-7');
     if (!cartCol) return;
     if (cart.length === 0) {
-        cartCol.innerHTML = `<h5 class="mb-3"><a href="../html/shop.html" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Tiếp tục mua hàng</a></h5><hr><div>Chưa có sản phẩm nào trong giỏ hàng.</div>`;
+        cartCol.innerHTML = `<h5 class="mb-3"><a href="/Shop/Shop" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Tiếp tục mua hàng</a></h5><hr><div>Chưa có sản phẩm nào trong giỏ hàng.</div>`;
         await updatePaypalTotal();
         return;
     }
@@ -32,7 +32,7 @@
         shippingOptionsHtml = `<option value="">Lỗi khi tải PTVC</option>`;
     }
 
-    let html = `<h5 class="mb-3"><a href="../html/shop.html" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Tiếp tục mua hàng</a></h5><hr>`;
+    let html = `<h5 class="mb-3"><a href="/Shop/Shop" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Tiếp tục mua hàng</a></h5><hr>`;
     html += `<div style="margin: 10px 0 18px 0;">
     <label for="shipping-method" style="font-weight: 500;">Phương thức vận chuyển:</label>
     <select id="shipping-method" style="width: 220px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; margin-left: 8px; font-family: 'Quicksand', sans-serif;">
