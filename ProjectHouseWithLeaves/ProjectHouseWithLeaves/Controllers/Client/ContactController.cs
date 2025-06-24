@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace ProjectHouseWithLeaves.Controllers.Client
 {
-    [ClientAuthorize]
     public class ContactController : Controller
     {
         private readonly IEmailService _emailService;

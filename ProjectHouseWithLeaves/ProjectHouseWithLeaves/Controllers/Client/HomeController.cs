@@ -49,7 +49,6 @@ namespace ProjectHouseWithLeaves.Controllers.Client
         }
 
         // Trang chủ có phân quyền - chỉ user thường mới vào được
-        [ClientAuthorize]
         public async Task<IActionResult> Home()
         {
             var productSeller = await _productService.GetProductBestSeller();
