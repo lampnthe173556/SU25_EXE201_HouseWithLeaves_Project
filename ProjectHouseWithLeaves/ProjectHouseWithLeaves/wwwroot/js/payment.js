@@ -375,23 +375,50 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 
 async function fetchProvinces() {
-    const res = await fetch('https://provinces.open-api.vn/api/p/');
-    if (!res.ok) throw new Error('Lỗi lấy danh sách tỉnh');
-    return await res.json(); // [{name: "...", code: ...}, ...]
+    try {
+        const res = await fetch('https://provinces.open-api.vn/api/p/');
+        if (!res.ok) throw new Error('Lỗi lấy danh sách tỉnh');
+        return await res.json(); // [{name: "...", code: ...}, ...]
+    } catch (error) {
+        console.warn('API lỗi, sử dụng dữ liệu backup:', error.message);
+        // Sử dụng dữ liệu backup
+        if (typeof getProvincesFromBackup === 'function') {
+            return getProvincesFromBackup();
+        }
+        throw new Error('Không thể lấy dữ liệu tỉnh/thành phố');
+    }
 }
 
 async function fetchDistricts(provinceCode) {
-    const res = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
-    if (!res.ok) throw new Error('Lỗi lấy danh sách huyện');
-    const data = await res.json();
-    return data.districts || []; // [{name: "...", code: ...}, ...]
+    try {
+        const res = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
+        if (!res.ok) throw new Error('Lỗi lấy danh sách huyện');
+        const data = await res.json();
+        return data.districts || []; // [{name: "...", code: ...}, ...]
+    } catch (error) {
+        console.warn('API lỗi, sử dụng dữ liệu backup:', error.message);
+        // Sử dụng dữ liệu backup
+        if (typeof getDistrictsFromBackup === 'function') {
+            return getDistrictsFromBackup(provinceCode);
+        }
+        throw new Error('Không thể lấy dữ liệu quận/huyện');
+    }
 }
 
 async function fetchWards(districtCode) {
-    const res = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-    if (!res.ok) throw new Error('Lỗi lấy danh sách xã');
-    const data = await res.json();
-    return data.wards || []; // [{name: "...", code: ...}, ...]
+    try {
+        const res = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+        if (!res.ok) throw new Error('Lỗi lấy danh sách xã');
+        const data = await res.json();
+        return data.wards || []; // [{name: "...", code: ...}, ...]
+    } catch (error) {
+        console.warn('API lỗi, sử dụng dữ liệu backup:', error.message);
+        // Sử dụng dữ liệu backup
+        if (typeof getWardsFromBackup === 'function') {
+            return getWardsFromBackup(districtCode);
+        }
+        throw new Error('Không thể lấy dữ liệu phường/xã');
+    }
 }
 
 function showDangerNotification(message) {
