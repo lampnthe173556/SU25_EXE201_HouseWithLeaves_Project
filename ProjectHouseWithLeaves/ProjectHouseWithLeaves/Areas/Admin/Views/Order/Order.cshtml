@@ -524,6 +524,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Địa chỉ giao hàng</label>
                             <p id="viewShippingAddress" class="mb-0"></p>
+                            <p id="viewFullAddress" class="mb-0 text-muted small"></p>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -991,6 +992,20 @@
                 $('#viewCustomerEmail').text(data.user?.email || 'N/A');
                 $('#viewCustomerPhone').text(data.user?.phone || 'N/A');
                 $('#viewShippingAddress').text(data.shippingAddress || 'N/A');
+                
+                // Hiển thị địa chỉ đầy đủ bao gồm xã/phường, quận/huyện, thành phố
+                const fullAddress = [];
+                if (data.shippingAddress) fullAddress.push(data.shippingAddress);
+                if (data.ward) fullAddress.push(data.ward);
+                if (data.district) fullAddress.push(data.district);
+                if (data.city) fullAddress.push(data.city);
+                
+                if (fullAddress.length > 0) {
+                    $('#viewFullAddress').text(fullAddress.join(', '));
+                } else {
+                    $('#viewFullAddress').text('N/A');
+                }
+                
                 $('#viewOrderDate').text(new Date(data.orderDate).toLocaleDateString('vi-VN'));
                 $('#viewPaymentMethod').text(data.paymentMethod?.methodName || 'N/A');
                 $('#viewShippingMethod').text(data.shippingMethod?.methodName || 'N/A');
